@@ -1,0 +1,2 @@
+rootProject.name = 'earthly'
+include 'core', 'repository', 'webapp', "webservice"

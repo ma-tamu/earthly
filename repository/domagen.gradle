@@ -1,0 +1,18 @@
+domaCodeGen {
+    dev {
+        url = datasourceUrl
+        user = datasourceUsername
+        password = datasourcePassword
+        schemaName = datasourceSchema
+        templateDir = file("$rootDir/repository/template")
+        entity {
+            packageName = 'jp.co.project.planets.earthly.db.entity'
+            overwriteListener = true
+        }
+        dao {
+            packageName = 'jp.co.project.planets.earthly.db.dao.base'
+            overwrite = true
+            suffix = 'BaseDao'
+        }
+    }
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body>
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main id="main" class="main">
+  <div class="pagetitle">
+    <div class="col-9">
+      <h1>ユーザー追加</h1>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a th:href="@{/users}">ユーザーリスト</a>
+        </li>
+        <li class="breadcrumb-item active">
+          ユーザー追加
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="container">
+    <form method="post" th:action="@{/users/entry}">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <label for="loginId" class="form-label">ログインID</label>
+            <input type="text" id="loginId" name="loginId" class="form-control" required>
+            <div class="invalid-feedback">ログインIDは必須です。</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="name" class="form-label">ユーザー名</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+            <div class="invalid-feedback">ユーザー名は必須です。</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="gender" class="form-label">性別</label>
+            <select id="gender" name="gender" class="form-select">
+              <option>M</option>
+              <option>F</option>
+              <option>etc</option>
+            </select>
+            <div class="invalid-feedback">性別は必須です。</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="mail" class="form-label">メールアドレス</label>
+            <input type="text" id="mail" name="mail" class="form-control" required>
+            <div class="invalid-feedback">メールアドレスは必須です。</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="company" class="form-label">所属会社</label>
+            <input type="text" id="company" name="company" class="form-control" required>
+            <div class="invalid-feedback">所属会社は必須です。</div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-6">
+          <a type="button" class="btn btn-secondary" th:href="@{/users}">戻る</a>
+          <button type="submit" class="btn btn-primary rounded-pill" data-bs-toggle="confirm">確認</button>
+          <div class="confirm fade" tabindex="-1" data-bs-background="false">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">ユーザー登録確認</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="confirm" aria-label="close"></button>
+                </div>
+                <div class="modal-body">
+                  body
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="confirm">キャンセル</button>
+                  <button type="submit" class="btn btn-primary">登録</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+</body>
+</html>

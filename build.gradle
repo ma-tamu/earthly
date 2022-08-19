@@ -1,0 +1,79 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.7.0"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+        classpath 'mysql:mysql-connector-java:8.0.26'
+        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.8"
+        classpath "de.aaschmid:gradle-cpd-plugin:3.3"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
+        classpath "org.flywaydb:flyway-gradle-plugin:8.5.12"
+        classpath "org.flywaydb:flyway-mysql:8.5.12"
+        classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
+        classpath "gradle.plugin.org.seasar.doma:compile:1.1.0"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+}
+
+subprojects {
+
+    ext {
+        datasourceHost = System.getenv("MYSQL_HOST") ?: "localhost"
+        datasourcePort = System.getenv("MYSQL_PORT") ?: "3306"
+        datasourceUsername = System.getenv("MYSQL_USER_NAME") ?: "earthly"
+        datasourcePassword = System.getenv("MYSQL_PASSWORD") ?: "earthly"
+        datasourceSchema = System.getenv("MYSQL_SCHEMA") ?: "earthly"
+        datasourceUrl = "jdbc:mysql://$datasourceHost:$datasourcePort/$datasourceSchema?useSSL=false&allowPublicKeyRetrieval=true"
+    }
+
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: "com.github.ben-manes.versions"
+    apply plugin: 'org.flywaydb.flyway'
+
+    group = 'jp.co.project.planets'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        runtimeOnly 'mysql:mysql-connector-java'
+
+        // flyway
+        implementation 'org.flywaydb:flyway-core'
+        implementation 'org.flywaydb:flyway-mysql'
+
+        // util
+        implementation 'org.apache.commons:commons-lang3:3.12.0'
+        implementation 'org.apache.commons:commons-collections4:4.4'
+        implementation 'com.google.guava:guava:31.1-jre'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.mockito:mockito-inline:4.6.1'
+    }
+
+    test {
+        useJUnitPlatform {
+            includeEngines 'junit-jupiter'
+        }
+    }
+}
+

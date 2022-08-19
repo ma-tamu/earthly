@@ -1,0 +1,25 @@
+// JavaクラスとSQLファイルの出力先ディレクトリを同じにする
+processResources.destinationDir = compileJava.destinationDir
+// コンパイルより前にSQLファイルを出力先ディレクトリにコピーするために依存関係を逆転する
+compileJava.dependsOn processResources
+
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+[compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.6.0'
+
+    implementation 'org.seasar.doma:doma:2.29.0'
+    implementation 'org.seasar.doma:doma-gen:2.28.0'
+
+    annotationProcessor 'org.seasar.doma:doma:2.29.0'
+    annotationProcessor 'org.seasar.doma:doma-gen:2.28.0'
+}
+
+apply plugin: "org.seasar.doma.codegen"
+apply plugin: "org.seasar.doma.compile"
+apply from: "flyway.gradle"
+apply from: "domagen.gradle"

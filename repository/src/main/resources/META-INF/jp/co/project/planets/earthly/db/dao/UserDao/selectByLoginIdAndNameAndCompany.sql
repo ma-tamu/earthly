@@ -9,7 +9,7 @@ SELECT user.id         AS id,
 FROM user
        LEFT OUTER JOIN company on user.company_id = company.id
 WHERE
-  /*%if hasViewAllCompany */
+  /*%if !hasViewAllCompany */
     company.id IN (SELECT user_01.company_id
                    FROM user user_01
                    WHERE user_01.id = /*executionUserId*/'')

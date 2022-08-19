@@ -2,14 +2,15 @@ package jp.co.project.planets.earthly.webapp.service;
 
 import com.google.common.annotations.VisibleForTesting;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.model.dto.UserSearchResultDto;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
+import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.logic.UserLogic;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,9 +84,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserSearchResultDto search(final UserSearchDto userSearchDto, final Pageable pageable,
-            final EarthlyUserInfoDto userInfoDto) {
-        return userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(), userSearchDto.name(),
+    public PageImpl<UserSimpleEntity> search(final UserSearchDto userSearchDto, final Pageable pageable,
+                           final EarthlyUserInfoDto userInfoDto) {
+
+        final var userSearchResultDto = userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(), userSearchDto.name(),
                 userSearchDto.company(), pageable, userInfoDto.permissionEnumList(), userInfoDto.id());
+
+        return new PageImpl<>(userSearchResultDto.userSimpleEntityList(), pageable, userSearchResultDto.total());
     }
 }

@@ -1,27 +1,26 @@
 function doGet(url, param) {
-    return execute(url, "GET", param, null);
+    return execute(url, "GET", param);
 }
 
-function doPost(url, param, body) {
-    return execute(url, "POST", param, body);
+function doPost(url, body) {
+    return execute(url, "POST", body);
 }
 
-function execute(url, method, param, body) {
+function execute(url, method, param) {
     let deferred = new $.Deferred();
 
     $.ajax({
         url: url,
         method: method,
-        param: param,
-        data: body,
+        data: param,
         cache: false
     }).then(
         function (data) {
-            deferred.resolve();
+            deferred.resolve(data);
         },
         function (data) {
-            deferred.rejected();
+            deferred.resolve(data);
         }
     );
-    return deferred;
+    return deferred.promise();
 }

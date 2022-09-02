@@ -83,13 +83,31 @@ public class UserService {
         throw new ForbiddenException(String.format("not accessible user user=%s", id), EWA4XX003);
     }
 
+    /**
+     * ユーザー検索
+     *
+     * @param userSearchDto
+     *         ユーザー検索DTO
+     * @param pageable
+     *         ページャー
+     * @param userInfoDto
+     *         ユーザー情報
+     * @return 検索結果
+     */
     @Transactional
     public PageImpl<UserSimpleEntity> search(final UserSearchDto userSearchDto, final Pageable pageable,
-                           final EarthlyUserInfoDto userInfoDto) {
+            final EarthlyUserInfoDto userInfoDto) {
 
-        final var userSearchResultDto = userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(), userSearchDto.name(),
-                userSearchDto.company(), pageable, userInfoDto.permissionEnumList(), userInfoDto.id());
+        final var userSearchResultDto = userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(),
+                userSearchDto.name(), userSearchDto.company(), pageable, userInfoDto.permissionEnumList(),
+                userInfoDto.id());
 
         return new PageImpl<>(userSearchResultDto.userSimpleEntityList(), pageable, userSearchResultDto.total());
+    }
+
+    public boolean hasAddUser(final EarthlyUserInfoDto userInfoDto) {
+
+        return userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER);
+
     }
 }

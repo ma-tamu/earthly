@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="pagination(page)">
-  <div class="float-end" th:unless="${#lists.isEmpty(page.getContent())}">
+  <div class="float-end" th:if="${#pagination.isPageable(page)}">
     <ul class="pagination">
-      <li class="page-item" th:classappend="${page.first} ? 'disabled':''">
-        <button class="page-link" aria-label="Previous" name="offset" value="0" th:classappend="${page.first} ? 'disabled':''">
+      <li class="page-item" th:classappend="${#pagination.isFirst(page)} ? 'disabled':''">
+        <button class="page-link" aria-label="Previous" name="page" value="0"
+                th:classappend="${#pagination.isFirst(page)} ? 'disabled':''">
           <span aria-hidden="true">&lt;&lt;</span>
         </button>
       </li>
-      <li class="page-item" th:each="i : ${#numbers.sequence()}">
-        <button class="page-link" name="offset" value="1">1</button>
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}">
+        <button class="page-link" name="page" value="1" th:value="${i}" th:text="${i + 1}">1</button>
       </li>
-      <li class="page-item">
-        <button class="page-link" name="offset" value="2">2</button>
-      </li>
-      <li class="page-item">
-        <button class="page-link" name="offset" value="3">3</button>
-      </li>
-      <li class="page-item" th:classappend="${page.last} ? 'disabled':''">
-        <button class="page-link" aria-label="Next" name="offset" th:value="${page.totalPages}-1" th:classappend="${page.last} ? 'disabled':''">
+      <li class="page-item" th:classappend="${#pagination.isLast(page)} ? 'disabled':''">
+        <button class="page-link" aria-label="Next" name="page" th:value="${page.totalPages}-1"
+                th:classappend="${#pagination.isLast(page)} ? 'disabled':''">
           <span aria-hidden="true">&gt;&gt;</span>
         </button>
       </li>

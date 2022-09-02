@@ -10,4 +10,9 @@ public final class ErrorMessageKey {
 
     /** 対象のユーザーは閲覧することはできません。 */
     public static final String FORBIDDEN_USER = "exception.forbidden.user";
+
+    /** ユーザー登録登録の権限がありません。 */
+    public static final String FORBIDDEN_ENTRY_USER = "exception.forbidden.entry.user";
+
+
 }

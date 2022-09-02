@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     public ModelAndView handler(final Exception exception) {
         log.error(exception.getMessage(), exception);
         final var modelAndView = new ModelAndView("error/500");
-        modelAndView.addObject(exception);
+        modelAndView.addObject("exception", exception);
         return modelAndView;
     }
 

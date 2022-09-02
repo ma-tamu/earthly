@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
+  <script
+      src="https://code.jquery.com/jquery-3.6.1.min.js"
+      integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+      crossorigin="anonymous"></script>
 </head>
 <body>
 <th:block th:replace="parts/template::header"></th:block>
@@ -29,51 +33,64 @@
     </nav>
   </div>
   <div class="container">
-    <form method="post" th:action="@{/users/entry}">
+    <form method="post" th:action="@{/users/entry}" th:object="${userEntryForm}">
       <div class="card-body">
         <div class="row">
-          <div class="col-6">
+          <div class="col-6 has-validation">
             <label for="loginId" class="form-label">ログインID</label>
-            <input type="text" id="loginId" name="loginId" class="form-control" required>
-            <div class="invalid-feedback">ログインIDは必須です。</div>
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
+                   th:classappend="${#fields.hasErrors('loginId')}?'is-invalid'">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">ログインIDは必須です。
+            </div>
           </div>
         </div>
         <div class="row">
           <div class="col-6">
             <label for="name" class="form-label">ユーザー名</label>
-            <input type="text" id="name" name="name" class="form-control" required>
-            <div class="invalid-feedback">ユーザー名は必須です。</div>
+            <input type="text" id="name" th:field="*{name}" class="form-control"
+                   th:classappend="${#fields.hasErrors('name')}?'is-invalid'">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">ユーザー名は必須です。</div>
           </div>
         </div>
         <div class="row">
           <div class="col-6">
             <label for="gender" class="form-label">性別</label>
-            <select id="gender" name="gender" class="form-select">
-              <option>M</option>
-              <option>F</option>
-              <option>etc</option>
+            <select id="gender" name="gender" class="form-select"
+                    th:classappend="${#fields.hasErrors('gender')}?'is-invalid'" th:with="g=*{gender}">
+              <option></option>
+              <option th:each="genderEnum : ${T(jp.co.project.planets.earthly.emuns.GenderEnum).values()}"
+                      th:value="${genderEnum.value}" th:text="${genderEnum.name()}"
+                      th:selected="${#strings.equals(genderEnum.value, g)}">M
+              </option>
             </select>
-            <div class="invalid-feedback">性別は必須です。</div>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}">性別は必須です。
+            </div>
           </div>
         </div>
         <div class="row">
           <div class="col-6">
             <label for="mail" class="form-label">メールアドレス</label>
-            <input type="text" id="mail" name="mail" class="form-control" required>
-            <div class="invalid-feedback">メールアドレスは必須です。</div>
+            <input type="text" id="mail" th:field="*{mail}" class="form-control"
+                   th:classappend="${#fields.hasErrors('mail')}?'is-invalid'">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}">メールアドレスは必須です。</div>
           </div>
         </div>
         <div class="row">
           <div class="col-6">
             <label for="company" class="form-label">所属会社</label>
-            <input type="text" id="company" name="company" class="form-control" required>
-            <div class="invalid-feedback">所属会社は必須です。</div>
+            <input type="text" id="company" th:field="*{company}" class="form-control"
+                   th:classappend="${#fields.hasErrors('company')}?'is-invalid'" autocomplete="on"
+                   list="companyDataList">
+            <datalist id="companyDataList"></datalist>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('company')}" th:errors="*{company}">
+              所属会社は必須です。
+            </div>
           </div>
         </div>
       </div>
       <div class="row text-center">
         <div class="col-6">
-          <a type="button" class="btn btn-secondary" th:href="@{/users}">戻る</a>
+          <a type="button" class="btn btn-secondary rounded-pill" th:href="@{/users}">戻る</a>
           <button type="submit" class="btn btn-primary rounded-pill" data-bs-toggle="confirm">確認</button>
           <div class="confirm fade" tabindex="-1" data-bs-background="false">
             <div class="modal-dialog">
@@ -99,5 +116,23 @@
 </main>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    $('#company').on('input', function (event) {
+        const url = /*[[@{'api/suggests/companies'}]]*/'';
+        let param = {keyword: this.value};
+        let deferred = doGet(url, param);
+
+        deferred.done(function (data) {
+            $('#companyDataList > option').remove();
+            $.each(data.components, function (index, item) {
+                $('#companyDataList').append('<option>').html(item.name).val(item.id);
+            });
+        });
+        deferred.fail(function (data) {
+            console.error(data)
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package jp.co.project.planets.earthly.webapp.controller;
 
+import jp.co.project.planets.earthly.webapp.controller.form.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.UserSearchForm;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -8,12 +9,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * user controller
@@ -41,8 +46,7 @@ public class UserController {
      */
     @GetMapping
     public ModelAndView search(@ModelAttribute final UserSearchForm userSearchForm,
-            @PageableDefault final Pageable pageable,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+            @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var userSearchDto = new UserSearchDto(userSearchForm.loginId(), userSearchForm.name(),
                 userSearchForm.company(), pageable.getOffset(), pageable.getPageSize(), pageable.getSort());
         final var userSearchResultDto = userService.search(userSearchDto, pageable, userInfoDto);
@@ -69,13 +73,33 @@ public class UserController {
         return modelAndView;
     }
 
+    /**
+     * ユーザー登録
+     *
+     * @param userEntryForm
+     *         ユーザー登録フォーム
+     * @param userInfoDto
+     *         ユーザー情報
+     * @return ユーザー登録
+     */
     @GetMapping("entry")
-    public ModelAndView entry(@AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        return new ModelAndView("users/entry");
+    public ModelAndView entry(final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var modelAndView = new ModelAndView("users/entry");
+        modelAndView.addObject(UserEntryForm.EMPTY);
+        modelAndView.addAllObjects(model.asMap());
+        return modelAndView;
     }
 
-    @PostMapping
-    public ModelAndView createValidation(@AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        return new ModelAndView("redirect:/users/entry");
+    @PostMapping("entry")
+    public ModelAndView createValidation(@ModelAttribute @Validated final UserEntryForm userEntryForm,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var modelAndView = new ModelAndView("redirect:/users/entry");
+        model.asMap().forEach(redirectAttributes::addFlashAttribute);
+        if (bindingResult.hasErrors()) {
+            return modelAndView;
+        }
+        return modelAndView;
     }
 }

@@ -84,8 +84,28 @@ public class CompanyDaoTest {
      * @throws Exception
      */
     @Test
+    public void testFindAccessibleByUserId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/findAccessibleByUserId.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
     public void testSelectByPrimaryKey(TestInfo testInfo) throws Exception {
         SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectByPrimaryKey.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testFindAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/findAccessibleByPrimaryKey.sql", dialect);
         execute(sqlFile);
     }
 

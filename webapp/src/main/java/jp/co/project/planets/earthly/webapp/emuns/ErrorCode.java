@@ -12,7 +12,9 @@ public enum ErrorCode implements IErrorCode {
     /** 対象ユーザーは存在しません。 */
     EWA4XX002("EWA4XX002", NOTFOUND_USER),
     /** 対象のユーザーは閲覧することはできません。 */
-    EWA4XX003("EWA4XX003", FORBIDDEN_USER);
+    EWA4XX003("EWA4XX003", FORBIDDEN_USER),
+    /** ユーザー登録登録の権限がありません。 */
+    EWA4XX004("EWA4XX004", FORBIDDEN_ENTRY_USER);
 
     /** エラーコード */
     private final String code;

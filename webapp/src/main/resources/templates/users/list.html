@@ -72,8 +72,8 @@
     <hr>
     <div class="card">
       <div class="card-body">
-        <th:block th:if="${!#lists.isEmpty(userSearchResultDto.userSimpleEntityList)}">
-          <th:block th:include="parts/pagination::pagination"/>
+        <th:block th:if="${!#lists.isEmpty(pageImpl.content)}">
+          <th:block th:replace="parts/pagination::pagination(${pageImpl})"/>
           <table class="table table-striped">
             <thead>
             <tr>
@@ -84,7 +84,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${userSearchResultDto.userSimpleEntityList}">
+            <tr th:each="user : ${pageImpl.content}">
               <td>
                 <a th:href="@{/users/__${user.id}__}" th:text="${user.loginId}">SampleID01</a>
               </td>
@@ -98,9 +98,9 @@
             </tr>
             </tbody>
           </table>
-          <th:block th:include="parts/pagination::pagination"/>
+          <th:block th:include="parts/pagination::pagination(${pageImpl})"/>
         </th:block>
-        <th:block th:if="${#lists.isEmpty(userSearchResultDto.userSimpleEntityList)}">
+        <th:block th:if="${#lists.isEmpty(pageImpl.content)}">
           <img src="">
         </th:block>
       </div>

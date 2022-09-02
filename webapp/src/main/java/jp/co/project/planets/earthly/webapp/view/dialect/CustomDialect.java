@@ -1,19 +1,21 @@
 package jp.co.project.planets.earthly.webapp.view.dialect;
 
-import org.thymeleaf.dialect.AbstractDialect;
+import jp.co.project.planets.earthly.webapp.view.factory.CustomExpressionObjectFactory;
 import org.thymeleaf.dialect.IExpressionObjectDialect;
 import org.thymeleaf.expression.IExpressionObjectFactory;
 
-public class CustomDialect extends AbstractDialect implements IExpressionObjectDialect {
-
-    private static final String DIALECT_NAME = "";
-
-    public CustomDialect() {
-        super(DIALECT_NAME);
-    }
+/**
+ * custom dialect
+ */
+public class CustomDialect implements IExpressionObjectDialect {
 
     @Override
     public IExpressionObjectFactory getExpressionObjectFactory() {
-        return null;
+        return new CustomExpressionObjectFactory();
+    }
+
+    @Override
+    public String getName() {
+        return "earthly";
     }
 }

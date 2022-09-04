@@ -2,7 +2,7 @@ SELECT
   /*%expand*/*
 FROM company
 WHERE
-  /*%if !isViewAllCompany*/
+  /*%if !hasViewAllCompany*/
     id IN (SELECT user.company_id
            FROM user
            WHERE user.id = /*userId*/''

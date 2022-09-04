@@ -14,5 +14,8 @@ public final class ErrorMessageKey {
     /** ユーザー登録登録の権限がありません。 */
     public static final String FORBIDDEN_ENTRY_USER = "exception.forbidden.entry.user";
 
+    /** 半角英数字で入力してください。 */
+    public static final String VALIDATION_ALPHANUMERIC = "exception.validation.alphanumeric";
+
 
 }

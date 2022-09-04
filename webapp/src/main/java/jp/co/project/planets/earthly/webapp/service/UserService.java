@@ -4,16 +4,21 @@ import com.google.common.annotations.VisibleForTesting;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
 import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
+import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.logic.UserLogic;
+import jp.co.project.planets.earthly.webapp.model.dto.UserEntryDto;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorCode.*;
 
@@ -26,6 +31,7 @@ public class UserService {
     private final UserLogic userLogic;
 
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
 
     /**
      * new instance user service
@@ -34,10 +40,14 @@ public class UserService {
      *         user logic
      * @param userRepository
      *         user repository
+     * @param companyRepository
+     *         company repository
      */
-    public UserService(final UserLogic userLogic, final UserRepository userRepository) {
+    public UserService(final UserLogic userLogic, final UserRepository userRepository,
+            final CompanyRepository companyRepository) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
     }
 
     /**
@@ -105,9 +115,46 @@ public class UserService {
         return new PageImpl<>(userSearchResultDto.userSimpleEntityList(), pageable, userSearchResultDto.total());
     }
 
-    public boolean hasAddUser(final EarthlyUserInfoDto userInfoDto) {
+    public void validateEntryOperation(final UserEntryDto userEntryDto, final EarthlyUserInfoDto userInfoDto) {
 
-        return userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER);
+        validateUserAddOperationPermission(userInfoDto);
+        validateUserAddingCompany(userEntryDto.company(), userInfoDto);
 
+    }
+
+    /**
+     * ユーザー追加操作可能か検証
+     *
+     * @param userInfoDto
+     *         ユーザー情報
+     */
+    public void validateUserAddOperationPermission(final EarthlyUserInfoDto userInfoDto) {
+        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER)) {
+            throw new ForbiddenException(EWA4XX004);
+        }
+
+        final var companyList = companyRepository.findAccessibleByUserId(userInfoDto.id(), Optional.empty(),
+                userInfoDto.permissionEnumList());
+        if (CollectionUtils.isEmpty(companyList)) {
+            throw new ForbiddenException(EWA4XX004);
+        }
+    }
+
+    /**
+     * ユーザー追加可能な会社か検証
+     *
+     * @param companyId
+     *         会社ID
+     * @param userInfoDto
+     *         ユーザー情報
+     * @throws ForbiddenException
+     *         ユーザーを追加できない会社の場合に発生
+     */
+    void validateUserAddingCompany(final String companyId, final EarthlyUserInfoDto userInfoDto) {
+        final var companyOptional = companyRepository.findByAccessiblePrimaryKey(companyId,
+                userInfoDto.permissionEnumList(), userInfoDto.id());
+        if (companyOptional.isEmpty()) {
+            throw new ForbiddenException(EWA4XX004);
+        }
     }
 }

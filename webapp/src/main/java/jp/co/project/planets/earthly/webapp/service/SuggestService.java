@@ -1,7 +1,6 @@
 package jp.co.project.planets.earthly.webapp.service;
 
 import jp.co.project.planets.earthly.db.entity.Company;
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class SuggestService {
     @Transactional
     public List<Company> searchAccessibleCompanyByUserId(final Optional<String> keywordOptional,
             final EarthlyUserInfoDto userInfoDto) {
-        final var hasViewAllCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
-        return companyRepository.findAccessibleByUserId(userInfoDto.id(), keywordOptional, hasViewAllCompany);
+        return companyRepository.findAccessibleByUserId(userInfoDto.id(), keywordOptional,
+                userInfoDto.permissionEnumList());
     }
 }

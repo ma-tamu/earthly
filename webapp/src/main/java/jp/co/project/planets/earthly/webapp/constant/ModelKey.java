@@ -6,4 +6,6 @@ package jp.co.project.planets.earthly.webapp.constant;
 public final class ModelKey {
 
     public static final String MESSAGE = "message";
+
+    public static final String MODAL = "modal";
 }

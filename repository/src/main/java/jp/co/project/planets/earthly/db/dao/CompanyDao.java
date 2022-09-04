@@ -21,5 +21,8 @@ public interface CompanyDao extends CompanyBaseDao {
     Optional<CompanyEntity> selectByPrimaryKey(String id);
 
     @Select
-    List<Company> selectAccessibleByUserId(String userId, Optional<String> keywordOptional, boolean isViewAllCompany);
+    Optional<Company> selectAccessibleByPrimaryKey(String id, String userId, boolean hasViewAllCompany);
+
+    @Select
+    List<Company> selectAccessibleByUserId(String userId, Optional<String> keywordOptional, boolean hasViewAllCompany);
 }

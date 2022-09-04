@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
+
 /**
  * user controller
  */
@@ -76,21 +78,38 @@ public class UserController {
     /**
      * ユーザー登録
      *
-     * @param userEntryForm
-     *         ユーザー登録フォーム
+     * @param model
+     *         model
      * @param userInfoDto
      *         ユーザー情報
      * @return ユーザー登録
      */
     @GetMapping("entry")
-    public ModelAndView entry(final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var modelAndView = new ModelAndView("users/entry");
+    public ModelAndView entry(final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        userService.validateUserAddOperationPermission(userInfoDto);
+
+        final var modelAndView = new ModelAndView("users/entry/index");
         modelAndView.addObject(UserEntryForm.EMPTY);
+        modelAndView.addObject(MODAL, false);
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
 
+    /**
+     * ユーザー登録(入力チェック)
+     *
+     * @param userEntryForm
+     *         ユーザー登録フォーム
+     * @param bindingResult
+     *         binding result
+     * @param redirectAttributes
+     *         redirect attributes
+     * @param model
+     *         model
+     * @param userInfoDto
+     *         ユーザー情報
+     * @return ユーザー登録画面へリダイレクト
+     */
     @PostMapping("entry")
     public ModelAndView createValidation(@ModelAttribute @Validated final UserEntryForm userEntryForm,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
@@ -100,6 +119,8 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return modelAndView;
         }
+        userService.validateEntryOperation(userEntryForm.toDto(), userInfoDto);
+        redirectAttributes.addFlashAttribute(MODAL, true);
         return modelAndView;
     }
 }

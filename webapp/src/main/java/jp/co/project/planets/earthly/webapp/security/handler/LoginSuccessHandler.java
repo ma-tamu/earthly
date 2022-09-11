@@ -23,7 +23,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
-                                        final Authentication authentication) throws IOException, ServletException {
+            final Authentication authentication) throws IOException, ServletException {
         final var userInfoDto = (EarthlyUserInfoDto) authentication.getPrincipal();
         final var session = request.getSession();
         final var redirectUrl = Optional.ofNullable(

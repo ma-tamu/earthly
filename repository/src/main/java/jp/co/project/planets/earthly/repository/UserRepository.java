@@ -18,6 +18,7 @@ import org.seasar.doma.boot.Pageables;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,5 +122,44 @@ public class UserRepository {
         final var userList = userDao.selectByLoginIdAndNameAndCompany(loginId, name, company, hasViewAllCompany,
                 executionUserId, selectOptions);
         return new UserSearchResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    /**
+     * insert user
+     *
+     * @param user
+     *         user
+     * @return insert count
+     */
+    public int insert(final User user) {
+        final var localDateTime = LocalDateTime.now();
+        user.setCreatedAt(localDateTime);
+        user.setUpdatedAt(localDateTime);
+        return userDao.insert(user);
+    }
+
+    /**
+     * update user
+     *
+     * @param user
+     *         user
+     * @return update count
+     */
+    public int update(final User user) {
+        user.setUpdatedAt(LocalDateTime.now());
+        return userDao.update(user);
+    }
+
+    /**
+     * delete user
+     *
+     * @param user
+     *         user
+     * @return delete count
+     */
+    public int delete(final User user) {
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setIsDeleted(true);
+        return userDao.update(user);
     }
 }

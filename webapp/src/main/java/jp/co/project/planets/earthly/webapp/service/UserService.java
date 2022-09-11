@@ -1,14 +1,15 @@
 package jp.co.project.planets.earthly.webapp.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import jp.co.project.planets.earthly.common.logic.UserLogic;
+import jp.co.project.planets.earthly.common.model.dto.UserEntryDto;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
 import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
-import jp.co.project.planets.earthly.webapp.logic.UserLogic;
-import jp.co.project.planets.earthly.webapp.model.dto.UserEntryDto;
+import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import org.apache.commons.collections4.CollectionUtils;
@@ -64,7 +65,8 @@ public class UserService {
 
         validateAccessible(id, userInfoDto);
 
-        return userLogic.getAccessibleEntity(id, userInfoDto);
+        return userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id()).orElseThrow(
+                () -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
     }
 
     /**
@@ -156,5 +158,15 @@ public class UserService {
         if (companyOptional.isEmpty()) {
             throw new ForbiddenException(EWA4XX004);
         }
+    }
+
+    @Transactional
+    public String create(final UserEntryDto userEntryDto, final EarthlyUserInfoDto userInfoDto) {
+
+        validateEntryOperation(userEntryDto, userInfoDto);
+
+        final var user = userLogic.create(userEntryDto, userInfoDto.id()) //
+                                  .orElseThrow(() -> new NotFoundException(EWA4XX002));
+        return user.getId();
     }
 }

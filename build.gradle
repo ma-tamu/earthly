@@ -47,6 +47,8 @@ subprojects {
     apply plugin: "com.github.ben-manes.versions"
     apply plugin: 'org.flywaydb.flyway'
 
+    apply from: "$rootDir/test.gradle"
+
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = JavaVersion.VERSION_17
@@ -76,4 +78,3 @@ subprojects {
         }
     }
 }
-

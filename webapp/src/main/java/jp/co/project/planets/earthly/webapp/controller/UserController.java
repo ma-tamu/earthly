@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.webapp.controller;
 
 import jp.co.project.planets.earthly.webapp.controller.form.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.UserSearchForm;
+import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import jp.co.project.planets.earthly.webapp.service.UserService;
@@ -90,7 +91,7 @@ public class UserController {
 
         final var modelAndView = new ModelAndView("users/entry/index");
         modelAndView.addObject(UserEntryForm.EMPTY);
-        modelAndView.addObject(MODAL, false);
+        modelAndView.addObject(READ_ONLY, false);
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -111,7 +112,7 @@ public class UserController {
      * @return ユーザー登録画面へリダイレクト
      */
     @PostMapping("entry")
-    public ModelAndView createValidation(@ModelAttribute @Validated final UserEntryForm userEntryForm,
+    public ModelAndView entryConfirm(@ModelAttribute @Validated final UserEntryForm userEntryForm,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var modelAndView = new ModelAndView("redirect:/users/entry");
@@ -119,8 +120,50 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return modelAndView;
         }
-        userService.validateEntryOperation(userEntryForm.toDto(), userInfoDto);
-        redirectAttributes.addFlashAttribute(MODAL, true);
-        return modelAndView;
+        try {
+            userService.validateEntryOperation(userEntryForm.toDto(), userInfoDto);
+            redirectAttributes.addFlashAttribute(READ_ONLY, true);
+            return modelAndView;
+        } catch (final ForbiddenException e) {
+            model.asMap().forEach(redirectAttributes::addFlashAttribute);
+            redirectAttributes.addFlashAttribute(ERROR_CODE, e.getErrorCode());
+            redirectAttributes.addFlashAttribute(MESSAGE_ARGS, e.getMessageKeyArgs());
+            return new ModelAndView("redirect:/users/entry");
+        }
+    }
+
+    /**
+     * ユーザー登録
+     *
+     * @param userEntryForm
+     *         ユーザー登録フォーム
+     * @param bindingResult
+     *         binding result
+     * @param redirectAttributes
+     *         redirect attributes
+     * @param model
+     *         model
+     * @param userInfoDto
+     *         ユーザー情報
+     * @return ユーザー登録が行えた場合は、ユーザー詳細画面へ遷移。それ以外の場合は、ユーザー登録画面に遷移
+     */
+    @PostMapping("create")
+    public ModelAndView create(@ModelAttribute @Validated final UserEntryForm userEntryForm,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            model.asMap().forEach(redirectAttributes::addFlashAttribute);
+            return new ModelAndView("redirect:/users/entry");
+        }
+        try {
+            final var userId = userService.create(userEntryForm.toDto(), userInfoDto);
+            return new ModelAndView(String.format("redirect:/users/%s", userId));
+        } catch (final ForbiddenException e) {
+            model.asMap().forEach(redirectAttributes::addFlashAttribute);
+            redirectAttributes.addFlashAttribute(ERROR_CODE, e.getErrorCode());
+            redirectAttributes.addFlashAttribute(MESSAGE_ARGS, e.getMessageKeyArgs());
+            return new ModelAndView("redirect:/users/entry");
+        }
     }
 }

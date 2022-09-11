@@ -1,6 +1,6 @@
 package jp.co.project.planets.earthly.webapp.controller.form;
 
-import jp.co.project.planets.earthly.webapp.model.dto.UserEntryDto;
+import jp.co.project.planets.earthly.common.model.dto.UserEntryDto;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;

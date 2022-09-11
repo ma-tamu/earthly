@@ -10,7 +10,7 @@
       integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
       crossorigin="anonymous"></script>
 </head>
-<body th:classappend="${modal}?'modal-open'" th:styleappend="${modal}?'overflow: hidden; padding-right: 0px;'">
+<body>
 <th:block th:replace="parts/template::header"></th:block>
 <th:block th:replace="parts/template::navigation"></th:block>
 <main id="main" class="main">
@@ -33,13 +33,18 @@
     </nav>
   </div>
   <div class="container">
-    <form method="post" th:action="@{/users/entry}" th:object="${userEntryForm}">
+    <div th:if="${errorCode}" class="alert alert-danger alert-dismissible fade show">
+      <i class="bi bi-exclamation-octagon me-1"></i>
+      <th:block th:text="${#messages.msgOrNullWithParams(errorCode.messageKey, messageArgs)}"></th:block>
+    </div>
+    <form method="post" th:with="action=${readOnly}? 'create' : 'entry'" th:action="@{/users/__${action}__}"
+          th:object="${userEntryForm}">
       <div class="card-body">
         <div class="row">
           <div class="col-6 has-validation">
             <label for="loginId" class="form-label">ログインID</label>
             <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
-                   th:classappend="${#fields.hasErrors('loginId')}?'is-invalid'">
+                   th:classappend="${#fields.hasErrors('loginId')}?'is-invalid'" th:readonly="${readOnly}">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">
               ログインIDは必須です。
             </div>
@@ -49,7 +54,7 @@
           <div class="col-6">
             <label for="name" class="form-label">ユーザー名</label>
             <input type="text" id="name" th:field="*{name}" class="form-control"
-                   th:classappend="${#fields.hasErrors('name')}?'is-invalid'">
+                   th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:readonly="${readOnly}">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
               ユーザー名は必須です。
             </div>
@@ -58,7 +63,7 @@
         <div class="row">
           <div class="col-6">
             <label for="gender" class="form-label">性別</label>
-            <select id="gender" name="gender" class="form-select"
+            <select id="gender" name="gender" class="form-select" th:styleappend="${readOnly}?'pointer-events: none;'"
                     th:classappend="${#fields.hasErrors('gender')}?'is-invalid'" th:with="g=*{gender}">
               <option></option>
               <option th:each="genderEnum : ${T(jp.co.project.planets.earthly.emuns.GenderEnum).values()}"
@@ -75,7 +80,7 @@
           <div class="col-6">
             <label for="mail" class="form-label">メールアドレス</label>
             <input type="text" id="mail" th:field="*{mail}" class="form-control"
-                   th:classappend="${#fields.hasErrors('mail')}?'is-invalid'">
+                   th:classappend="${#fields.hasErrors('mail')}?'is-invalid'" th:readonly="${readOnly}">
             <div class="invalid-feedback" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}">
               メールアドレスは必須です。
             </div>
@@ -87,8 +92,8 @@
             <input type="text" id="companyName" th:field="*{companyName}"
                    class="form-control dropdown-toggle"
                    th:classappend="${#fields.hasErrors('company')}?'is-invalid'" autocomplete="on"
-                   list="companyDataList">
-            <input type="hidden" th:field="*{company}">
+                   list="companyDataList" th:readonly="${readOnly}">
+            <input type="hidden" th:field="*{company}" th:readonly="${readOnly}">
             <datalist id="companyDataList"></datalist>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('company')}" th:errors="*{company}">
               所属会社は必須です。
@@ -96,18 +101,23 @@
           </div>
         </div>
       </div>
-      <div class="row text-center">
+      <div class="row text-center" th:unless="${readOnly}">
         <div class="col-6">
           <button type="button" class="btn btn-secondary rounded-pill" data-bs-toggle="modal"
                   data-bs-target="#cancelModal">戻る
           </button>
           <div th:replace="users/entry/modal::cancel"></div>
-          <button type="submit" class="btn btn-primary rounded-pill" data-bs-toggle="modal"
-                  data-bs-target="#confirmModal">確認
+          <button type="submit" class="btn btn-primary rounded-pill">確認
           </button>
-          <div th:replace="users/entry/modal::confirm(${modal})"></div>
-          <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal"
-                  data-bs-target="#confirmModal">test
+        </div>
+      </div>
+      <div class="row text-center" th:if="${readOnly}">
+        <div class="col-6">
+          <button type="button" class="btn btn-secondary rounded-pill" data-bs-toggle="modal"
+                  data-bs-target="#cancelModal">戻る
+          </button>
+          <div th:replace="users/entry/modal::cancel"></div>
+          <button type="submit" class="btn btn-primary rounded-pill">登録
           </button>
         </div>
       </div>
@@ -145,6 +155,5 @@
         $('#company').val(id);
     });
 </script>
-<div class="modal-backdrop show" th:if="${modal}"></div>
 </body>
 </html>

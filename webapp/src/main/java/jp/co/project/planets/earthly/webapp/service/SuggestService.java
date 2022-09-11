@@ -17,11 +17,25 @@ public class SuggestService {
 
     private final CompanyRepository companyRepository;
 
+    /**
+     * new instance suggest service
+     *
+     * @param companyRepository
+     *         company repository
+     */
     public SuggestService(final CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
     }
 
-
+    /**
+     * 操作ユーザーの閲覧できる会社を検索。
+     *
+     * @param keywordOptional
+     *         検索キーワード
+     * @param userInfoDto
+     *         ユーザー情報
+     * @return 会社リスト
+     */
     @Transactional
     public List<Company> searchAccessibleCompanyByUserId(final Optional<String> keywordOptional,
             final EarthlyUserInfoDto userInfoDto) {

@@ -1,8 +1,8 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
-import jp.co.project.planets.earthly.webapp.logic.UserLogic;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -17,5 +17,7 @@ public final class ErrorMessageKey {
     /** 半角英数字で入力してください。 */
     public static final String VALIDATION_ALPHANUMERIC = "exception.validation.alphanumeric";
 
+    /** {0}の登録に失敗しました。 */
+    public static final String FAILED_INSERT = "exception.failed.insert";
 
 }

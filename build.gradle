@@ -46,6 +46,7 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: "com.github.ben-manes.versions"
     apply plugin: 'org.flywaydb.flyway'
+    apply plugin: 'pmd'
 
     apply from: "$rootDir/test.gradle"
 
@@ -70,6 +71,8 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:4.6.1'
+        testImplementation 'com.google.testparameterinjector:test-parameter-injector-junit5:1.8'
+
     }
 
     test {

@@ -11,14 +11,32 @@ jacocoTestReport {
         html.enabled true
         html.destination file("${buildDir}/jacocoHtml")
     }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "jp/co/project/planets/earthly/db/dao/base/**",
+                    "jp/co/project/planets/earthly/db/entity/**"
+            ])
+        }))
+    }
 }
 
 jacocoTestCoverageVerification {
+
     violationRules {
         rule {
+            excludes = [
+                    "jp/co/project/planets/earthly/db/dao/base/**",
+                    "jp/co/project/planets/earthly/db/entity/**"
+            ]
             limit {
                 minimum = 0.5
+                counter = 'BRANCH'
             }
         }
     }
 }
+
+check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

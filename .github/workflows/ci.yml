@@ -18,8 +18,8 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-#      - name: setup db
-#        run: docker-compose up -d
+      - name: setup db
+        run: docker-compose up -d
 #      - name: test
 #        run: |
 #          chmod +x gradlew

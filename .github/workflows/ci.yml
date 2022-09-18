@@ -23,6 +23,7 @@ jobs:
       - name: test
         run: |
           chmod +x gradlew
+          ./gradlew :repository:flywayMigrate
           ./gradlew check --info
 #      - name: upload report
 #        if: always()

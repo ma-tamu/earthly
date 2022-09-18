@@ -20,10 +20,10 @@ jobs:
           java-version: '17'
       - name: setup db
         run: docker-compose up -d
-#      - name: test
-#        run: |
-#          chmod +x gradlew
-#          ./gradlew check --info
+      - name: test
+        run: |
+          chmod +x gradlew
+          ./gradlew check --info
 #      - name: upload report
 #        if: always()
 #        with:

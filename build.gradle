@@ -46,9 +46,12 @@ subprojects {
     apply plugin: 'idea'
     apply plugin: "com.github.ben-manes.versions"
     apply plugin: 'org.flywaydb.flyway'
-    apply plugin: 'pmd'
 
-    apply from: "$rootDir/test.gradle"
+    apply from: "$rootDir/gradle/checkstyle.gradle"
+    apply from: "$rootDir/gradle/spotbugs.gradle"
+    apply from: "$rootDir/gradle/pmd.gradle"
+    apply from: "$rootDir/gradle/cpd.gradle"
+    apply from: "$rootDir/gradle/jacoco.gradle"
 
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'

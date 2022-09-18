@@ -1,0 +1,19 @@
+apply plugin: 'pmd'
+
+
+pmd {
+    toolVersion = "6.21.0"
+    ignoreFailures = true
+    sourceSets = [sourceSets.main]
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+    excludes = [
+            "**/*DaoImpl.java",
+            "**/db/entity/*.java"
+    ]
+}

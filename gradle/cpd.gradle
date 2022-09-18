@@ -1,0 +1,16 @@
+apply plugin: "de.aaschmid.cpd"
+
+cpd {
+    toolVersion = '6.41.0'
+    ignoreFailures = true
+}
+
+cpdCheck {
+    reports {
+        text.enabled = false
+        xml.enabled = true
+    }
+    source = sourceSets.main.allJava
+    exclude '**/*DaoImpl.java'
+    exclude '**/db/entity/*.java'
+}

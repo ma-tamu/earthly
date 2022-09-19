@@ -15,8 +15,9 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "jp/co/project/planets/earthly/db/dao/base/**",
-                    "jp/co/project/planets/earthly/db/entity/**"
+                    "jp/co/project/planets/earthly/db/dao/**",
+                    "jp/co/project/planets/earthly/db/entity/**",
+                    "jp/co/project/planets/earthly/model/entity/**"
             ])
         }))
     }
@@ -28,7 +29,8 @@ jacocoTestCoverageVerification {
         rule {
             excludes = [
                     "jp/co/project/planets/earthly/db/dao/base/**",
-                    "jp/co/project/planets/earthly/db/entity/**"
+                    "jp/co/project/planets/earthly/db/entity/**",
+                    "jp/co/project/planets/earthly/model/entity/**"
             ]
             limit {
                 minimum = 0.5

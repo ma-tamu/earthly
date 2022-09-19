@@ -8,7 +8,7 @@ on:
       - issue/**
 
 jobs:
-  ci-job:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -18,9 +18,9 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-      - name: setup db
+      - name: docker setup db
         run: docker-compose up -d
-      - name: test
+      - name: test & verify
         run: |
           chmod +x gradlew
           ./gradlew :repository:flywayMigrate

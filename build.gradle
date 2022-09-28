@@ -75,7 +75,6 @@ subprojects {
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:4.6.1'
         testImplementation 'com.google.testparameterinjector:test-parameter-injector-junit5:1.8'
-        testImplementation 'com.github.database-rider:rider-spring:1.34.0'
         testImplementation 'com.github.database-rider:rider-junit5:1.34.0'
 
     }

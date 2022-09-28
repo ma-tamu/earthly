@@ -16,7 +16,7 @@ import java.sql.Statement;
 /**
  *
  */
-public class CountryEntityBaseDaoTest {
+public class CountryEnumEntityBaseDaoTest {
 
     /**  */
     protected SqlFileRepository repository;

@@ -24,19 +24,24 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
-
     violationRules {
         rule {
-            excludes = [
-                    "jp/co/project/planets/earthly/db/dao/base/**",
-                    "jp/co/project/planets/earthly/db/entity/**",
-                    "jp/co/project/planets/earthly/model/entity/**"
-            ]
             limit {
                 minimum = 0.5
                 counter = 'BRANCH'
+                value = 'COVEREDRATIO'
             }
         }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: [
+                    'jp/co/project/planets/earthly/db/dao/**/**',
+                    'jp/co/project/planets/earthly/db/entity/**',
+                    'jp/co/project/planets/earthly/model/entity/**'
+            ])
+        }))
     }
 }
 

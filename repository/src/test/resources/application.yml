@@ -1,3 +1,7 @@
+logging:
+  level:
+    root: debug
+
 spring:
   datasource:
     url: ${earthly.datasource.url}

@@ -1,40 +1,39 @@
 package jp.co.project.planets.earthly.db.dao.base;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.Statement;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
 import org.seasar.doma.jdbc.NoCacheSqlFileRepository;
 import org.seasar.doma.jdbc.SqlFile;
 import org.seasar.doma.jdbc.SqlFileRepository;
 import org.seasar.doma.jdbc.dialect.Dialect;
 
-/**
- * 
- */
-public class CountryBaseDaoTest {
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
-    /** */
+/**
+ *
+ */
+public class CountryEnumBaseDaoTest {
+
+    /**  */
     protected SqlFileRepository repository;
 
-    /** */
+    /**  */
     protected Dialect dialect;
 
-    /** */
+    /**  */
     protected Driver driver;
 
-    /** */
+    /**  */
     protected String url;
 
-    /** */
+    /**  */
     protected String user;
 
-    /** */
+    /**  */
     protected String password;
 
     @BeforeEach
@@ -47,15 +46,14 @@ public class CountryBaseDaoTest {
     }
 
     /**
-     * 
      * @param sqlFile
      * @throws Exception
      */
-    protected void execute(SqlFile sqlFile) throws Exception {
-        Connection connection = getConnection();
+    protected void execute(final SqlFile sqlFile) throws Exception {
+        final Connection connection = getConnection();
         try {
             connection.setAutoCommit(false);
-            Statement statement = connection.createStatement();
+            final Statement statement = connection.createStatement();
             try {
                 statement.execute(sqlFile.getSql());
             } finally {
@@ -71,7 +69,6 @@ public class CountryBaseDaoTest {
     }
 
     /**
-     * 
      * @return
      * @throws Exception
      */
@@ -80,12 +77,12 @@ public class CountryBaseDaoTest {
     }
 
     /**
-     * 
      * @throws Exception
      */
     @Test
-    public void testSelectById(TestInfo testInfo) throws Exception {
-        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/base/CountryBaseDao/selectById.sql", dialect);
+    public void testSelectById(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/db/dao/base/CountryBaseDao/selectById.sql", dialect);
         execute(sqlFile);
     }
 

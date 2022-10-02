@@ -50,8 +50,8 @@ public class CompanyRepository {
      *         ユーザーID
      * @param keywordOptional
      *         キーワード
-     * @param hasViewAllCompany
-     *         全社閲覧できるか
+     * @param permissionEnumList
+     *         パーミッションリスト
      * @return 会社一覧
      */
     public List<Company> findAccessibleByUserId(final String userId, final Optional<String> keywordOptional,

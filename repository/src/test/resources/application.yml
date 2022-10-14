@@ -1,0 +1,34 @@
+logging:
+  level:
+    root: debug
+
+spring:
+  datasource:
+    url: ${earthly.datasource.url}
+    name: ${earthly.datasource.name}
+    password: ${earthly.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
+      jdbc-url: ${spring.datasource.url}
+      username: ${spring.datasource.name}
+      password: ${spring.datasource.password}
+      driver-class-name: ${spring.datasource.driver-class-name}
+      schema: ${earthly.datasource.schema}
+      connection-test-query: SELECT 1
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.name}
+    password: ${spring.datasource.password}
+    schemas: ${earthly.datasource.schema}
+    driver-class-name: ${spring.datasource.driver-class-name}
+    table: earthly_version
+
+earthly:
+  datasource:
+    host: ${MYSQL_HOST:localhost}
+    port: ${MYSQL_PORT:3306}
+    name: ${MYSQL_USER_NAME:earthly}
+    password: ${MYSQL_PASSWORD:earthly}
+    schema: ${MYSQL_SCHEMA:earthly}
+    url: jdbc:mysql://${earthly.datasource.host}:${earthly.datasource.port}/${earthly.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false

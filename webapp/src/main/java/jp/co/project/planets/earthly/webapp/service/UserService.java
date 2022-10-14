@@ -131,8 +131,8 @@ public class UserService {
      *         ユーザー情報
      */
     public void validateUserAddOperationPermission(final EarthlyUserInfoDto userInfoDto) {
-        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER)) {
-            throw new ForbiddenException(EWA4XX004);
+        if (userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER)) {
+            return;
         }
 
         final var companyList = companyRepository.findAccessibleByUserId(userInfoDto.id(), Optional.empty(),

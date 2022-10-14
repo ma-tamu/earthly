@@ -21,8 +21,8 @@ import java.util.List;
  *         パスワード
  * @param lockout
  *         ロックアウト
- * @param companyId
- *         所属会社ID
+ * @param company
+ *         所属会社
  * @param createdAt
  *         作成日時
  * @param createdBy

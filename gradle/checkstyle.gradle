@@ -1,0 +1,17 @@
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = '9.2'
+    ignoreFailures = true
+    showViolations = true
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    source = sourceSets.main.allJava
+    exclude '**/*DaoImpl.java'
+    exclude '**/db/entity/*.java'
+}

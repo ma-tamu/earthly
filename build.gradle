@@ -47,7 +47,11 @@ subprojects {
     apply plugin: "com.github.ben-manes.versions"
     apply plugin: 'org.flywaydb.flyway'
 
-    apply from: "$rootDir/test.gradle"
+    apply from: "$rootDir/gradle/checkstyle.gradle"
+    apply from: "$rootDir/gradle/spotbugs.gradle"
+    apply from: "$rootDir/gradle/pmd.gradle"
+    apply from: "$rootDir/gradle/cpd.gradle"
+    apply from: "$rootDir/gradle/jacoco.gradle"
 
     group = 'jp.co.project.planets'
     version = '0.0.1-SNAPSHOT'
@@ -70,6 +74,10 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:4.6.1'
+        testImplementation 'com.google.testparameterinjector:test-parameter-injector-junit5:1.8'
+        testImplementation 'com.github.database-rider:rider-junit5:1.34.0'
+        testImplementation 'com.ninja-squad:DbSetup:2.1.0'
+
     }
 
     test {

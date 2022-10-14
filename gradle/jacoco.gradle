@@ -1,0 +1,49 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "jp/co/project/planets/earthly/db/dao/**",
+                    "jp/co/project/planets/earthly/db/entity/**",
+                    "jp/co/project/planets/earthly/model/entity/**"
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: [
+                    'jp/co/project/planets/earthly/db/dao/**/**',
+                    'jp/co/project/planets/earthly/db/entity/**',
+                    'jp/co/project/planets/earthly/model/entity/**'
+            ])
+        }))
+    }
+}
+
+check.dependsOn jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

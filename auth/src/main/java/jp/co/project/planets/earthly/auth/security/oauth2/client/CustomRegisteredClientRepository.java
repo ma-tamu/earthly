@@ -1,8 +1,8 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.client;
 
-import jp.co.project.planets.pleiades.db.entity.Scope;
-import jp.co.project.planets.pleiades.model.entity.OAuthClientEntity;
-import jp.co.project.planets.pleiades.repository.OAuthClientRepository;
+import jp.co.project.planets.earthly.db.entity.Scope;
+import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
+import jp.co.project.planets.earthly.repository.OAuthClientRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -13,16 +13,16 @@ import org.springframework.security.oauth2.server.authorization.config.TokenSett
 import java.time.Instant;
 
 /**
- * moon registered client repository
+ * custom registered client repository
  */
-public class MoonRegisteredClientRepository implements RegisteredClientRepository {
+public class CustomRegisteredClientRepository implements RegisteredClientRepository {
 
     private final OAuthClientRepository oauthClientRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenSettings tokenSettings;
 
     /**
-     * new instances moon registered client repository
+     * new instances custom registered client repository
      *
      * @param oauthClientRepository
      *         oauth client repository
@@ -31,9 +31,9 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
      * @param tokenSettings
      *         token settings
      */
-    public MoonRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
-                                          final PasswordEncoder passwordEncoder,
-                                          final TokenSettings tokenSettings) {
+    public CustomRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
+            final PasswordEncoder passwordEncoder,
+            final TokenSettings tokenSettings) {
         this.oauthClientRepository = oauthClientRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenSettings = tokenSettings;
@@ -70,7 +70,7 @@ public class MoonRegisteredClientRepository implements RegisteredClientRepositor
         builder.clientName(oauthClient.name());
         oauthClient.scopes().stream().map(Scope::getName).forEach(builder::scope);
         oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())) //
-                .forEach(builder::authorizationGrantType);
+                   .forEach(builder::authorizationGrantType);
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);

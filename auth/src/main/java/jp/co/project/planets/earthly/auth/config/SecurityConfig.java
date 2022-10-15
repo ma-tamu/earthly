@@ -1,8 +1,7 @@
 package jp.co.project.planets.earthly.auth.config;
 
-import jp.co.project.planets.moon.security.LoginUserDetailService;
-import jp.co.project.planets.moon.security.MoonAuthenticationProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import jp.co.project.planets.earthly.auth.security.LoginUserDetailService;
+import jp.co.project.planets.earthly.auth.security.CustomAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -26,7 +25,6 @@ public class SecurityConfig {
      *
      * @param loginUserDetailService
      */
-    @Autowired
     public SecurityConfig(final LoginUserDetailService loginUserDetailService) {
         this.loginUserDetailService = loginUserDetailService;
     }
@@ -54,7 +52,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception {
         http.httpBasic().disable();
-        final var authenticationProvider = new MoonAuthenticationProvider();
+        final var authenticationProvider = new CustomAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         http.authorizeRequests(authorizeRequests -> authorizeRequests.antMatchers("/oauth2/introspect", "/oauth2/jwks",

@@ -5,7 +5,8 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
 import jp.co.project.planets.earthly.auth.security.oauth2.Jwks;
-import jp.co.project.planets.earthly.auth.security.oauth2.client.MoonRegisteredClientRepository;
+import jp.co.project.planets.earthly.auth.security.oauth2.client.CustomRegisteredClientRepository;
+import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationConsentService;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationService;
 import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
@@ -50,7 +51,7 @@ public class AuthorizationServerConfig {
     public RegisteredClientRepository registeredClientRepository(final OAuthClientRepository oauthClientRepository,
             final PasswordEncoder passwordEncoder,
             final TokenSettings tokenSettings) {
-        return new MoonRegisteredClientRepository(oauthClientRepository, passwordEncoder, tokenSettings);
+        return new CustomRegisteredClientRepository(oauthClientRepository, passwordEncoder, tokenSettings);
     }
 
     /**
@@ -68,7 +69,7 @@ public class AuthorizationServerConfig {
     /**
      * generate oauth2 authorization service
      *
-     * @param moonRegisteredClientRepository
+     * @param registeredClientRepository
      *         registered client repository
      * @param oauth2AuthorizationRepository
      *         oauth2 authorization repository
@@ -78,9 +79,9 @@ public class AuthorizationServerConfig {
      */
     @Bean
     public OAuth2AuthorizationService authorizationService(
-            final RegisteredClientRepository moonRegisteredClientRepository,
+            final RegisteredClientRepository registeredClientRepository,
             final OAuth2AuthorizationRepository oauth2AuthorizationRepository, final ConvertHelper convertHelper) {
-        return new CustomOAuth2AuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository,
+        return new CustomOAuth2AuthorizationService(registeredClientRepository, oauth2AuthorizationRepository,
                 convertHelper);
     }
 
@@ -97,7 +98,7 @@ public class AuthorizationServerConfig {
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService(
             final OAuthClientConsentRepository oauthClientConsentRepository, final ConvertHelper convertHelper) {
-        return new MoonOAuth2AuthorizationConsentService(oauthClientConsentDao, convertHelper);
+        return new CustomOAuth2AuthorizationConsentService(oauthClientConsentRepository, convertHelper);
     }
 
     /**
@@ -128,7 +129,7 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public TokenSettings tokenSettings(@Value("${moon.oauth2.token.expire}") final String tokenExpireSecond) {
+    public TokenSettings tokenSettings(@Value("${auth.oauth2.token.expire}") final String tokenExpireSecond) {
         final long expireSecond = Long.parseLong(tokenExpireSecond);
         return TokenSettings.builder() //
                             .accessTokenTimeToLive(Duration.ofSeconds(expireSecond)) //

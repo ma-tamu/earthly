@@ -1,0 +1,45 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /earthly
+
+logging:
+  level:
+    root: debug
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    name: ${auth.datasource.name}
+    password: ${auth.datasource.password}
+    url: ${auth.datasource.url}
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      maximum-pool-size: 10
+      jdbc-url: ${auth.datasource.url}
+      username: ${auth.datasource.name}
+      password: ${auth.datasource.password}
+  flyway:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    user: ${auth.datasource.name}
+    password: ${auth.datasource.password}
+    url: ${auth.datasource.url}
+    schemas: ${auth.datasource.schema}
+    table: earthly_version
+
+doma:
+  dialect: mysql
+
+auth:
+  datasource:
+    host: ${MYSQL_HOST:localhost}
+    port: ${MYSQL_PORT:3306}
+    name: ${MYSQL_USER_NAME:earthly}
+    password: ${MYSQL_USER_PASSWORD:earthly}
+    schema: ${MYSQL_SCHEMA:earthly}
+    url: jdbc:mysql://${auth.datasource.host}:${auth.datasource.port}/${auth.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false
+  oauth2:
+    token:
+      expire: 28800 # 秒指定

@@ -4,7 +4,8 @@ import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import com.nimbusds.jose.jwk.RSAKey;
-import jp.co.project.planets.moon.utils.KeyGeneratorUtils;
+import jp.co.project.planets.earthly.auth.utils.KeyGeneratorUtils;
+
 
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;

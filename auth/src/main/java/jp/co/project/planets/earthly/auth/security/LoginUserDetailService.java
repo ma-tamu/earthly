@@ -1,9 +1,8 @@
 package jp.co.project.planets.earthly.auth.security;
 
-import jp.co.project.planets.moon.model.dto.UserInfoDto;
-import jp.co.project.planets.pleiades.db.dao.UserDao;
+import jp.co.project.planets.earthly.auth.model.dto.UserInfoDto;
+import jp.co.project.planets.earthly.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginUserDetailService implements UserDetailsService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public LoginUserDetailService(UserDao userDao) {
-        this.userDao = userDao;
+    public LoginUserDetailService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
 
@@ -29,7 +27,7 @@ public class LoginUserDetailService implements UserDetailsService {
         if (StringUtils.isBlank(username)) {
             throw new UsernameNotFoundException("login id is empty.");
         }
-        final var user = userDao.selectByLoginId(username).orElseThrow(() -> new UsernameNotFoundException(""));
+        final var user = userRepository.findByLoginId(username).orElseThrow(() -> new UsernameNotFoundException(""));
 
         return new UserInfoDto(user.getId(), user.getLoginId(), user.getPassword(), user.getName(), user.getLockout(), user.getIsDeleted());
     }

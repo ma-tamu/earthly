@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * moon oauth2 authorization service
+ * custom oauth2 authorization service
  */
 public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
@@ -32,7 +32,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
     private final ConvertHelper convertHelper;
 
     /**
-     * new instances moon oauth2 authorization service.
+     * new instances custom oauth2 authorization service.
      *
      * @param registeredClientRepository
      *         RegisteredClientRepository
@@ -139,6 +139,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
     }
 
     @Override
+    @Transactional
     public void remove(final OAuth2Authorization authorization) {
         final var oauth2Authorization = oauth2AuthorizationRepository.findByPrimaryKey(authorization.getId());
         oauth2AuthorizationRepository.delete(oauth2Authorization);

@@ -19,11 +19,12 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
     private final ConvertHelper convertHelper;
 
     /**
-     * new instance moon oauth2 authorization consent service
+     * new instance custom oauth2 authorization consent service
      *
      * @param oauthClientConsentRepository
      *         OAuthクライアント承認DAO
      * @param convertHelper
+     *         convert helper
      */
     public CustomOAuth2AuthorizationConsentService(final OAuthClientConsentRepository oauthClientConsentRepository,
             final ConvertHelper convertHelper) {
@@ -57,8 +58,7 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
     @Override
     public OAuth2AuthorizationConsent findById(final String registeredClientId, final String principalName) {
         final var oauthClientConsentOptional = oauthClientConsentRepository.selectConsentClientIdByUserId(
-                registeredClientId,
-                principalName);
+                registeredClientId, principalName);
         if (oauthClientConsentOptional.isEmpty()) {
             return null;
         }

@@ -1,9 +1,9 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.server;
 
-import jp.co.project.planets.moon.helper.ConvertHelper;
-import jp.co.project.planets.pleiades.db.entity.Oauth2Authorization;
-import jp.co.project.planets.pleiades.repository.OAuth2AuthorizationRepository;
-import jp.co.project.planets.pleiades.util.DateUtils;
+import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
+import jp.co.project.planets.earthly.common.utils.DateUtils;
+import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
+import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * moon oauth2 authorization service
  */
-public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationService {
+public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationRepository oauth2AuthorizationRepository;
@@ -41,9 +41,9 @@ public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationServic
      * @param convertHelper
      *         ConvertHelper
      */
-    public MoonOAuth2AuthorizationService(final RegisteredClientRepository registeredClientRepository,
-                                          final OAuth2AuthorizationRepository oauth2AuthorizationRepository,
-                                          final ConvertHelper convertHelper) {
+    public CustomOAuth2AuthorizationService(final RegisteredClientRepository registeredClientRepository,
+                                            final OAuth2AuthorizationRepository oauth2AuthorizationRepository,
+                                            final ConvertHelper convertHelper) {
         this.registeredClientRepository = registeredClientRepository;
         this.oauth2AuthorizationRepository = oauth2AuthorizationRepository;
         this.convertHelper = convertHelper;
@@ -67,6 +67,7 @@ public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationServic
      *
      * @param authorization
      *         OAuth2Authorization
+     *
      * @return Oauth2Authorization
      */
     private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization) {
@@ -80,6 +81,7 @@ public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationServic
      *         OAuth2Authorization
      * @param oauth2Authorization
      *         Oauth2Authorization
+     *
      * @return Oauth2Authorization
      */
     private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization,
@@ -171,6 +173,7 @@ public class MoonOAuth2AuthorizationService implements OAuth2AuthorizationServic
      *
      * @param oauth2Authorization
      *         oauth2 authorization
+     *
      * @return OAuth2Authorization
      */
     private OAuth2Authorization generateOAuth2Authorization(final Oauth2Authorization oauth2Authorization) {

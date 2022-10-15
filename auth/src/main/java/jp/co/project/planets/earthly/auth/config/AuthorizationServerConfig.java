@@ -6,7 +6,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
 import jp.co.project.planets.earthly.auth.security.oauth2.Jwks;
 import jp.co.project.planets.earthly.auth.security.oauth2.client.MoonRegisteredClientRepository;
-import jp.co.project.planets.earthly.auth.security.oauth2.server.MoonOAuth2AuthorizationService;
+import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationService;
 import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
 import jp.co.project.planets.earthly.repository.OAuthClientRepository;
@@ -80,7 +80,7 @@ public class AuthorizationServerConfig {
     public OAuth2AuthorizationService authorizationService(
             final RegisteredClientRepository moonRegisteredClientRepository,
             final OAuth2AuthorizationRepository oauth2AuthorizationRepository, final ConvertHelper convertHelper) {
-        return new MoonOAuth2AuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository,
+        return new CustomOAuth2AuthorizationService(moonRegisteredClientRepository, oauth2AuthorizationRepository,
                 convertHelper);
     }
 

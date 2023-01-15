@@ -15,6 +15,7 @@ public class RegionListener implements EntityListener<Region> {
 
     @Override
     public void preInsert(Region entity, PreInsertContext<Region> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

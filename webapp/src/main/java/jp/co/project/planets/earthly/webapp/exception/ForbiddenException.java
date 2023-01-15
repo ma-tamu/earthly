@@ -1,8 +1,9 @@
 package jp.co.project.planets.earthly.webapp.exception;
 
-import jp.co.project.planets.earthly.core.enums.IErrorCode;
-import jp.co.project.planets.earthly.core.exception.AbstractBaseException;
 import org.springframework.http.HttpStatus;
+
+import jp.co.project.planets.earthly.core.enums.Code;
+import jp.co.project.planets.earthly.core.exception.AbstractBaseException;
 
 /**
  * forbidden exception
@@ -13,11 +14,11 @@ public class ForbiddenException extends AbstractBaseException {
      * new instance forbidden exception
      *
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
-    public ForbiddenException(final IErrorCode errorCode, final String... messageKeyArgs) {
+    public ForbiddenException(final Code errorCode, final String... messageKeyArgs) {
         this(null, errorCode, messageKeyArgs);
     }
 
@@ -25,13 +26,13 @@ public class ForbiddenException extends AbstractBaseException {
      * new instance not found exception
      *
      * @param message
-     *         detail messages
+     *            detail messages
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
-    public ForbiddenException(final String message, final IErrorCode errorCode, final String... messageKeyArgs) {
+    public ForbiddenException(final String message, final Code errorCode, final String... messageKeyArgs) {
         this(message, null, errorCode, messageKeyArgs);
     }
 
@@ -39,16 +40,16 @@ public class ForbiddenException extends AbstractBaseException {
      * new instance not found exception
      *
      * @param message
-     *         detail messages
+     *            detail messages
      * @param cause
-     *         caused by
+     *            caused by
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
-    public ForbiddenException(final String message, final Throwable cause, final IErrorCode errorCode,
-                              final String... messageKeyArgs) {
+    public ForbiddenException(final String message, final Throwable cause, final Code errorCode,
+            final String... messageKeyArgs) {
         super(message, cause, HttpStatus.NOT_FOUND.value(), errorCode, messageKeyArgs);
     }
 }

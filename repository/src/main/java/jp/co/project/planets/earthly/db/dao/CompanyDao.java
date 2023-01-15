@@ -25,4 +25,7 @@ public interface CompanyDao extends CompanyBaseDao {
 
     @Select
     List<Company> selectAccessibleByUserId(String userId, Optional<String> keywordOptional, boolean hasViewAllCompany);
+
+    @Select
+    List<Company> selectManagementCompanyByUserId(String userId);
 }

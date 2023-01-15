@@ -1,16 +1,18 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.client;
 
-import jp.co.project.planets.earthly.db.entity.Scope;
-import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
-import jp.co.project.planets.earthly.repository.OAuthClientRepository;
+import java.time.Instant;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
-import java.time.Instant;
+import jp.co.project.planets.earthly.db.entity.Scope;
+import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
+import jp.co.project.planets.earthly.repository.OAuthClientRepository;
 
 /**
  * custom registered client repository
@@ -25,11 +27,11 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
      * new instances custom registered client repository
      *
      * @param oauthClientRepository
-     *         oauth client repository
+     *            oauth client repository
      * @param passwordEncoder
-     *         password encoder
+     *            password encoder
      * @param tokenSettings
-     *         token settings
+     *            token settings
      */
     public CustomRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
             final PasswordEncoder passwordEncoder,
@@ -38,7 +40,6 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         this.passwordEncoder = passwordEncoder;
         this.tokenSettings = tokenSettings;
     }
-
 
     @Override
     public void save(final RegisteredClient registeredClient) {
@@ -60,7 +61,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
      * RegisteredClientを生成
      *
      * @param oauthClient
-     *         OAuthクライアント
+     *            OAuthクライアント
      * @return RegisteredClient
      */
     private RegisteredClient generateRegisteredClient(final OAuthClientEntity oauthClient) {
@@ -70,13 +71,14 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         builder.clientName(oauthClient.name());
         oauthClient.scopes().stream().map(Scope::getName).forEach(builder::scope);
         oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())) //
-                   .forEach(builder::authorizationGrantType);
+                .forEach(builder::authorizationGrantType);
         builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
         builder.tokenSettings(tokenSettings);
+        builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build());
         return builder.build();
     }
 }

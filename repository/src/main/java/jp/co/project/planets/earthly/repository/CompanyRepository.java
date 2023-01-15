@@ -1,12 +1,13 @@
 package jp.co.project.planets.earthly.repository;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
 import jp.co.project.planets.earthly.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.db.entity.Company;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * company repository
@@ -20,7 +21,7 @@ public class CompanyRepository {
      * new instance company repository
      *
      * @param companyDao
-     *         company dao
+     *            company dao
      */
     public CompanyRepository(final CompanyDao companyDao) {
         this.companyDao = companyDao;
@@ -30,11 +31,11 @@ public class CompanyRepository {
      * 閲覧できる対象会社を取得
      *
      * @param id
-     *         会社ID
+     *            会社ID
      * @param permissionEnumList
-     *         パーミッションリスト
+     *            パーミッションリスト
      * @param executionUserId
-     *         実行ユーザーID
+     *            実行ユーザーID
      * @return 会社
      */
     public Optional<Company> findByAccessiblePrimaryKey(final String id, final List<PermissionEnum> permissionEnumList,
@@ -47,17 +48,28 @@ public class CompanyRepository {
      * 閲覧できる会社一覧を取得
      *
      * @param userId
-     *         ユーザーID
+     *            ユーザーID
      * @param keywordOptional
-     *         キーワード
+     *            キーワード
      * @param permissionEnumList
-     *         パーミッションリスト
+     *            パーミッションリスト
      * @return 会社一覧
      */
     public List<Company> findAccessibleByUserId(final String userId, final Optional<String> keywordOptional,
             final List<PermissionEnum> permissionEnumList) {
         final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
         return companyDao.selectAccessibleByUserId(userId, keywordOptional, hasViewAllCompany);
+    }
+
+    /**
+     * 管理している会社一覧を取得
+     * 
+     * @param userId
+     *            ユーザーID
+     * @return 管理している会社一覧
+     */
+    public List<Company> findManagementCompanyByUserId(final String userId) {
+        return companyDao.selectManagementCompanyByUserId(userId);
     }
 
 }

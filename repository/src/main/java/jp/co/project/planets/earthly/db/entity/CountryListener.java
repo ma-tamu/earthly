@@ -15,6 +15,7 @@ public class CountryListener implements EntityListener<Country> {
 
     @Override
     public void preInsert(Country entity, PreInsertContext<Country> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   mysql:
+    profiles:
+      - all
     build: ./docker/mysql
     restart: always
     environment:
@@ -13,6 +15,8 @@ services:
     ports:
       - "3306:3306"
   redis:
+    profiles:
+      - all
     build: ./docker/redis
     restart: always
     ports:

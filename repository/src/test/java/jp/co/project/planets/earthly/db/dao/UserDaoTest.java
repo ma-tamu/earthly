@@ -84,6 +84,16 @@ public class UserDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/UserDao/selectAccessibleByPrimaryKey.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
     public void testSelectByLoginId(TestInfo testInfo) throws Exception {
         SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/UserDao/selectByLoginId.sql", dialect);
         execute(sqlFile);

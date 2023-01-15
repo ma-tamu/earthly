@@ -1,7 +1,5 @@
 package jp.co.project.planets.earthly.webapp.exception;
 
-import jp.co.project.planets.earthly.core.exception.AbstractBaseException;
-import jp.co.project.planets.earthly.webapp.constant.ModelKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -10,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+
+import jp.co.project.planets.earthly.core.exception.AbstractBaseException;
+import jp.co.project.planets.earthly.webapp.constant.ModelKey;
 
 /**
  * global exception handler
@@ -28,14 +29,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ModelAndView handler(final Exception exception) {
         log.error(exception.getMessage(), exception);
-        final var modelAndView = new ModelAndView("error/500");
+        final var modelAndView = new ModelAndView("errors/500", HttpStatus.INTERNAL_SERVER_ERROR);
         modelAndView.addObject("exception", exception);
         return modelAndView;
     }
 
-    @ExceptionHandler({ForbiddenException.class, NotFoundException.class})
+    @ExceptionHandler({ ForbiddenException.class, NotFoundException.class })
     public ModelAndView baseExceptionHandler(final AbstractBaseException baseException) {
-        final var modelAndView = new ModelAndView("error/404");
+        final var modelAndView = new ModelAndView("errors/404", HttpStatus.NOT_FOUND);
         final var httpStatus = HttpStatus.valueOf(baseException.getHttpStatus());
         modelAndView.setStatus(httpStatus);
 

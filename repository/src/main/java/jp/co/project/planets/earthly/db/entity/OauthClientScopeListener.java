@@ -15,6 +15,7 @@ public class OauthClientScopeListener implements EntityListener<OauthClientScope
 
     @Override
     public void preInsert(OauthClientScope entity, PreInsertContext<OauthClientScope> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

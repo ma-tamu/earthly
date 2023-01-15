@@ -38,6 +38,27 @@ spring:
         strategy:
           content:
             enabled: true
+  security:
+    oauth2:
+      client:
+        provider:
+          earthly:
+            authorization-uri: ${earthly.oauth2.provider.earthly.base-path}/oauth2/authorize
+            token-uri: ${earthly.oauth2.provider.earthly.base-path}/oauth2/token
+            user-info-authentication-method: client_secret_post
+            user-info-uri: ${earthly.oauth2.provider.earthly.base-path}/userinfo
+            jwk-set-uri: ${earthly.oauth2.provider.earthly.base-path}/keys
+        registration:
+          earthly:
+            authorization-grant-type: authorization_code
+            client-name: mars
+            client-id: 34a10a88cbc2cfab10f4262e09439efec7e76a34e1b28687f0a19d43d3e76f4d
+            client-secret: c103fb40ee6d955024b7319b29fc4ad44e8c4c4a3c160b6a6075c00b39bd1991
+            provider: earthly
+            client-authentication-method: client_secret_post
+            redirect-uri: http://127.0.0.1:8080/earthly/login/oauth2/code
+            scope:
+              - open_id
 
 earthly:
   datasource:
@@ -47,4 +68,7 @@ earthly:
     password: ${MYSQL_PASSWORD:earthly}
     schema: ${MYSQL_SCHEMA:earthly}
     url: jdbc:mysql://${earthly.datasource.host}:${earthly.datasource.port}/${earthly.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false
-
+  oauth2:
+    provider:
+      earthly:
+        base-path: http://localhost:9000/earthly

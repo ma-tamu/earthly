@@ -1,31 +1,33 @@
 package jp.co.project.planets.earthly.webapp.security.dto;
 
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import jp.co.project.planets.earthly.emuns.PermissionEnum;
 
 /**
  * ユーザー情報DTO
  *
  * @param id
- *         ユーザーID
+ *            ユーザーID
  * @param loginId
- *         ログインID
+ *            ログインID
  * @param name
- *         ユーザー名
+ *            ユーザー名
  * @param password
- *         パスワード
+ *            パスワード
  * @param lockout
- *         ロックアウト
+ *            ロックアウト
  * @param permissionEnumList
- *         パーミッションリスト
+ *            パーミッションリスト
  */
 public record EarthlyUserInfoDto(String id, String loginId, String name, String password, boolean lockout,
-                                 List<PermissionEnum> permissionEnumList,
-                                 List<? extends GrantedAuthority> grantedAuthorities) implements UserDetails {
+        CompanyDto company,
+        List<PermissionEnum> permissionEnumList,
+        List<? extends GrantedAuthority> grantedAuthorities) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;

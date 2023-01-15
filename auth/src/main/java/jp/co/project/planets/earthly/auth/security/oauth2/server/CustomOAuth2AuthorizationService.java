@@ -1,26 +1,27 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.server;
 
-import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
-import jp.co.project.planets.earthly.common.utils.DateUtils;
-import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
-import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AuthorizationCode;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.transaction.annotation.Transactional;
+
+import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
+import jp.co.project.planets.earthly.common.utils.DateUtils;
+import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
+import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
 
 /**
  * custom oauth2 authorization service
@@ -35,15 +36,15 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      * new instances custom oauth2 authorization service.
      *
      * @param registeredClientRepository
-     *         RegisteredClientRepository
+     *            RegisteredClientRepository
      * @param oauth2AuthorizationRepository
-     *         OAuth2AuthorizationRepository
+     *            OAuth2AuthorizationRepository
      * @param convertHelper
-     *         ConvertHelper
+     *            ConvertHelper
      */
     public CustomOAuth2AuthorizationService(final RegisteredClientRepository registeredClientRepository,
-                                            final OAuth2AuthorizationRepository oauth2AuthorizationRepository,
-                                            final ConvertHelper convertHelper) {
+            final OAuth2AuthorizationRepository oauth2AuthorizationRepository,
+            final ConvertHelper convertHelper) {
         this.registeredClientRepository = registeredClientRepository;
         this.oauth2AuthorizationRepository = oauth2AuthorizationRepository;
         this.convertHelper = convertHelper;
@@ -66,7 +67,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      * Oauth2Authorizationを生成
      *
      * @param authorization
-     *         OAuth2Authorization
+     *            OAuth2Authorization
      *
      * @return Oauth2Authorization
      */
@@ -78,14 +79,14 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      * Oauth2Authorizationを生成
      *
      * @param authorization
-     *         OAuth2Authorization
+     *            OAuth2Authorization
      * @param oauth2Authorization
-     *         Oauth2Authorization
+     *            Oauth2Authorization
      *
      * @return Oauth2Authorization
      */
     private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization,
-                                                            final Oauth2Authorization oauth2Authorization) {
+            final Oauth2Authorization oauth2Authorization) {
         oauth2Authorization.setId(authorization.getId());
         oauth2Authorization.setRegisteredClientId(authorization.getRegisteredClientId());
         oauth2Authorization.setPrincipalName(authorization.getPrincipalName());
@@ -160,11 +161,11 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         }
 
         final var oauth2Authorization = switch (tokenType.getValue()) {
-            case OAuth2ParameterNames.STATE -> oauth2AuthorizationRepository.findByState(token);
-            case OAuth2ParameterNames.CODE -> oauth2AuthorizationRepository.findByCode(token);
-            case OAuth2ParameterNames.ACCESS_TOKEN -> oauth2AuthorizationRepository.findByAccessToken(token);
-            case OAuth2ParameterNames.REFRESH_TOKEN -> oauth2AuthorizationRepository.findByRefreshToken(token);
-            default -> throw new RuntimeException(String.format("unknown token. token=%s", token));
+        case OAuth2ParameterNames.STATE -> oauth2AuthorizationRepository.findByState(token);
+        case OAuth2ParameterNames.CODE -> oauth2AuthorizationRepository.findByCode(token);
+        case OAuth2ParameterNames.ACCESS_TOKEN -> oauth2AuthorizationRepository.findByAccessToken(token);
+        case OAuth2ParameterNames.REFRESH_TOKEN -> oauth2AuthorizationRepository.findByRefreshToken(token);
+        default -> throw new RuntimeException(String.format("unknown token. token=%s", token));
         };
         return generateOAuth2Authorization(oauth2Authorization);
     }
@@ -173,7 +174,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      * OAuth2Authorizationを生成
      *
      * @param oauth2Authorization
-     *         oauth2 authorization
+     *            oauth2 authorization
      *
      * @return OAuth2Authorization
      */
@@ -212,6 +213,10 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             builder.token(token);
             builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));
         }
+        if (StringUtils.isNotBlank(oauth2Authorization.getAuthorizationGrantType())) {
+            builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));
+        }
+
         return builder.build();
     }
 }

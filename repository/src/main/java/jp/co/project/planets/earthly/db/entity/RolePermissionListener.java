@@ -15,6 +15,7 @@ public class RolePermissionListener implements EntityListener<RolePermission> {
 
     @Override
     public void preInsert(RolePermission entity, PreInsertContext<RolePermission> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

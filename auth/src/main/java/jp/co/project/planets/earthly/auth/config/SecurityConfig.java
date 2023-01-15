@@ -1,7 +1,5 @@
 package jp.co.project.planets.earthly.auth.config;
 
-import jp.co.project.planets.earthly.auth.security.LoginUserDetailService;
-import jp.co.project.planets.earthly.auth.security.CustomAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,10 +9,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import jp.co.project.planets.earthly.auth.security.CustomAuthenticationProvider;
+import jp.co.project.planets.earthly.auth.security.LoginUserDetailService;
+
 /**
  * security config
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -39,15 +40,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     /**
      * generate default security filter chain
      *
      * @param http
-     *         http security
+     *            http security
      * @return SecurityFilterChain
      * @throws Exception
-     *         security filter chain generate failed.
+     *             security filter chain generate failed.
      */
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception {
@@ -55,9 +55,8 @@ public class SecurityConfig {
         final var authenticationProvider = new CustomAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
-        http.authorizeRequests(authorizeRequests -> authorizeRequests.antMatchers("/oauth2/introspect", "/oauth2/jwks",
-                    "/oauth2/revoke").permitAll().anyRequest().authenticated()) //
-            .formLogin(Customizer.withDefaults()).authenticationProvider(authenticationProvider);
+        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated()) //
+                .formLogin(Customizer.withDefaults()).authenticationProvider(authenticationProvider);
         return http.build();
     }
 }

@@ -15,6 +15,7 @@ public class ScopeListener implements EntityListener<Scope> {
 
     @Override
     public void preInsert(Scope entity, PreInsertContext<Scope> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

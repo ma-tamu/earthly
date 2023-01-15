@@ -1,14 +1,14 @@
 package jp.co.project.planets.earthly.core.enums;
 
 /**
- * error code
+ * code
  */
-public interface IErrorCode {
+public interface Code {
 
     /**
-     * get error code
+     * get code
      *
-     * @return error code
+     * @return code
      */
     String getCode();
 

@@ -15,6 +15,7 @@ public class CompanyListener implements EntityListener<Company> {
 
     @Override
     public void preInsert(Company entity, PreInsertContext<Company> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

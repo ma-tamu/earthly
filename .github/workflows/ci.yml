@@ -19,7 +19,7 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
       - name: docker setup db
-        run: docker-compose up -d
+        run: docker-compose --profile all up -d
       - name: test & verify
         run: |
           chmod +x gradlew

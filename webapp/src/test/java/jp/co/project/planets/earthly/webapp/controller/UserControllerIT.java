@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.model.entity.CountryEntity;
 import jp.co.project.planets.earthly.model.entity.LanguageEntity;
@@ -53,7 +54,8 @@ class UserControllerIT {
                 regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
         final var expected = new UserEntity("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "M",
-                "orren_hannana7co@conservation.fm", "T4gXZYL6qQK84", false, belongCompanyEntity,
+                "orren_hannana7co@conservation.fm", "T4gXZYL6qQK84", "ja", Timezone.ASIA_TOKYO.getId(), false,
+                belongCompanyEntity,
                 Collections.emptyList(), LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null,
                 LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null, Boolean.FALSE);
 

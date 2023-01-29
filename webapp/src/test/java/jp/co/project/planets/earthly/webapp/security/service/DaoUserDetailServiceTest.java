@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.db.entity.User;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
@@ -44,8 +45,9 @@ class DaoUserDetailServiceTest {
     @Test
     void ログインIDに紐づくユーザーが存在する場合にUserDetailsがかえされること() {
 
-        final var user = new User("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", GenderEnum.MALE.getValue(),
-                "norelay@exanmep.com", "PASSWORD", false, "COMPANY_ID_01", null, null, null, null, false);
+        final var user = new User("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", GenderEnum.MALE.getValue(), "ja",
+                Timezone.ASIA_TOKYO.getId(), "norelay@exanmep.com", "PASSWORD", false, "COMPANY_ID_01", null, null,
+                null, null, false);
         when(userRepository.findByLoginId(eq("LOGIN_ID_01"))).thenReturn(Optional.of(user));
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER, PermissionEnum.ADD_USER,

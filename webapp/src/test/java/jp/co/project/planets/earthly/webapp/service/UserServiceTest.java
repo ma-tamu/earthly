@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import jp.co.project.planets.earthly.common.logic.UserLogic;
+import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
@@ -63,8 +64,9 @@ class UserServiceTest {
         final var role01 = new RoleSimpleEntity("ROLE_ID_01", "ROLE_NAME_01");
         final var roleList = List.of(role01);
         final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
-                "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2",
-                Boolean.FALSE, belongCompanyEntity, roleList, LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
+                "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
+                Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, belongCompanyEntity, roleList,
+                LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
                 LocalDateTime.of(2022, Month.AUGUST, 14, 14, 46, 59), null, Boolean.FALSE);
         when(userLogic.getAccessibleEntity(eq("USER_ID_02"), eq(permissionEnumList), eq("USER_ID_01"))).thenReturn(
                 Optional.of(expected));

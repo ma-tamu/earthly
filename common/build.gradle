@@ -1,4 +1,11 @@
 dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.antlr:ST4:4.3.4'
+
     implementation project(":core")
     implementation project(":repository")
+    implementation project(":aws")
 }

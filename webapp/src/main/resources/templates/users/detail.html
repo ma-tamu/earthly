@@ -72,6 +72,19 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:if="${#strings.equals(userEntity.language, 'ja')}" th:text="#{page.select.language.japanese}">日本語</th:block>
+              <th:block th:if="${#strings.equals(userEntity.language, 'en')}" th:text="#{page.select.language.english}">英語</th:block>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:text="${userEntity.timezone}">Asia/Tokyo</th:block>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.company}">会社</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${userEntity.company.name}">company</th:block>
@@ -119,6 +132,24 @@
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
               <div class="col-lg-9 col-md-8">
                 <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userEntity.gender).name}">M</th:block>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
+              <div class="col-lg-9 col-md-8">
+                <th:block th:replace="parts/language::select(*{language})" />
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
+                  言語は必須です。
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
+              <div class="col-lg-9 col-md-8">
+                <th:block th:replace="parts/timezone::select(*{timezone})" />
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('timezone')}" th:errors="*{timezone}">
+                  タイムゾーンは必須です。
+                </div>
               </div>
             </div>
             <div class="row">
@@ -223,6 +254,7 @@
         let id = $("#companyDataList option[value='" + $('#company').val() + "']").text();
         $('#companyId').val(id);
         $('div.card.edit').find('input').prop('disabled', false);
+        $('div.card.edit').find('select').prop('disabled', false);
     });
     function cancel() {
         $('.confirm button').disabled = false;
@@ -238,8 +270,21 @@
                 e.disabled = false;
             } else {
                 e.value = v;
-                e.readOnly = false;
+                e.disabled = false;
             }
+        });
+        $('.edit > form').find('select').each((i, e) =>{
+           let before = e.dataset.before;
+            if (before === undefined) {
+                return true;
+            }
+            Array.from(e.options).forEach(opt =>{
+                if (opt.value === before) {
+                    opt.selected = true;
+                    return true;
+                }
+            });
+            e.disabled = false;
         });
         $('div.card.detail').show();
         $('div.card.edit').hide();

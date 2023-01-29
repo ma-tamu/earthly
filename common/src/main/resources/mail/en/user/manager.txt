@@ -1,0 +1,12 @@
+Dear. <company> <managerName>
+
+The following users have been registered.
+
+Login ID: <loginId>
+Name: <name>
+Belong company: <company>
+Email: <mail>
+
+---
+
+*We do not accept questions by replying to this email.

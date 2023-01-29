@@ -74,8 +74,8 @@ public class UserController {
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var userEntity = userService.getById(id, userInfoDto);
         final var modelAndView = new ModelAndView("users/detail");
-        final var userUpdateForm = new UserUpdateForm(userEntity.name(), userEntity.mail(),
-                userEntity.company().name(), userEntity.company().id(), userEntity.lockout());
+        final var userUpdateForm = new UserUpdateForm(userEntity.name(), userEntity.mail(), userEntity.language(),
+                userEntity.timezone(), userEntity.company().name(), userEntity.company().id(), userEntity.lockout());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userEntity);
         modelAndView.addAllObjects(model.asMap());

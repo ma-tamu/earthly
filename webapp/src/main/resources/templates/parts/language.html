@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="select(value)">
+  <select id="language" name="language" class="form-select"
+          th:classappend="${#fields.hasErrors('language')}?'is-invalid'" th:data-before="${value}"
+          th:disabled="${readOnly}">
+    <option th:if="${!#strings.isEmpty(value)}"></option>
+    <option value="ja" th:selected="${#strings.equals('ja', value)}"
+            th:text="#{page.select.language.japanese}"></option>
+    <option value="en" th:selected="${#strings.equals('en', value)}" th:text="#{page.select.language.english}"></option>
+  </select>
+</th:block>
+</html>

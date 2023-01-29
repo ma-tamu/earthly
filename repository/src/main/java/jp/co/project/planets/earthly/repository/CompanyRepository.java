@@ -28,6 +28,17 @@ public class CompanyRepository {
     }
 
     /**
+     * find by primary key
+     * 
+     * @param id
+     *            company id
+     * @return Company
+     */
+    public Optional<Company> findByPrimaryKey(final String id) {
+        return Optional.ofNullable(companyDao.selectById(id));
+    }
+
+    /**
      * 閲覧できる対象会社を取得
      *
      * @param id

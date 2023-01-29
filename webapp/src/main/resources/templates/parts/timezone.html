@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="select(value)">
+  <select id="timezone" name="timezone" class="form-select"
+          th:classappend="${#fields.hasErrors('timezone')}?'is-invalid'" th:data-before="${value}"
+          th:disabled="${readOnly}">
+    <option th:if="${!#strings.isEmpty(value)}"></option>
+    <option th:each="t: ${timezone}" th:selected="${#strings.equals(t.id, value)}" th:text="${t.id}"
+            th:value="${t.id}"></option>
+  </select>
+</th:block>
+</html>

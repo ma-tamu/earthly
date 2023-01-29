@@ -23,12 +23,14 @@ import jp.co.project.planets.earthly.repository.UserRepository;
 public class UserLogic {
 
     private final RoleLogic roleLogic;
+    private final MailLogic mailLogic;
     private final UserRepository userRepository;
 
     private static final Logger log = LoggerFactory.getLogger(UserLogic.class);
 
-    public UserLogic(final RoleLogic roleLogic, final UserRepository userRepository) {
+    public UserLogic(final RoleLogic roleLogic, final MailLogic mailLogic, final UserRepository userRepository) {
         this.roleLogic = roleLogic;
+        this.mailLogic = mailLogic;
         this.userRepository = userRepository;
     }
 
@@ -67,9 +69,14 @@ public class UserLogic {
             return Optional.empty();
         }
         final var userOptional = userRepository.findByLoginId(userDto.loginId());
-        userOptional.ifPresent(v -> roleLogic.grantDefaultRole(v.getId(), operationUserId));
+        if (userOptional.isEmpty()) {
+            log.error("user not found? loginId:{}", userDto.loginId());
+        }
+        final var createdUser = userOptional.get();
+        final var id = createdUser.getId();
+        roleLogic.grantDefaultRole(id, operationUserId);
+        mailLogic.postUserCreationNotification(id);
 
-        // TODO メール通知する。
         return userOptional;
     }
 
@@ -78,6 +85,8 @@ public class UserLogic {
         user.setMail(userDto.mail());
         final var lockout = StringUtils.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
         user.setLockout(lockout);
+        user.setLanguage(userDto.language());
+        user.setTimezone(userDto.timezone());
         user.setCompanyId(userDto.company());
         user.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
         user.setUpdatedBy(operateUserId);

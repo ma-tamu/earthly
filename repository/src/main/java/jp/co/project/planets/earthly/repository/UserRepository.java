@@ -1,5 +1,13 @@
 package jp.co.project.planets.earthly.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.seasar.doma.boot.Pageables;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
 import jp.co.project.planets.earthly.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.db.dao.RoleDao;
 import jp.co.project.planets.earthly.db.dao.UserDao;
@@ -14,13 +22,6 @@ import jp.co.project.planets.earthly.model.entity.LanguageEntity;
 import jp.co.project.planets.earthly.model.entity.RegionEntity;
 import jp.co.project.planets.earthly.model.entity.RoleSimpleEntity;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
-import org.seasar.doma.boot.Pageables;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * user repository
@@ -36,11 +37,11 @@ public class UserRepository {
      * new instance user repository
      *
      * @param userDao
-     *         user dao
+     *            user dao
      * @param companyDao
-     *         company dao
+     *            company dao
      * @param roleDao
-     *         role dao
+     *            role dao
      */
     public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao) {
         this.userDao = userDao;
@@ -52,7 +53,7 @@ public class UserRepository {
      * find by primary key
      *
      * @param id
-     *         id
+     *            id
      * @return User
      */
     public Optional<User> findByPrimaryKey(final String id) {
@@ -63,7 +64,7 @@ public class UserRepository {
      * find by login id
      *
      * @param loginId
-     *         login id
+     *            login id
      * @return user
      */
     public Optional<User> findByLoginId(final String loginId) {
@@ -74,11 +75,11 @@ public class UserRepository {
      * 閲覧可能なユーザーを取得
      *
      * @param id
-     *         ユーザーID
+     *            ユーザーID
      * @param permissionEnumList
-     *         実行ユーザーのパーミッションリスト
+     *            実行ユーザーのパーミッションリスト
      * @param executionUserId
-     *         実行ユーザー
+     *            実行ユーザー
      * @return UserEntity
      */
     public Optional<UserEntity> findAccessibleByPrimaryKey(final String id,
@@ -110,8 +111,8 @@ public class UserRepository {
                 it -> new RoleSimpleEntity(it.getId(), it.getName())).toList();
 
         return new UserEntity(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
-                user.getPassword(), user.getLockout(), belongCompanyEntity, roleSimpleEntityList, user.getCreatedAt(),
-                null, user.getUpdatedAt(), null, user.getIsDeleted());
+                user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(), belongCompanyEntity,
+                roleSimpleEntityList, user.getCreatedAt(), null, user.getUpdatedAt(), null, user.getIsDeleted());
     }
 
     public UserSearchResultDto findByLoginIdAndNameAndCompany(final String loginId, final String name,
@@ -128,7 +129,7 @@ public class UserRepository {
      * insert user
      *
      * @param user
-     *         user
+     *            user
      * @return insert count
      */
     public int insert(final User user) {
@@ -142,7 +143,7 @@ public class UserRepository {
      * update user
      *
      * @param user
-     *         user
+     *            user
      * @return update count
      */
     public int update(final User user) {
@@ -154,7 +155,7 @@ public class UserRepository {
      * delete user
      *
      * @param user
-     *         user
+     *            user
      * @return delete count
      */
     public int delete(final User user) {

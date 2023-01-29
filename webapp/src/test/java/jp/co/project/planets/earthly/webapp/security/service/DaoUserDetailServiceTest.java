@@ -1,11 +1,12 @@
 package jp.co.project.planets.earthly.webapp.security.service;
 
-import jp.co.project.planets.earthly.db.entity.User;
-import jp.co.project.planets.earthly.emuns.GenderEnum;
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.repository.UserRepository;
-import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
-import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,17 +16,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import jp.co.project.planets.earthly.db.entity.User;
+import jp.co.project.planets.earthly.emuns.GenderEnum;
+import jp.co.project.planets.earthly.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
+import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 class DaoUserDetailServiceTest {
-
 
     @Test
     void ログインIDに紐づくユーザーが存在しない場合にExceptionが発生すること() {
@@ -57,9 +57,9 @@ class DaoUserDetailServiceTest {
 
         // verify
         final var expected = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "PASSWORD", false,
-                permissionEnumList, List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name()),
-                new SimpleGrantedAuthority(PermissionEnum.ADD_USER.name()),
-                new SimpleGrantedAuthority(PermissionEnum.EDIT_USER.name())));
+                null, permissionEnumList, List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name()),
+                        new SimpleGrantedAuthority(PermissionEnum.ADD_USER.name()),
+                        new SimpleGrantedAuthority(PermissionEnum.EDIT_USER.name())));
         assertThat(actual).isInstanceOf(EarthlyUserInfoDto.class).usingDefaultComparator().isEqualTo(expected);
     }
 

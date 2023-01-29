@@ -1,0 +1,13 @@
+Dear. <name>
+
+User registration is complete.
+
+Please access the URL below and set a password.
+<baseUrl>/forgotPassword
+
+Login ID: <loginId>
+Belong company: <company>
+
+---
+
+*We do not accept questions by replying to this email.

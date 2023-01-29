@@ -51,7 +51,7 @@ class UserServiceTest {
     void VIEW_ALL_USERを保持している場合に存在するユーザーIDを指定すると指定したユーザーが取得できること() {
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER);
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, permissionEnumList,
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null, permissionEnumList,
                 List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
 
         // condition
@@ -79,7 +79,7 @@ class UserServiceTest {
     @Test
     void VIEW_ALL_USERを保持していない且つ対象ユーザーが自分自身でない場合にForbiddenExceptionが返される() {
 
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false,
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
                 Collections.emptyList(), Collections.emptyList());
 
         try {
@@ -96,7 +96,7 @@ class UserServiceTest {
     void VIEW_ALL_USERを保持している場合に存在しないユーザーIDを指定するとNotFoundExceptionが発生すること() {
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER);
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, permissionEnumList,
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null, permissionEnumList,
                 List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
 
         when(userLogic.getAccessibleEntity(eq("USER_ID_02"), eq(permissionEnumList), eq("USER_ID_01"))).thenReturn(
@@ -120,7 +120,7 @@ class UserServiceTest {
                 Collections.emptyList());
 
         try {
-            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false,
+            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
                     Collections.emptyList(), Collections.emptyList());
 
             // test
@@ -142,7 +142,7 @@ class UserServiceTest {
                 Optional.empty());
 
         try {
-            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false,
+            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
                     Collections.emptyList(), Collections.emptyList());
 
             // test

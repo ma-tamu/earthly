@@ -3,6 +3,7 @@ services:
   mysql:
     profiles:
       - all
+      - db
     build: ./docker/mysql
     restart: always
     environment:
@@ -17,9 +18,33 @@ services:
   redis:
     profiles:
       - all
+      - db
     build: ./docker/redis
     restart: always
     ports:
       - "6379:6379"
     tmpfs:
       - /data
+  localstack:
+    profiles:
+      - all
+      - localstack
+    build: ./docker/localstack
+    restart: always
+    ports:
+      - "4566:4566"
+    volumes:
+      - ./docker/localstack:/docker-entrypoint-initaws.d # 初回起動スクリプト
+      - /var/run/docker.sock:/var/run/docker.sock # おまじない
+      - 'localstack-data:/tmp/localstack' # データのマウント
+    environment:
+      - SERVICES=s3,ses
+      - AWS_ACCESS_KEY_ID=earthly
+      - AWS_SECRET_ACCESS_KEY=earthly
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - DATA_DIR=/tmp/localstack/data
+      - DISABLE_CORS_CHECKS=1
+
+volumes:
+  localstack-data:
+    driver: 'local'

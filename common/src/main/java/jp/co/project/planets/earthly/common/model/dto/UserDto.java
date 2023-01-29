@@ -23,8 +23,8 @@ import jp.co.project.planets.earthly.db.entity.User;
  * @param companyName
  *            所属会社名
  */
-public record UserDto(String loginId, String name, String mail, String gender, String company,
-        String companyName, Boolean lockout) {
+public record UserDto(String loginId, String name, String mail, String gender, String language, String timezone,
+        String company, String companyName, Boolean lockout) {
 
     /**
      * convert to entity
@@ -40,6 +40,8 @@ public record UserDto(String loginId, String name, String mail, String gender, S
         user.setName(name);
         user.setMail(mail);
         user.setGender(gender);
+        user.setLanguage(language);
+        user.setTimezone(timezone);
         user.setCompanyId(company);
         user.setLockout(BooleanUtils.isTrue(lockout));
         user.setIsDeleted(false);

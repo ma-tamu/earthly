@@ -1,2 +1,2 @@
 rootProject.name = 'earthly'
-include 'core', 'common', 'repository', 'auth', 'webapp', "webservice"
+include 'core', 'common', 'repository', 'aws', 'auth', 'webapp', "webservice"

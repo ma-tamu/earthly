@@ -17,12 +17,10 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
 private static final long serialVersionUID = 1L;
 
         /** 会社ID */
-        @Id
         @Column(name = "company_id")
     String companyId;
 
         /** ユーザーID */
-        @Id
         @Column(name = "user_id")
     String userId;
 
@@ -46,6 +44,11 @@ private static final long serialVersionUID = 1L;
         @Column(name = "is_deleted")
     Boolean isDeleted;
 
+        /**  */
+        @Id
+        @Column(name = "id")
+    String id;
+
     public ManagementCompanyUser() {
     }
     /**
@@ -64,8 +67,10 @@ private static final long serialVersionUID = 1L;
      *         更新者
      * @Param isDeleted
      *         削除フラグ
+     * @Param id
+     *         
      */
-    public ManagementCompanyUser(final String companyId,final String userId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
+    public ManagementCompanyUser(final String companyId,final String userId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted,final String id) {
         this.companyId = companyId;
         this.userId = userId;
         this.createdAt = createdAt;
@@ -73,6 +78,7 @@ private static final long serialVersionUID = 1L;
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
+        this.id = id;
     }
 
         /**
@@ -199,5 +205,23 @@ private static final long serialVersionUID = 1L;
         */
         public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+        }
+
+        /**
+        * Returns the id.
+        *
+        * @return the id
+        */
+        public String getId() {
+        return id;
+        }
+
+        /**
+        * Sets the id.
+        *
+        * @param id the id
+        */
+        public void setId(String id) {
+        this.id = id;
         }
 }

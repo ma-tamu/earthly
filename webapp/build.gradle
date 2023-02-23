@@ -10,6 +10,8 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    implementation 'dev.samstevens.totp:totp:1.7.1'
+
     implementation project(":core")
     implementation project(":repository")
     implementation project(":common")

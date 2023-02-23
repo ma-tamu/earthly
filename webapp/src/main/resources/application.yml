@@ -72,3 +72,8 @@ earthly:
     provider:
       earthly:
         base-path: http://localhost:9000/earthly
+
+aws:
+  ses:
+    from: noreply@example.com
+    region: ap-northeast-1

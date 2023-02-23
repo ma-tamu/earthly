@@ -23,7 +23,7 @@ public class ForbiddenException extends AbstractBaseException {
     }
 
     /**
-     * new instance not found exception
+     * new instance forbidden exception
      *
      * @param message
      *            detail messages
@@ -37,7 +37,7 @@ public class ForbiddenException extends AbstractBaseException {
     }
 
     /**
-     * new instance not found exception
+     * new instance forbidden exception
      *
      * @param message
      *            detail messages

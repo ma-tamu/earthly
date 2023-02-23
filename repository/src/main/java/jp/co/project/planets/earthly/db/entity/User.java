@@ -53,6 +53,14 @@ private static final long serialVersionUID = 1L;
         @Column(name = "lockout")
     Boolean lockout;
 
+        /**  */
+        @Column(name = "two_factor_authentication")
+    Boolean twoFactorAuthentication;
+
+        /**  */
+        @Column(name = "secret")
+    String secret;
+
         /** 所属会社 */
         @Column(name = "company_id")
     String companyId;
@@ -99,6 +107,10 @@ private static final long serialVersionUID = 1L;
      *         パスワード
      * @Param lockout
      *         ロックアウト
+     * @Param twoFactorAuthentication
+     *         
+     * @Param secret
+     *         
      * @Param companyId
      *         所属会社
      * @Param createdAt
@@ -112,7 +124,7 @@ private static final long serialVersionUID = 1L;
      * @Param isDeleted
      *         削除フラグ
      */
-    public User(final String id,final String loginId,final String name,final String gender,final String language,final String timezone,final String mail,final String password,final Boolean lockout,final String companyId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
+    public User(final String id,final String loginId,final String name,final String gender,final String language,final String timezone,final String mail,final String password,final Boolean lockout,final Boolean twoFactorAuthentication,final String secret,final String companyId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;
@@ -122,6 +134,8 @@ private static final long serialVersionUID = 1L;
         this.mail = mail;
         this.password = password;
         this.lockout = lockout;
+        this.twoFactorAuthentication = twoFactorAuthentication;
+        this.secret = secret;
         this.companyId = companyId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
@@ -290,6 +304,42 @@ private static final long serialVersionUID = 1L;
         */
         public void setLockout(Boolean lockout) {
         this.lockout = lockout;
+        }
+
+        /**
+        * Returns the twoFactorAuthentication.
+        *
+        * @return the twoFactorAuthentication
+        */
+        public Boolean getTwoFactorAuthentication() {
+        return twoFactorAuthentication;
+        }
+
+        /**
+        * Sets the twoFactorAuthentication.
+        *
+        * @param twoFactorAuthentication the twoFactorAuthentication
+        */
+        public void setTwoFactorAuthentication(Boolean twoFactorAuthentication) {
+        this.twoFactorAuthentication = twoFactorAuthentication;
+        }
+
+        /**
+        * Returns the secret.
+        *
+        * @return the secret
+        */
+        public String getSecret() {
+        return secret;
+        }
+
+        /**
+        * Sets the secret.
+        *
+        * @param secret the secret
+        */
+        public void setSecret(String secret) {
+        this.secret = secret;
         }
 
         /**

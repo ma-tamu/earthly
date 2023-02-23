@@ -25,6 +25,8 @@ import java.util.List;
  *            タイムゾーン
  * @param lockout
  *            ロックアウト
+ * @param is2fa
+ *            2要素認証の有無
  * @param company
  *            所属会社
  * @param roleList
@@ -41,7 +43,8 @@ import java.util.List;
  *            削除フラグ
  */
 public record UserEntity(String id, String loginId, String name, String gender, String mail, String password,
-        String language, String timezone, Boolean lockout, BelongCompanyEntity company, List<RoleSimpleEntity> roleList,
-        LocalDateTime createdAt, OperationUser createdBy, LocalDateTime updatedAt, OperationUser updatedBy,
-        Boolean isDeleted) implements Serializable {
+        String language, String timezone, Boolean lockout, Boolean is2fa, String secret, BelongCompanyEntity company,
+        List<RoleSimpleEntity> roleList, List<CompanySimpleEntity> managementCompanyList, LocalDateTime createdAt,
+        OperationUser createdBy, LocalDateTime updatedAt, OperationUser updatedBy, Boolean isDeleted)
+        implements Serializable {
 }

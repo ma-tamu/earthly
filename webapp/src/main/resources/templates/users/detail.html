@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
+  <script th:src="@{/vendor/qrcodejs/qrcode.min.js}"></script>
 </head>
 <body class="modal-open">
 <th:block th:replace="parts/template::header"></th:block>
@@ -24,7 +25,7 @@
               </button>
             </div>
             <div data-bs-toggle="tooltip" data-bs-placement="top"
-                 th:if="${!#strings.equals(#authentication.principal.id, userEntity.id)}">
+                 th:if="${!#strings.equals(#authentication.principal.id, userDetailDto.userEntity.id)}">
               <button class="btn btn-info rounded-pill m-1" th:title="#{page.tooltip.delete}"
                       data-bs-toggle="modal" data-bs-target="#deleteModal">
                 <i class="bx bx-trash"></i>
@@ -43,7 +44,7 @@
           <a th:href="@{/users}">ユーザーリスト</a>
         </li>
         <li class="breadcrumb-item active">
-          <th:block th:text="${userEntity.name}"/>
+          <th:block th:text="${userDetailDto.userEntity.name}"/>
         </li>
       </ol>
     </nav>
@@ -51,50 +52,66 @@
   <section class="section profile">
     <div class="card detail" th:styleappend="${!#bools.isFalse(editMode)} ? 'display: none'">
       <div class="card-body">
-        <div class="card-title" th:text="${userEntity.loginId}">login id</div>
+        <div class="card-title" th:text="${userDetailDto.userEntity.loginId}">login id</div>
         <div class="profile-overview">
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.name}">ユーザー名</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${userEntity.name}">name</th:block>
+              <th:block th:text="${userDetailDto.userEntity.name}">name</th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mail}">メールアドレス</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${userEntity.mail}">mail</th:block>
+              <th:block th:text="${userDetailDto.userEntity.mail}">mail</th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userEntity.gender).name}">M</th:block>
+              <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">M
+              </th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:if="${#strings.equals(userEntity.language, 'ja')}" th:text="#{page.select.language.japanese}">日本語</th:block>
-              <th:block th:if="${#strings.equals(userEntity.language, 'en')}" th:text="#{page.select.language.english}">英語</th:block>
+              <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'ja')}"
+                        th:text="#{page.select.language.japanese}">日本語
+              </th:block>
+              <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'en')}" th:text="#{page.select.language.english}">
+                英語
+              </th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${userEntity.timezone}">Asia/Tokyo</th:block>
+              <th:block th:text="${userDetailDto.userEntity.timezone}">Asia/Tokyo</th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.company}">会社</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${userEntity.company.name}">company</th:block>
+              <th:block th:text="${userDetailDto.userEntity.company.name}">company</th:block>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.lockout}">ロックアウト</div>
             <div class="col-lg-9 col-md-8">
-              <i class="bx" th:classappend="${userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
-              <th:block th:text="${userEntity.lockout} ?'ON':'OFF'">ON</th:block>
+              <i class="bx" th:classappend="${userDetailDto.userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
+              <th:block th:text="${userDetailDto.userEntity.lockout} ?'ON':'OFF'">ON</th:block>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.2fa}">2要素認証</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:if="${userDetailDto.userEntity.is2fa}">
+                <img th:src="${userDetailDto.qrcode}" height="200" width="200">
+              </th:block>
+              <th:block th:unless="${userDetailDto.userEntity.is2fa}">
+                無効
+              </th:block>
             </div>
           </div>
         </div>
@@ -102,14 +119,14 @@
     </div>
     <div class="card edit" th:styleappend="${!#bools.isTrue(editMode)} ? 'display: none'">
       <form method="post" th:with="action=${readOnly}? 'update' : 'edit'"
-            th:action="@{/users/__${userEntity.id}__/__${action}__}" th:object="${userUpdateForm}">
+            th:action="@{/users/__${userDetailDto.userEntity.id}__/__${action}__}" th:object="${userUpdateForm}">
         <div class="card-body">
-          <div class="card-title" th:text="${userEntity.loginId}">login id</div>
+          <div class="card-title" th:text="${userDetailDto.userEntity.loginId}">login id</div>
           <div class="profile-overview">
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.name}">ユーザー名</div>
               <div class="col-lg-9 col-md-8">
-                <input type="text" class="form-control" th:data-before="${userEntity.name}"
+                <input type="text" class="form-control" th:data-before="${userDetailDto.userEntity.name}"
                        th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:disabled="${readOnly}"
                        th:field="*{name}">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
@@ -120,7 +137,7 @@
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mail}">メールアドレス</div>
               <div class="col-lg-9 col-md-8">
-                <input type="email" class="form-control" th:data-before="${userEntity.mail}"
+                <input type="email" class="form-control" th:data-before="${userDetailDto.userEntity.mail}"
                        th:classappend="${#fields.hasErrors('mail')}?'is-invalid'" th:disabled="${readOnly}"
                        th:field="*{mail}">
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}">
@@ -131,13 +148,14 @@
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
               <div class="col-lg-9 col-md-8">
-                <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userEntity.gender).name}">M</th:block>
+                <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">M
+                </th:block>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
               <div class="col-lg-9 col-md-8">
-                <th:block th:replace="parts/language::select(*{language})" />
+                <th:block th:replace="parts/language::select(*{language})"/>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
                   言語は必須です。
                 </div>
@@ -146,7 +164,7 @@
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
               <div class="col-lg-9 col-md-8">
-                <th:block th:replace="parts/timezone::select(*{timezone})" />
+                <th:block th:replace="parts/timezone::select(*{timezone})"/>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('timezone')}" th:errors="*{timezone}">
                   タイムゾーンは必須です。
                 </div>
@@ -155,10 +173,10 @@
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.company}">会社</div>
               <div class="col-lg-9 col-md-8">
-                <input type="text" class="form-control" th:data-before="${userEntity.company.name}"
+                <input type="text" class="form-control" th:data-before="${userDetailDto.userEntity.company.name}"
                        th:classappend="${#fields.hasErrors('company')}?'is-invalid'" th:disabled="${readOnly}"
                        autocomplete="on" list="companyDataList" th:field="*{company}">
-                <input type="hidden" th:data-before="${userEntity.company.id()}" th:disabled="${readOnly}"
+                <input type="hidden" th:data-before="${userDetailDto.userEntity.company.id()}" th:disabled="${readOnly}"
                        th:field="*{companyId}">
                 <datalist id="companyDataList"></datalist>
                 <div class="invalid-feedback" th:if="${#fields.hasErrors('company')}" th:errors="*{company}">
@@ -170,23 +188,38 @@
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.lockout}">ロックアウト</div>
               <div class="col-lg-9 col-md-8">
                 <div class="form-check form-switch"
-                     th:unless="${#strings.equals(userEntity.id, #authentication.getPrincipal().id)}">
-                  <input type="checkbox" class="form-check-input" th:data-before="${userEntity.lockout}"
+                     th:unless="${#strings.equals(userDetailDto.userEntity.id, #authentication.getPrincipal().id)}">
+                  <input type="checkbox" class="form-check-input" th:data-before="${userDetailDto.userEntity.lockout}"
                          th:classappend="${#fields.hasErrors('lockout')}?'is-invalid'" id="lockout"
                          th:field="*{lockout}" th:disabled="${readOnly}">
                   <label for="lockout">do you lockout ?</label>
                 </div>
-                <th:block th:if="${#strings.equals(userEntity.id, #authentication.getPrincipal().id)}">
-                  <i class="bx" th:classappend="${userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
-                  <th:block th:text="${userEntity.lockout} ?'ON':'OFF'">ON</th:block>
+                <th:block th:if="${#strings.equals(userDetailDto.userEntity.id, #authentication.getPrincipal().id)}">
+                  <i class="bx" th:classappend="${userDetailDto.userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
+                  <th:block th:text="${userDetailDto.userEntity.lockout} ?'ON':'OFF'">ON</th:block>
                 </th:block>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.2fa}">2要素認証</div>
+              <div class="col-lg-9 col-md-8">
+                <div class="form-check form-switch">
+                  <input type="checkbox" class="form-check-input" th:data-before="${userDetailDto.userEntity.is2fa}"
+                         th:classappend="${#fields.hasErrors('is2fa')}?'is-invalid'" id="is2fa"
+                         th:field="*{is2fa}" th:disabled="${readOnly}">
+                  <label for="is2fa">enable 2fa ?</label>
+                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-12 text-end">
                 <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
-                <button type="submit" class="btn btn-primary confirm" th:disabled="${readOnly}" th:styleappend="${readOnly}?'display:none'">確認</button>
-                <button type="submit" class="btn btn-primary update" th:disabled="${#bools.isFalse(readOnly)}" th:styleappend="${#bools.isFalse(readOnly)}?'display:none'">更新</button>
+                <button type="submit" class="btn btn-primary confirm" th:disabled="${readOnly}"
+                        th:styleappend="${readOnly}?'display:none'">確認
+                </button>
+                <button type="submit" class="btn btn-primary update" th:disabled="${#bools.isFalse(readOnly)}"
+                        th:styleappend="${#bools.isFalse(readOnly)}?'display:none'">更新
+                </button>
               </div>
             </div>
           </div>
@@ -204,7 +237,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="role : ${userEntity.roleList}">
+          <tr th:each="role : ${userDetailDto.userEntity.roleList}">
             <td>
               <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名</a>
             </td>
@@ -213,16 +246,62 @@
         </table>
       </div>
     </div>
+    <hr>
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title" th:text="#{page.label.user.group.list}">グループリスト</div>
+        <table class="table table-striped table-borderless">
+          <thead>
+          <tr>
+            <th th:text="#{page.label.user.group.name}">グループ名</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="role : ${userDetailDto.userEntity.roleList}">
+            <td>
+              <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">グループ名</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr>
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title" th:text="#{page.label.user.group.list}">管理会社リスト</div>
+        <table class="table table-striped table-borderless">
+          <thead>
+          <tr>
+            <th th:text="#{page.label.user.group.name}">会社名</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="role : ${userDetailDto.userEntity.roleList}">
+            <td>
+              <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">会社名</a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </section>
-  <div th:replace="users/delete::modal(${userEntity.id})"></div>
+  <div th:replace="users/delete::modal(${userDetailDto.userEntity.id})"></div>
 </main>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/vendor/authenticatorjs/unibabel/index.js}"></script>
+<script th:src="@{/vendor/authenticatorjs/unibabel/unibabel.hex.js}"></script>
+<script th:src="@{/vendor/authenticatorjs/unibabel/unibabel.base32.js}"></script>
+
+<script th:src="@{/vendor/authenticatorjs/botp/sha1-hmac.js}"></script>
+<script th:src="@{/vendor/authenticatorjs/botp/index.js}"></script>
+<script th:src="@{/vendor/authenticatorjs/authenticator/authenticator.js}"></script>
 <script th:src="@{/js/client.js}"></script>
 <script type="text/javascript" th:inline="javascript">
-    const url = /*[[@{'/api/suggests/companies'}]]*/'';
     let param = {keyword: this.value};
-    let deferred = doGet(url, param);
+    let deferred = doGet(/*[[@{'/api/suggests/companies'}]]*/'', param);
 
     deferred.done(function (data) {
         $('#companyDataList > option').remove();
@@ -256,11 +335,12 @@
         $('div.card.edit').find('input').prop('disabled', false);
         $('div.card.edit').find('select').prop('disabled', false);
     });
+
     function cancel() {
         $('.confirm button').disabled = false;
         $('.update').disabled = true;
 
-        $('.edit > form').find('input').each((i, e) =>{
+        $('.edit > form').find('input').each((i, e) => {
             let v = e.dataset.before;
             if (v === undefined) {
                 return true;
@@ -273,12 +353,12 @@
                 e.disabled = false;
             }
         });
-        $('.edit > form').find('select').each((i, e) =>{
-           let before = e.dataset.before;
+        $('.edit > form').find('select').each((i, e) => {
+            let before = e.dataset.before;
             if (before === undefined) {
                 return true;
             }
-            Array.from(e.options).forEach(opt =>{
+            Array.from(e.options).forEach(opt => {
                 if (opt.value === before) {
                     opt.selected = true;
                     return true;

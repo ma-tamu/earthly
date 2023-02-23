@@ -72,12 +72,14 @@ public class UserController {
     @GetMapping("{userId}")
     public ModelAndView get(@PathVariable("userId") final String id, final Model model,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var userEntity = userService.getById(id, userInfoDto);
+        final var userDetailDto = userService.getById(id, userInfoDto);
         final var modelAndView = new ModelAndView("users/detail");
+        final var userEntity = userDetailDto.userEntity();
         final var userUpdateForm = new UserUpdateForm(userEntity.name(), userEntity.mail(), userEntity.language(),
-                userEntity.timezone(), userEntity.company().name(), userEntity.company().id(), userEntity.lockout());
+                userEntity.timezone(), userEntity.company().name(), userEntity.company().id(), userEntity.lockout(),
+                userEntity.is2fa());
         modelAndView.addObject(userUpdateForm);
-        modelAndView.addObject(userEntity);
+        modelAndView.addObject(userDetailDto);
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }

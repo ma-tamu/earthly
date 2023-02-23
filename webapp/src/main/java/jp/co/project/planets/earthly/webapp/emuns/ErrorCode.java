@@ -19,6 +19,9 @@ public enum ErrorCode implements Code {
     EWA4XX005("EWA4XX005", FORBIDDEN_EDIT_USER),
     /** 所属会社の編集ができません。 */
     EWA4XX006("EWA4XX005", NOT_MODIFY_BELONG_COMPANY),
+    /** 新しいパスワードと新しいパスワードの再入力が異なります。 */
+    EWA4XX007("EWA4XX006", NEW_PASSWORD_MISMATCH),
+
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     ;

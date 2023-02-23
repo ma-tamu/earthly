@@ -11,21 +11,30 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import dev.samstevens.totp.code.HashingAlgorithm;
+import dev.samstevens.totp.exceptions.QrGenerationException;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.qr.ZxingPngQrGenerator;
+import dev.samstevens.totp.util.Utils;
+import jp.co.project.planets.earthly.common.logic.CryptoLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.model.entity.UserEntity;
 import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
+import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
+import jp.co.project.planets.earthly.webapp.model.dto.UserDetailDto;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
@@ -41,6 +50,8 @@ public class UserService {
     private final CompanyRepository companyRepository;
 
     private final MessageSource messageSource;
+    private final PasswordEncoder passwordEncoder;
+    private final CryptoLogic cryptoLogic;
 
     /**
      * new instance user service
@@ -53,13 +64,20 @@ public class UserService {
      *            company repository
      * @param messageSource
      *            message source
+     * @param passwordEncoder
+     *            password encoder
+     * @param cryptoLogic
+     *            crypto logic
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
-            final CompanyRepository companyRepository, final MessageSource messageSource) {
+            final CompanyRepository companyRepository, final MessageSource messageSource,
+            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.messageSource = messageSource;
+        this.passwordEncoder = passwordEncoder;
+        this.cryptoLogic = cryptoLogic;
     }
 
     /**
@@ -72,12 +90,21 @@ public class UserService {
      * @return UserEntity
      */
     @Transactional
-    public UserEntity getById(final String id, final EarthlyUserInfoDto userInfoDto) {
-
+    public UserDetailDto getById(final String id, final EarthlyUserInfoDto userInfoDto) {
         validateAccessible(id, userInfoDto);
-
-        return userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id()).orElseThrow(
-                () -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
+        final var userEntity = userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id())
+                .orElseThrow(() -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
+        final var builder = new QrData.Builder();
+        final var qrData = builder.issuer("Planet Systems").label(userEntity.loginId()).secret(userEntity.secret())
+                .algorithm(HashingAlgorithm.SHA1).digits(6).period(30).build();
+        final var zxingPngQrGenerator = new ZxingPngQrGenerator();
+        try {
+            final byte[] bytes = zxingPngQrGenerator.generate(qrData);
+            final var image = Utils.getDataUriForImage(bytes, zxingPngQrGenerator.getImageMimeType());
+            return new UserDetailDto(userEntity, image);
+        } catch (final QrGenerationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -175,8 +202,10 @@ public class UserService {
      * ユーザー作成
      * 
      * @param userDto
+     *            user dto
      * @param userInfoDto
-     * @return
+     *            ユーザー情報
+     * @return ユーザーID
      */
     @Transactional
     public String create(final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
@@ -268,6 +297,26 @@ public class UserService {
         return companyList.contains(afterCompanyId);
     }
 
+    @Transactional
+    public void updatePassword(final String id, final String newPassword, final String renewPassword) {
+        Assert.notNull(id, "id must not be null");
+        Assert.notNull(newPassword, "newPassword must not be null");
+        Assert.notNull(renewPassword, "renewPassword must not be null");
+
+        if (!StringUtils.equals(newPassword, renewPassword)) {
+            throw new BadRequestException(EWA4XX007);
+        }
+
+        final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+        final var password = passwordEncoder.encode(newPassword);
+        user.setPassword(password);
+        final var plant = String.join(":", user.getLoginId(), user.getMail());
+        final var secret = cryptoLogic.encodeSHA256(plant);
+        user.setSecret(secret);
+        user.setUpdatedBy(id);
+        userRepository.update(user);
+    }
+
     /**
      * ユーザー更新
      * 
@@ -291,4 +340,5 @@ public class UserService {
     public String delete(final String id, final EarthlyUserInfoDto userInfoDto) {
         return null;
     }
+
 }

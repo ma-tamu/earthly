@@ -24,7 +24,7 @@ import jp.co.project.planets.earthly.db.entity.User;
  *            所属会社名
  */
 public record UserDto(String loginId, String name, String mail, String gender, String language, String timezone,
-        String company, String companyName, Boolean lockout) {
+        String company, String companyName, Boolean lockout, Boolean is2fa) {
 
     /**
      * convert to entity
@@ -44,6 +44,7 @@ public record UserDto(String loginId, String name, String mail, String gender, S
         user.setTimezone(timezone);
         user.setCompanyId(company);
         user.setLockout(BooleanUtils.isTrue(lockout));
+        user.setTwoFactorAuthentication(is2fa);
         user.setIsDeleted(false);
         return user;
     }

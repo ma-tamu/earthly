@@ -42,6 +42,6 @@ public record UserEntryForm(
      * @return UserEntryDto
      */
     public UserDto toDto() {
-        return new UserDto(loginId, name, mail, gender, language, timezone, company, companyName, false);
+        return new UserDto(loginId, name, mail, gender, language, timezone, company, companyName, false, false);
     }
 }

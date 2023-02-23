@@ -15,12 +15,11 @@ import org.seasar.doma.boot.ConfigAutowireable;
 public interface Oauth2AuthorizationConsentBaseDao {
 
     /**
-     * @param registeredClientId
-     * @param principalName
+     * @param id
      * @return the Oauth2AuthorizationConsent entity
      */
     @Select
-    Oauth2AuthorizationConsent selectById(String registeredClientId, String principalName);
+    Oauth2AuthorizationConsent selectById(String id);
 
     /**
      * @param entity

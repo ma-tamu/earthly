@@ -43,6 +43,7 @@ public class DaoUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("user not found."));
 
         return new EarthlyUserInfoDto(user.getId(), user.getLoginId(), user.getName(), user.getPassword(),
-                user.getLockout(), company, permissionEnumList, grantedAuthorities);
+                user.getLockout(), user.getTwoFactorAuthentication(), false, user.getSecret(), company,
+                permissionEnumList, grantedAuthorities);
     }
 }

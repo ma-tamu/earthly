@@ -11,12 +11,14 @@ import org.springframework.stereotype.Repository;
 import jp.co.project.planets.earthly.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.db.dao.RoleDao;
 import jp.co.project.planets.earthly.db.dao.UserDao;
+import jp.co.project.planets.earthly.db.entity.Company;
 import jp.co.project.planets.earthly.db.entity.Role;
 import jp.co.project.planets.earthly.db.entity.User;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.dto.UserSearchResultDto;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.model.entity.CompanyEntity;
+import jp.co.project.planets.earthly.model.entity.CompanySimpleEntity;
 import jp.co.project.planets.earthly.model.entity.CountryEntity;
 import jp.co.project.planets.earthly.model.entity.LanguageEntity;
 import jp.co.project.planets.earthly.model.entity.RegionEntity;
@@ -96,11 +98,12 @@ public class UserRepository {
         }
         final boolean hasViewAllRole = permissionEnumList.contains(PermissionEnum.VIEW_ALL_ROLE);
         final var roleList = roleDao.selectGrantedRoleByUserId(id, hasViewAllRole, executionUserId);
-        return Optional.of(generateUserEntity(user, companyEntityOptional.get(), roleList));
+        final var managementCompanyList = companyDao.selectManagementCompanyByUserId(id);
+        return Optional.of(generateUserEntity(user, companyEntityOptional.get(), roleList, managementCompanyList));
     }
 
     private UserEntity generateUserEntity(final User user, final CompanyEntity companyEntity,
-            final List<Role> roleList) {
+            final List<Role> roleList, final List<Company> managementCompanyList) {
         final var regionEntity = new RegionEntity(companyEntity.regionId(), companyEntity.regionName());
         final var languageEntity = new LanguageEntity(companyEntity.languageId(), companyEntity.languageName());
         final var countryEntity = new CountryEntity(companyEntity.countryId(), companyEntity.countryName(),
@@ -109,10 +112,15 @@ public class UserRepository {
                 countryEntity);
         final var roleSimpleEntityList = roleList.stream().map(
                 it -> new RoleSimpleEntity(it.getId(), it.getName())).toList();
+        final var companySimpleEntityList = managementCompanyList.stream()
+                .map(it -> new CompanySimpleEntity(it.getId(), it.getName())).toList();
 
         return new UserEntity(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
-                user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(), belongCompanyEntity,
-                roleSimpleEntityList, user.getCreatedAt(), null, user.getUpdatedAt(), null, user.getIsDeleted());
+                user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(),
+                user.getTwoFactorAuthentication(), user.getSecret(), belongCompanyEntity, roleSimpleEntityList,
+                companySimpleEntityList,
+                user.getCreatedAt(), null,
+                user.getUpdatedAt(), null, user.getIsDeleted());
     }
 
     public UserSearchResultDto findByLoginIdAndNameAndCompany(final String loginId, final String name,

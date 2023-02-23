@@ -21,7 +21,7 @@ public class MailClient {
     private final String from;
     private final String region;
 
-    public MailClient(@Value("") final String from, @Value("") final String region) {
+    public MailClient(@Value("${aws.ses.from}") final String from, @Value("${aws.ses.region}") final String region) {
         this.from = from;
         this.region = region;
     }

@@ -15,6 +15,7 @@ public class Oauth2AuthorizationListener implements EntityListener<Oauth2Authori
 
     @Override
     public void preInsert(Oauth2Authorization entity, PreInsertContext<Oauth2Authorization> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

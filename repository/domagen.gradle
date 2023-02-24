@@ -5,6 +5,7 @@ domaCodeGen {
         password = datasourcePassword
         schemaName = datasourceSchema
         templateDir = file("$rootDir/repository/template")
+        ignoredTableNamePattern = 'earthly_version'
         entity {
             packageName = 'jp.co.project.planets.earthly.db.entity'
             overwriteListener = true

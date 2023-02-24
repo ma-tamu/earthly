@@ -15,12 +15,11 @@ import org.seasar.doma.boot.ConfigAutowireable;
 public interface ManagementCompanyUserBaseDao {
 
     /**
-     * @param companyId
-     * @param userId
+     * @param id
      * @return the ManagementCompanyUser entity
      */
     @Select
-    ManagementCompanyUser selectById(String companyId, String userId);
+    ManagementCompanyUser selectById(String id);
 
     /**
      * @param entity

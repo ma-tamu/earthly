@@ -84,8 +84,8 @@ public class CompanyDaoTest {
      * @throws Exception
      */
     @Test
-    public void testSelectAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
-        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectAccessibleByPrimaryKey.sql", dialect);
+    public void testFindAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/findAccessibleByPrimaryKey.sql", dialect);
         execute(sqlFile);
     }
 
@@ -94,8 +94,8 @@ public class CompanyDaoTest {
      * @throws Exception
      */
     @Test
-    public void testSelectByPrimaryKey(TestInfo testInfo) throws Exception {
-        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectByPrimaryKey.sql", dialect);
+    public void testSelectAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectAccessibleByPrimaryKey.sql", dialect);
         execute(sqlFile);
     }
 
@@ -114,8 +114,18 @@ public class CompanyDaoTest {
      * @throws Exception
      */
     @Test
-    public void testFindAccessibleByPrimaryKey(TestInfo testInfo) throws Exception {
-        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/findAccessibleByPrimaryKey.sql", dialect);
+    public void testSelectByPrimaryKey(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectByPrimaryKey.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectManagementCompanyByUserId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/db/dao/CompanyDao/selectManagementCompanyByUserId.sql", dialect);
         execute(sqlFile);
     }
 

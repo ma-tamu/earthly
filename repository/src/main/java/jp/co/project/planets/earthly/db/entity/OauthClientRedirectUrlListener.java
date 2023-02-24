@@ -15,6 +15,7 @@ public class OauthClientRedirectUrlListener implements EntityListener<OauthClien
 
     @Override
     public void preInsert(OauthClientRedirectUrl entity, PreInsertContext<OauthClientRedirectUrl> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

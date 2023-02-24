@@ -33,6 +33,14 @@ private static final long serialVersionUID = 1L;
         @Column(name = "gender")
     String gender;
 
+        /**  */
+        @Column(name = "language")
+    String language;
+
+        /**  */
+        @Column(name = "timezone")
+    String timezone;
+
         /** メールアドレス */
         @Column(name = "mail")
     String mail;
@@ -44,6 +52,14 @@ private static final long serialVersionUID = 1L;
         /** ロックアウト */
         @Column(name = "lockout")
     Boolean lockout;
+
+        /**  */
+        @Column(name = "two_factor_authentication")
+    Boolean twoFactorAuthentication;
+
+        /**  */
+        @Column(name = "secret")
+    String secret;
 
         /** 所属会社 */
         @Column(name = "company_id")
@@ -81,12 +97,20 @@ private static final long serialVersionUID = 1L;
      *         ユーザー名
      * @Param gender
      *         性別
+     * @Param language
+     *         
+     * @Param timezone
+     *         
      * @Param mail
      *         メールアドレス
      * @Param password
      *         パスワード
      * @Param lockout
      *         ロックアウト
+     * @Param twoFactorAuthentication
+     *         
+     * @Param secret
+     *         
      * @Param companyId
      *         所属会社
      * @Param createdAt
@@ -100,14 +124,18 @@ private static final long serialVersionUID = 1L;
      * @Param isDeleted
      *         削除フラグ
      */
-    public User(final String id,final String loginId,final String name,final String gender,final String mail,final String password,final Boolean lockout,final String companyId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
+    public User(final String id,final String loginId,final String name,final String gender,final String language,final String timezone,final String mail,final String password,final Boolean lockout,final Boolean twoFactorAuthentication,final String secret,final String companyId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;
         this.gender = gender;
+        this.language = language;
+        this.timezone = timezone;
         this.mail = mail;
         this.password = password;
         this.lockout = lockout;
+        this.twoFactorAuthentication = twoFactorAuthentication;
+        this.secret = secret;
         this.companyId = companyId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
@@ -189,6 +217,42 @@ private static final long serialVersionUID = 1L;
         }
 
         /**
+        * Returns the language.
+        *
+        * @return the language
+        */
+        public String getLanguage() {
+        return language;
+        }
+
+        /**
+        * Sets the language.
+        *
+        * @param language the language
+        */
+        public void setLanguage(String language) {
+        this.language = language;
+        }
+
+        /**
+        * Returns the timezone.
+        *
+        * @return the timezone
+        */
+        public String getTimezone() {
+        return timezone;
+        }
+
+        /**
+        * Sets the timezone.
+        *
+        * @param timezone the timezone
+        */
+        public void setTimezone(String timezone) {
+        this.timezone = timezone;
+        }
+
+        /**
         * Returns the mail.
         *
         * @return the mail
@@ -240,6 +304,42 @@ private static final long serialVersionUID = 1L;
         */
         public void setLockout(Boolean lockout) {
         this.lockout = lockout;
+        }
+
+        /**
+        * Returns the twoFactorAuthentication.
+        *
+        * @return the twoFactorAuthentication
+        */
+        public Boolean getTwoFactorAuthentication() {
+        return twoFactorAuthentication;
+        }
+
+        /**
+        * Sets the twoFactorAuthentication.
+        *
+        * @param twoFactorAuthentication the twoFactorAuthentication
+        */
+        public void setTwoFactorAuthentication(Boolean twoFactorAuthentication) {
+        this.twoFactorAuthentication = twoFactorAuthentication;
+        }
+
+        /**
+        * Returns the secret.
+        *
+        * @return the secret
+        */
+        public String getSecret() {
+        return secret;
+        }
+
+        /**
+        * Sets the secret.
+        *
+        * @param secret the secret
+        */
+        public void setSecret(String secret) {
+        this.secret = secret;
         }
 
         /**

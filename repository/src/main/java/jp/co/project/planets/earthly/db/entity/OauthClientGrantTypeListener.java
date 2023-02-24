@@ -15,6 +15,7 @@ public class OauthClientGrantTypeListener implements EntityListener<OauthClientG
 
     @Override
     public void preInsert(OauthClientGrantType entity, PreInsertContext<OauthClientGrantType> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

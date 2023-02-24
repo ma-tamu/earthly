@@ -1,6 +1,23 @@
 package jp.co.project.planets.earthly.repository;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
+
 import jp.co.project.planets.earthly.TestConfig;
+import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
@@ -12,25 +29,10 @@ import jp.co.project.planets.earthly.model.entity.UserEntity;
 import jp.co.project.planets.earthly.test.emuns.CountryEnum;
 import jp.co.project.planets.earthly.test.emuns.LanguageEnum;
 import jp.co.project.planets.earthly.test.emuns.RegionEnum;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Collections;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(classes = TestConfig.class)
 @Transactional
-@Sql(scripts = {"classpath:/datasets/users.sql"})
+@Sql(scripts = { "classpath:/datasets/users.sql" })
 class UserRepositoryTest {
 
     @BeforeEach
@@ -78,9 +80,10 @@ class UserRepositoryTest {
         final var role01 = new RoleSimpleEntity("ROLE_ID_01", "ROLE_NAME_01");
         final var roleList = List.of(role01);
         final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
-                "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2",
-                Boolean.FALSE, belongCompanyEntity, roleList, LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12),
-                null, LocalDateTime.of(2022, Month.AUGUST, 14, 14, 46, 59), null, Boolean.FALSE);
+                "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
+                Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, Boolean.FALSE, null, belongCompanyEntity, roleList,
+                Collections.emptyList(), LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
+                LocalDateTime.of(2022, Month.AUGUST, 14, 14, 46, 59), null, Boolean.FALSE);
 
         // verify
         assertThat(actual).isPresent().get().usingRecursiveComparison().isEqualTo(expected);

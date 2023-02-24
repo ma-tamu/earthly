@@ -7,36 +7,14 @@
         <h5 class="modal-title"><i class="ri-alert-line"></i></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" th:text="#{page.modal.entry.cancel}">
         登録をキャンセルしますか？
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a type="button" class="btn btn-primary" th:href="@{/templates/users}">OK</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.back}">Cancel</button>
+        <a type="button" class="btn btn-primary" th:href="@{/templates/users}" th:text="#{page.button.create=}">OK</a>
       </div>
     </div>
   </div>
 </div>
-
-<div th:fragment="confirm(modal)" class="modal" th:classappend="${modal}?'show'" id="confirmModal" tabindex="-1"
-     aria-modal="true"
-     th:styleappend="${modal}? 'display: block':'display: none'" th:role="${modal}?'dialog'">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">ユーザー登録確認</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        body
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル
-        </button>
-        <button type="submit" class="btn btn-primary">登録</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 </html>

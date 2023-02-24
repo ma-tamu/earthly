@@ -1,0 +1,21 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    implementation 'org.springframework.security:spring-security-config'
+    implementation 'org.springframework.security:spring-security-web'
+
+    implementation 'com.nimbusds:nimbus-jose-jwt'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.0.0'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    implementation project(':core')
+    implementation project(':common')
+    implementation project(':repository')
+}

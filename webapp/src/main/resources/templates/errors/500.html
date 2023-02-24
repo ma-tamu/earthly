@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Internal Server Error</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body>
+<main>
+  <div class="container">
+    <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+      <h1>500</h1>
+      <h2>システム管理者に連絡してください。</h2>
+      <a class="btn" th:href="@{/}">Back to home</a>
+    </section>
+  </div>
+</main>
+</body>
+<th:block th:replace="parts/static::bottom"></th:block>
+</html>

@@ -22,6 +22,7 @@ public class ${simpleName}<#if superclassSimpleName??> extends ${superclassSimpl
 
     @Override
     public void preInsert(<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if> entity, PreInsertContext<<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if>> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

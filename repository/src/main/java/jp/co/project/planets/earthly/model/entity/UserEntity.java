@@ -8,34 +8,43 @@ import java.util.List;
  * user entity
  *
  * @param id
- *         ユーザーID
+ *            ユーザーID
  * @param loginId
- *         ログインID
+ *            ログインID
  * @param name
- *         ユーザー名
+ *            ユーザー名
  * @param gender
- *         性別
+ *            性別
  * @param mail
- *         メールアドレス
+ *            メールアドレス
  * @param password
- *         パスワード
+ *            パスワード
+ * @param language
+ *            言語
+ * @param timezone
+ *            タイムゾーン
  * @param lockout
- *         ロックアウト
+ *            ロックアウト
+ * @param is2fa
+ *            2要素認証の有無
  * @param company
- *         所属会社
+ *            所属会社
+ * @param roleList
+ *            保持ロールリスト
  * @param createdAt
- *         作成日時
+ *            作成日時
  * @param createdBy
- *         作成者
+ *            作成者
  * @param updatedAt
- *         更新日時
+ *            更新日時
  * @param updatedBy
- *         更新者
+ *            更新者
  * @param isDeleted
- *         削除フラグ
+ *            削除フラグ
  */
 public record UserEntity(String id, String loginId, String name, String gender, String mail, String password,
-                         Boolean lockout, BelongCompanyEntity company, List<RoleSimpleEntity> roleList,
-                         LocalDateTime createdAt, OperationUser createdBy,
-                         LocalDateTime updatedAt, OperationUser updatedBy, Boolean isDeleted) implements Serializable {
+        String language, String timezone, Boolean lockout, Boolean is2fa, String secret, BelongCompanyEntity company,
+        List<RoleSimpleEntity> roleList, List<CompanySimpleEntity> managementCompanyList, LocalDateTime createdAt,
+        OperationUser createdBy, LocalDateTime updatedAt, OperationUser updatedBy, Boolean isDeleted)
+        implements Serializable {
 }

@@ -1,6 +1,6 @@
 package jp.co.project.planets.earthly.core.exception;
 
-import jp.co.project.planets.earthly.core.enums.IErrorCode;
+import jp.co.project.planets.earthly.core.enums.Code;
 
 /**
  * abstract base exception
@@ -11,7 +11,7 @@ public abstract class AbstractBaseException extends RuntimeException {
     private final int httpStatus;
 
     /** エラーコード */
-    private final IErrorCode errorCode;
+    private final Code errorCode;
 
     /** エラーメッセージキーの引数 */
     private final String[] messageKeyArgs;
@@ -20,13 +20,13 @@ public abstract class AbstractBaseException extends RuntimeException {
      * new instance exception
      *
      * @param httpStatus
-     *         http status
+     *            http status
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
-    protected AbstractBaseException(final int httpStatus, final IErrorCode errorCode, final String[] messageKeyArgs) {
+    protected AbstractBaseException(final int httpStatus, final Code errorCode, final String[] messageKeyArgs) {
         this(null, null, httpStatus, errorCode, messageKeyArgs);
     }
 
@@ -34,36 +34,35 @@ public abstract class AbstractBaseException extends RuntimeException {
      * new instance exception
      *
      * @param message
-     *         exception detail message
+     *            exception detail message
      * @param httpStatus
-     *         http status
+     *            http status
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
-    protected AbstractBaseException(final String message, final int httpStatus, final IErrorCode errorCode,
+    protected AbstractBaseException(final String message, final int httpStatus, final Code errorCode,
             final String[] messageKeyArgs) {
         this(message, null, httpStatus, errorCode, messageKeyArgs);
     }
-
 
     /**
      * new instance exception
      *
      * @param message
-     *         exception detail message
+     *            exception detail message
      * @param cause
-     *         cause
+     *            cause
      * @param httpStatus
-     *         http status
+     *            http status
      * @param errorCode
-     *         error code
+     *            error code
      * @param messageKeyArgs
-     *         message key args
+     *            message key args
      */
     protected AbstractBaseException(final String message, final Throwable cause, final int httpStatus,
-            final IErrorCode errorCode, final String[] messageKeyArgs) {
+            final Code errorCode, final String[] messageKeyArgs) {
         super(message, cause);
         this.httpStatus = httpStatus;
         this.errorCode = errorCode;
@@ -84,7 +83,7 @@ public abstract class AbstractBaseException extends RuntimeException {
      *
      * @return error code
      */
-    public IErrorCode getErrorCode() {
+    public Code getErrorCode() {
         return errorCode;
     }
 

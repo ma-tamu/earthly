@@ -17,11 +17,14 @@ private static final long serialVersionUID = 1L;
 
         /**  */
         @Id
+        @Column(name = "id")
+    String id;
+
+        /**  */
         @Column(name = "registered_client_id")
     String registeredClientId;
 
         /**  */
-        @Id
         @Column(name = "principal_name")
     String principalName;
 
@@ -33,6 +36,8 @@ private static final long serialVersionUID = 1L;
     }
     /**
      * new instance
+     * @Param id
+     *         
      * @Param registeredClientId
      *         
      * @Param principalName
@@ -40,11 +45,30 @@ private static final long serialVersionUID = 1L;
      * @Param authorities
      *         
      */
-    public Oauth2AuthorizationConsent(final String registeredClientId,final String principalName,final String authorities) {
+    public Oauth2AuthorizationConsent(final String id,final String registeredClientId,final String principalName,final String authorities) {
+        this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;
         this.authorities = authorities;
     }
+
+        /**
+        * Returns the id.
+        *
+        * @return the id
+        */
+        public String getId() {
+        return id;
+        }
+
+        /**
+        * Sets the id.
+        *
+        * @param id the id
+        */
+        public void setId(String id) {
+        this.id = id;
+        }
 
         /**
         * Returns the registeredClientId.

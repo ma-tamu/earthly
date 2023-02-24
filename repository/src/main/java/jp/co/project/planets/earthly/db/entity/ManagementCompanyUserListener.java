@@ -15,6 +15,7 @@ public class ManagementCompanyUserListener implements EntityListener<ManagementC
 
     @Override
     public void preInsert(ManagementCompanyUser entity, PreInsertContext<ManagementCompanyUser> context) {
+        entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override

@@ -26,6 +26,7 @@ import jp.co.project.planets.earthly.model.entity.CountryEntity;
 import jp.co.project.planets.earthly.model.entity.LanguageEntity;
 import jp.co.project.planets.earthly.model.entity.RegionEntity;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
+import jp.co.project.planets.earthly.webapp.model.dto.UserDetailDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 @SpringBootTest
@@ -53,18 +54,19 @@ class UserControllerIT {
         final var countryEntity = new CountryEntity("d92bf311652a77227d2725c204a5396b", "Japan", languageEntity,
                 regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
-        final var expected = new UserEntity("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "M",
+        final var userEntity = new UserEntity("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "M",
                 "orren_hannana7co@conservation.fm", "T4gXZYL6qQK84", "ja", Timezone.ASIA_TOKYO.getId(), false, false,
-                null, belongCompanyEntity, Collections.emptyList(), Collections.emptyList(),
+                "NULL", belongCompanyEntity, Collections.emptyList(), Collections.emptyList(),
                 LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null,
                 LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null, Boolean.FALSE);
+        final var expected = new UserDetailDto(userEntity, null);
 
         // test & verify
         final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-        mockMvc.perform(get("/users/USER_ID_01").with(user(userInfoDto)).with(csrf())) //
+        final var result = mockMvc.perform(get("/users/USER_ID_01").with(user(userInfoDto)).with(csrf())) //
                 .andExpect(status().isOk())//
                 .andExpect(view().name("users/detail")) //
-                .andExpect(model().attribute("userEntity", expected)) //
+                .andExpect(model().attribute("userDetailDto", expected)) //
                 .andReturn();
     }
 

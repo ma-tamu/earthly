@@ -17,11 +17,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jp.co.project.planets.earthly.core.enums.Timezone;
+import jp.co.project.planets.earthly.db.entity.Company;
 import jp.co.project.planets.earthly.db.entity.User;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
+import jp.co.project.planets.earthly.webapp.security.dto.CompanyDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 @Tag("unit")
@@ -54,12 +57,16 @@ class DaoUserDetailServiceTest {
                 PermissionEnum.EDIT_USER);
         when(permissionLogic.findPermissionEnumListByUserId(eq("USER_ID_01"))).thenReturn(permissionEnumList);
 
+        final var company = new Company("COMPANY_ID_01", "COMPANY_NAME_01", null, null, null, null, null, false);
+        when(companyRepository.findByAccessiblePrimaryKey(anyString(), anyList(), anyString()))
+                .thenReturn(Optional.of(company));
+
         // test
         final var actual = daoUserDetailService.loadUserByUsername("LOGIN_ID_01");
 
         // verify
         final var expected = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "PASSWORD", false,
-                false, false, null, null, permissionEnumList,
+                false, false, null, new CompanyDto("COMPANY_ID_01", "COMPANY_NAME_01"), permissionEnumList,
                 List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name()),
                         new SimpleGrantedAuthority(PermissionEnum.ADD_USER.name()),
                         new SimpleGrantedAuthority(PermissionEnum.EDIT_USER.name())));
@@ -71,7 +78,9 @@ class DaoUserDetailServiceTest {
 
     @Mock
     UserRepository userRepository;
-
+    @Mock
+    CompanyRepository companyRepository;
     @Mock
     PermissionLogic permissionLogic;
+
 }

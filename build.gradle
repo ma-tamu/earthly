@@ -5,9 +5,9 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.3"
         classpath "io.spring.gradle:dependency-management-plugin:1.1.0"
-        classpath 'mysql:mysql-connector-java:8.0.26'
+        classpath 'com.mysql:mysql-connector-j:8.0.32'
         classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.8"
         classpath "de.aaschmid:gradle-cpd-plugin:3.3"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513"
@@ -60,7 +60,7 @@ subprojects {
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
-        runtimeOnly 'mysql:mysql-connector-java'
+        runtimeOnly 'com.mysql:mysql-connector-j'
 
         // flyway
         implementation 'org.flywaydb:flyway-core'

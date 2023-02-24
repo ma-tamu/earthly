@@ -36,6 +36,7 @@ public class MultiFactorAuthenticationController {
         if (!successful) {
             return new ModelAndView("redirect:/mfa");
         }
+        authenticationService.updateSecurityContext(userInfoDto);
         final var requestRedirectUrlOptional = RequestUtils.getSavedRequestRedirectUrl();
         final var redirectUrl = requestRedirectUrlOptional
                 .map(s -> StringUtils.removeStart(s, RequestUtils.getRequest().getContextPath()))

@@ -1,5 +1,7 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import dev.samstevens.totp.code.DefaultCodeGenerator;
@@ -28,5 +30,23 @@ public class AuthenticationService {
         final var defaultCodeGenerator = new DefaultCodeGenerator();
         final var codeVerifier = new DefaultCodeVerifier(defaultCodeGenerator, systemTimeProvider);
         return codeVerifier.isValidCode(userInfoDto.secret(), code);
+    }
+
+    /**
+     * update security context
+     * 
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    public void updateSecurityContext(final EarthlyUserInfoDto userInfoDto) {
+
+        final var earthlyUserInfoDto = new EarthlyUserInfoDto(userInfoDto.id(), userInfoDto.loginId(),
+                userInfoDto.name(), userInfoDto.password(), userInfoDto.lockout(), userInfoDto.tfa(), true,
+                userInfoDto.secret(), userInfoDto.company(), userInfoDto.permissionEnumList(),
+                userInfoDto.grantedAuthorities());
+        final var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(earthlyUserInfoDto,
+                userInfoDto.getPassword(), userInfoDto.getAuthorities());
+        final var context = SecurityContextHolder.getContext();
+        context.setAuthentication(usernamePasswordAuthenticationToken);
     }
 }

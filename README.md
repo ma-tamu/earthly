@@ -1,5 +1,5 @@
 # earthy
-https://github.com/ma-tamu/earthly/actions/workflows/ci.yml/badge.svg
+![CI workflow](https://github.com/ma-tamu/earthly/actions/workflows/ci.yml/badge.svg)
 
 <p align="center">
   <a href="https://skillicons.dev">

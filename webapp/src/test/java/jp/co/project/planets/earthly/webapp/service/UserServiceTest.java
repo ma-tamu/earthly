@@ -52,8 +52,8 @@ class UserServiceTest {
     void VIEW_ALL_USERを保持している場合に存在するユーザーIDを指定すると指定したユーザーが取得できること() {
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER);
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null, permissionEnumList,
-                List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, false, false, null, null,
+                permissionEnumList, List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
 
         // condition
         final var regionEntity = new RegionEntity("45bd917836a599faf2a30c54d677d9a6", "Asia");
@@ -65,8 +65,8 @@ class UserServiceTest {
         final var roleList = List.of(role01);
         final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
                 "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
-                Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, belongCompanyEntity, roleList,
-                LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
+                Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, false, null, belongCompanyEntity, roleList,
+                Collections.emptyList(), LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
                 LocalDateTime.of(2022, Month.AUGUST, 14, 14, 46, 59), null, Boolean.FALSE);
         when(userLogic.getAccessibleEntity(eq("USER_ID_02"), eq(permissionEnumList), eq("USER_ID_01"))).thenReturn(
                 Optional.of(expected));
@@ -81,37 +81,29 @@ class UserServiceTest {
     @Test
     void VIEW_ALL_USERを保持していない且つ対象ユーザーが自分自身でない場合にForbiddenExceptionが返される() {
 
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, false, false, null, null,
                 Collections.emptyList(), Collections.emptyList());
 
-        try {
-            // test
-            userService.validateAccessible("USER_ID_02", userInfoDto);
-        } catch (final ForbiddenException e) {
-            // verify
-            final var expected = new NotFoundException("not accessible user user=USER_ID_02.", EWA4XX003);
-            assertThat(e).usingRecursiveComparison().isEqualTo(expected);
-        }
+        // test & verify
+        final var expected = new NotFoundException("not accessible user user=USER_ID_02.", EWA4XX003);
+        assertThatThrownBy(() -> userService.validateAccessible("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
+                ForbiddenException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
 
     @Test
     void VIEW_ALL_USERを保持している場合に存在しないユーザーIDを指定するとNotFoundExceptionが発生すること() {
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER);
-        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null, permissionEnumList,
-                List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, false, false, null, null,
+                permissionEnumList, List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name())));
 
         when(userLogic.getAccessibleEntity(eq("USER_ID_02"), eq(permissionEnumList), eq("USER_ID_01"))).thenReturn(
                 Optional.empty());
 
-        try {
-            // test
-            userService.getById("USER_ID_02", userInfoDto);
-        } catch (final NotFoundException e) {
-            // verify
-            final var expected = new NotFoundException("not found user user=USER_ID_02.", EWA4XX002);
-            assertThat(e).usingRecursiveComparison().isEqualTo(expected);
-        }
+        // test & verify
+        final var expected = new NotFoundException("not found user user=USER_ID_02.", EWA4XX002);
+        assertThatThrownBy(() -> userService.getById("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
+                NotFoundException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
 
     @Test
@@ -121,18 +113,13 @@ class UserServiceTest {
         when(companyRepository.findAccessibleByUserId(anyString(), any(Optional.class), anyList())).thenReturn(
                 Collections.emptyList());
 
-        try {
-            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
-                    Collections.emptyList(), Collections.emptyList());
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, false, false, null, null,
+                Collections.emptyList(), Collections.emptyList());
+        final var expected = new ForbiddenException(EWA4XX004);
 
-            // test
-            userService.validateUserAddOperationPermission(userInfoDto);
-        } catch (final ForbiddenException e) {
-
-            // verify
-            final var expected = new ForbiddenException(EWA4XX004);
-            assertThat(e).usingRecursiveComparison().isEqualTo(expected);
-        }
+        // test & verify
+        assertThatThrownBy(() -> userService.validateUserAddOperationPermission(userInfoDto)).isInstanceOfSatisfying(
+                ForbiddenException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
 
     }
 
@@ -143,17 +130,14 @@ class UserServiceTest {
         when(companyRepository.findByAccessiblePrimaryKey(anyString(), anyList(), eq("USER_ID_01"))).thenReturn(
                 Optional.empty());
 
-        try {
-            final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, null,
-                    Collections.emptyList(), Collections.emptyList());
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", null, null, null, false, false, false, null, null,
+                Collections.emptyList(), Collections.emptyList());
+        final var expected = new ForbiddenException(EWA4XX004);
 
-            // test
-            userService.validateUserAddingCompany("NOT_FOUND_COMPANY_ID", userInfoDto);
-        } catch (final ForbiddenException e) {
-            // verify
-            final var expected = new ForbiddenException(EWA4XX004);
-            assertThat(e).usingRecursiveComparison().isEqualTo(expected);
-        }
+        // test & verify
+        assertThatThrownBy(() -> userService.validateUserAddingCompany("NOT_FOUND_COMPANY_ID", userInfoDto))
+                .isInstanceOfSatisfying(ForbiddenException.class,
+                        e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
 
     @InjectMocks

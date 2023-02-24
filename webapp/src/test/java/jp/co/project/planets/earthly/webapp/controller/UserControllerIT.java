@@ -45,8 +45,8 @@ class UserControllerIT {
     @Sql(scripts = { "classpath:/datasets/defaults.sql" })
     void 指定したユーザーIDのユーザー情報が取得できること() throws Exception {
         final var userInfoDto = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01",
-                "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", false, null, Collections.emptyList(),
-                Collections.emptyList());
+                "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", false, false, false, null, null,
+                Collections.emptyList(), Collections.emptyList());
 
         final var regionEntity = new RegionEntity("45bd917836a599faf2a30c54d677d9a6", "Asia");
         final var languageEntity = new LanguageEntity("19154223c579d44a0fe8c9e5476d8f5e", "japanese");
@@ -54,9 +54,9 @@ class UserControllerIT {
                 regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
         final var expected = new UserEntity("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "M",
-                "orren_hannana7co@conservation.fm", "T4gXZYL6qQK84", "ja", Timezone.ASIA_TOKYO.getId(), false,
-                belongCompanyEntity,
-                Collections.emptyList(), LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null,
+                "orren_hannana7co@conservation.fm", "T4gXZYL6qQK84", "ja", Timezone.ASIA_TOKYO.getId(), false, false,
+                null, belongCompanyEntity, Collections.emptyList(), Collections.emptyList(),
+                LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null,
                 LocalDateTime.of(2018, Month.JULY, 13, 15, 59, 03), null, Boolean.FALSE);
 
         // test & verify

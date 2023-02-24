@@ -291,13 +291,6 @@
 </main>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
-<script th:src="@{/vendor/authenticatorjs/unibabel/index.js}"></script>
-<script th:src="@{/vendor/authenticatorjs/unibabel/unibabel.hex.js}"></script>
-<script th:src="@{/vendor/authenticatorjs/unibabel/unibabel.base32.js}"></script>
-
-<script th:src="@{/vendor/authenticatorjs/botp/sha1-hmac.js}"></script>
-<script th:src="@{/vendor/authenticatorjs/botp/index.js}"></script>
-<script th:src="@{/vendor/authenticatorjs/authenticator/authenticator.js}"></script>
 <script th:src="@{/js/client.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     let param = {keyword: this.value};

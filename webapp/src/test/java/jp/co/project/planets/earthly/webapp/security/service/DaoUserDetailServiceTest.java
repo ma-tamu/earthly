@@ -46,8 +46,8 @@ class DaoUserDetailServiceTest {
     void ログインIDに紐づくユーザーが存在する場合にUserDetailsがかえされること() {
 
         final var user = new User("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", GenderEnum.MALE.getValue(), "ja",
-                Timezone.ASIA_TOKYO.getId(), "norelay@exanmep.com", "PASSWORD", false, "COMPANY_ID_01", null, null,
-                null, null, false);
+                Timezone.ASIA_TOKYO.getId(), "norelay@exanmep.com", "PASSWORD", false, false, null, "COMPANY_ID_01",
+                null, null, null, null, false);
         when(userRepository.findByLoginId(eq("LOGIN_ID_01"))).thenReturn(Optional.of(user));
 
         final var permissionEnumList = List.of(PermissionEnum.VIEW_ALL_USER, PermissionEnum.ADD_USER,
@@ -59,7 +59,8 @@ class DaoUserDetailServiceTest {
 
         // verify
         final var expected = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", "PASSWORD", false,
-                null, permissionEnumList, List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name()),
+                false, false, null, null, permissionEnumList,
+                List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_USER.name()),
                         new SimpleGrantedAuthority(PermissionEnum.ADD_USER.name()),
                         new SimpleGrantedAuthority(PermissionEnum.EDIT_USER.name())));
         assertThat(actual).isInstanceOf(EarthlyUserInfoDto.class).usingDefaultComparator().isEqualTo(expected);

@@ -6,6 +6,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,12 +147,22 @@ public class UserLogic {
         passwordTokenRepository.insert(passwordToken);
     }
 
+    /**
+     * ユーザー更新
+     * 
+     * @param user
+     *            ユーザーエンティティ
+     * @param userDto
+     *            ユーザーDTO
+     * @param operateUserId
+     *            操作ユーザーID
+     */
     public void update(final User user, final UserDto userDto, final String operateUserId) {
         user.setName(userDto.name());
         user.setMail(userDto.mail());
         final var lockout = StringUtils.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
         user.setLockout(lockout);
-        user.setTwoFactorAuthentication(userDto.is2fa());
+        user.setTwoFactorAuthentication(BooleanUtils.isTrue(userDto.is2fa()));
         user.setLanguage(userDto.language());
         user.setTimezone(userDto.timezone());
         user.setCompanyId(userDto.company());

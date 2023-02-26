@@ -118,9 +118,7 @@ public class UserRepository {
         return new UserEntity(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
                 user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(),
                 user.getTwoFactorAuthentication(), user.getSecret(), belongCompanyEntity, roleSimpleEntityList,
-                companySimpleEntityList,
-                user.getCreatedAt(), null,
-                user.getUpdatedAt(), null, user.getIsDeleted());
+                companySimpleEntityList, user.getCreatedAt(), null, user.getUpdatedAt(), null, user.getIsDeleted());
     }
 
     public UserSearchResultDto findByLoginIdAndNameAndCompany(final String loginId, final String name,

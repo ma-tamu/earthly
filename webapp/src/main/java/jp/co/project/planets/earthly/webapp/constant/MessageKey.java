@@ -7,4 +7,6 @@ public final class MessageKey {
     }
 
     public static final String UPDATE_SUCCESS = "page.alert.success.update";
+
+    public static final String DELETE_SUCCESS = "page.alert.success.delete";
 }

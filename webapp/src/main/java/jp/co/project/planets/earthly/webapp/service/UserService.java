@@ -340,8 +340,49 @@ public class UserService {
         return messageSource.getMessage(MessageKey.UPDATE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
     }
 
+    /**
+     * ユーザー削除
+     * 
+     * @param id
+     *            ユーザーID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 削除メッセージ
+     */
     public String delete(final String id, final EarthlyUserInfoDto userInfoDto) {
-        return null;
+        validateDeleteOperation(id, userInfoDto);
+
+        final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new BadRequestException(EWA4XX002));
+        user.setUpdatedBy(userInfoDto.id());
+        user.setIsDeleted(true);
+        userRepository.update(user);
+        return messageSource.getMessage(MessageKey.DELETE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
+    }
+
+    @VisibleForTesting
+    void validateDeleteOperation(final String id, final EarthlyUserInfoDto userInfoDto) {
+        Assert.notNull(id, "id must not be null");
+        if (StringUtils.equals(id, userInfoDto.id())) {
+            throw new BadRequestException(EWA4XX002);
+        }
+        validateDeletePermission(id, userInfoDto);
+    }
+
+    void validateDeletePermission(final String id, final EarthlyUserInfoDto userInfoDto) {
+
+        if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_USER)) {
+            return;
+        }
+
+        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
+            return;
+        }
+
+        final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+        if (StringUtils.equals(user.getCompanyId(), userInfoDto.company().id())) {
+            return;
+        }
+        throw new ForbiddenException(EWA4XX008);
     }
 
 }

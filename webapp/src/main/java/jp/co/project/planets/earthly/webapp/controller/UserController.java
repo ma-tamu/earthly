@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
+import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -273,7 +274,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute(SUCCESS, message);
             final var modelAndView = new ModelAndView("redirect:/users");
             return modelAndView;
-        } catch (final ForbiddenException e) {
+        } catch (final BadRequestException | ForbiddenException e) {
             final var modelAndView = new ModelAndView("redirect:/users/%s".formatted(id));
             return modelAndView;
         }

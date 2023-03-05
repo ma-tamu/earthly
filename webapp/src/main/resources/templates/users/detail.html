@@ -68,7 +68,9 @@
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">M
+              <th:block
+                  th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
+                M
               </th:block>
             </div>
           </div>
@@ -78,7 +80,8 @@
               <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'ja')}"
                         th:text="#{page.select.language.japanese}">日本語
               </th:block>
-              <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'en')}" th:text="#{page.select.language.english}">
+              <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'en')}"
+                        th:text="#{page.select.language.english}">
                 英語
               </th:block>
             </div>
@@ -147,7 +150,9 @@
             <div class="row">
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
               <div class="col-lg-9 col-md-8">
-                <th:block th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">M
+                <th:block
+                    th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
+                  M
                 </th:block>
               </div>
             </div>
@@ -234,7 +239,7 @@
               <th:block th:text="#{page.label.user.role.list}">保持ロールリスト</th:block>
             </div>
             <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1" data-bs-toggle="model" data-bs-target="#assignRoleModal">
+              <button class="btn btn-info rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#assignRoleModal">
                 <i class="bx bx-add-to-queue"></i>
               </button>
               <button class="btn btn-info rounded-pill m-1">
@@ -263,10 +268,12 @@
     <div class="card">
       <div class="card-body">
         <div class="card-title" th:text="#{page.label.user.management.company.list}">管理会社リスト</div>
-        <div class="row-cols-auto text-center" th:if="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
+        <div class="row-cols-auto text-center"
+             th:if="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
           <img th:src="@{/img/inbox.png}" height="100" width="100" alt="empty">
         </div>
-        <table class="table table-striped table-borderless" th:unless="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
+        <table class="table table-striped table-borderless"
+               th:unless="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
           <thead>
           <tr>
             <th th:text="#{page.label.user.management.company.name}">会社名</th>
@@ -284,41 +291,7 @@
     </div>
   </section>
   <div th:replace="users/delete::modal(${userDetailDto.userEntity.id})"></div>
-  <div class="modal" id="assignRoleModal" tabindex="-1" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          ロール割り当て
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped table-borderless">
-            <thead>
-            <tr>
-              <th th:text="#{page.label.user.role.name}">ロール名</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>
-                <a href="#">ロール名1</a>
-              </td>
-              <td>
-                <a href="#">ロール名2</a>
-              </td>
-              <td>
-                <a href="#">ロール名3</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-          <button type="button" class="btn btn-primary">割り当て</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div th:replace="users/assign::roleModal(${userDetailDto.userEntity.id})"></div>
 </main>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>

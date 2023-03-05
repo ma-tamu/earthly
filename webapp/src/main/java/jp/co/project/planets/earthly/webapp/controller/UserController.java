@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -266,6 +267,7 @@ public class UserController {
      *            ユーザー情報
      * @return ユーザーリスト
      */
+    @PostMapping("{userId}/delete")
     public ModelAndView delete(@PathVariable("userId") final String id, final RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
@@ -278,5 +280,12 @@ public class UserController {
             final var modelAndView = new ModelAndView("redirect:/users/%s".formatted(id));
             return modelAndView;
         }
+    }
+
+    @GetMapping("{userId}/unassigned/roles")
+    public ModelAndView searchUnassignedRole(@PathVariable("userId") final String id,
+            final UserUnassignedRoleSearchForm form,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        return new ModelAndView("");
     }
 }

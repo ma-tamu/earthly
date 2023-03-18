@@ -26,9 +26,11 @@ import dev.samstevens.totp.util.Utils;
 import jp.co.project.planets.earthly.common.logic.CryptoLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
+import jp.co.project.planets.earthly.db.entity.Role;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
+import jp.co.project.planets.earthly.repository.RoleRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
@@ -48,6 +50,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final RoleRepository roleRepository;
 
     private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
@@ -62,6 +65,8 @@ public class UserService {
      *            user repository
      * @param companyRepository
      *            company repository
+     * @param roleRepository
+     *            role repository
      * @param messageSource
      *            message source
      * @param passwordEncoder
@@ -70,11 +75,12 @@ public class UserService {
      *            crypto logic
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
-            final CompanyRepository companyRepository, final MessageSource messageSource,
-            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
+            final CompanyRepository companyRepository, final RoleRepository roleRepository,
+            final MessageSource messageSource, final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
+        this.roleRepository = roleRepository;
         this.messageSource = messageSource;
         this.passwordEncoder = passwordEncoder;
         this.cryptoLogic = cryptoLogic;
@@ -359,6 +365,16 @@ public class UserService {
         return messageSource.getMessage(MessageKey.DELETE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
     }
 
+    /**
+     * 削除操作の検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             操作ユーザーと削除ユーザーが同じ場合に発生
+     */
     @VisibleForTesting
     void validateDeleteOperation(final String id, final EarthlyUserInfoDto userInfoDto) {
         Assert.notNull(id, "id must not be null");
@@ -368,6 +384,16 @@ public class UserService {
         validateDeletePermission(id, userInfoDto);
     }
 
+    /**
+     * 削除権限の検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws ForbiddenException
+     *             削除権限を保持していない場合に発生
+     */
     void validateDeletePermission(final String id, final EarthlyUserInfoDto userInfoDto) {
 
         if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_USER)) {
@@ -385,4 +411,11 @@ public class UserService {
         throw new ForbiddenException(EWA4XX008);
     }
 
+    @Transactional
+    public PageImpl<Role> findUnassignedRole(final String id, final String roleName, final Pageable pageable,
+            final EarthlyUserInfoDto userInfoDto) {
+        final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, roleName, pageable,
+                userInfoDto.id(), userInfoDto.permissionEnumList());
+        return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
+    }
 }

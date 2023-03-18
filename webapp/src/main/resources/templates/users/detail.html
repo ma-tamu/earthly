@@ -239,7 +239,8 @@
               <th:block th:text="#{page.label.user.role.list}">保持ロールリスト</th:block>
             </div>
             <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1" data-bs-toggle="modal" data-bs-target="#assignRoleModal">
+              <button class="btn btn-info rounded-pill m-1 assign-role" data-bs-target="#assignRoleModal"
+                      data-bs-toggle="modal">
                 <i class="bx bx-add-to-queue"></i>
               </button>
               <button class="btn btn-info rounded-pill m-1">
@@ -365,6 +366,31 @@
         });
         $('div.card.detail').show();
         $('div.card.edit').hide();
+    }
+
+    $('.on-search').on('click', function () {
+        searchRole();
+    });
+    $('.assign-role').on('click', function () {
+        searchRole();
+    });
+
+    function searchRole() {
+        const form = $('form[name=roleSearch]');
+        let body = form.serialize();
+        let url = form.attr('action');
+        let deferred = doGet(url, body);
+        deferred.done(function (data, response) {
+            if (0 < data.indexOf('html')) {
+                window.location.href = "/earthly";
+                return;
+            }
+            $('.card.role-list').html(data)
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
     }
 </script>
 </body>

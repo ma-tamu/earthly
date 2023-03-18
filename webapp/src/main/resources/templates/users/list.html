@@ -101,7 +101,7 @@
           <th:block th:include="parts/pagination::pagination(${pageImpl})"/>
         </th:block>
         <th:block th:if="${#lists.isEmpty(pageImpl.content)}">
-          <img src="">
+          <img th:src="@{/img/inbox.png}">
         </th:block>
       </div>
     </div>

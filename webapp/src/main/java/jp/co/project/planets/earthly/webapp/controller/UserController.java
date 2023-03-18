@@ -2,6 +2,9 @@ package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 
+import java.util.Collections;
+
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -82,6 +85,7 @@ public class UserController {
                 userEntity.is2fa());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userDetailDto);
+        modelAndView.addObject("rolePage", new PageImpl(Collections.EMPTY_LIST));
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -282,10 +286,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("{userId}/unassigned/roles")
+    @GetMapping("{userId}/roles")
     public ModelAndView searchUnassignedRole(@PathVariable("userId") final String id,
-            final UserUnassignedRoleSearchForm form,
+            final UserUnassignedRoleSearchForm form, @PageableDefault final Pageable pageable,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        return new ModelAndView("");
+        final var rolePage = userService.findUnassignedRole(id, form.roleName(), pageable, userInfoDto);
+        final var modelAndView = new ModelAndView("users/assign::searchResult");
+        modelAndView.addObject("rolePage", rolePage);
+        return modelAndView;
     }
 }

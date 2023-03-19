@@ -1,0 +1,61 @@
+package jp.co.project.planets.earthly.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.seasar.doma.boot.Pageables;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import jp.co.project.planets.earthly.db.dao.RoleDao;
+import jp.co.project.planets.earthly.db.entity.Role;
+import jp.co.project.planets.earthly.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.model.dto.RoleSearchResultDto;
+
+/**
+ * role repository
+ */
+@Repository
+public class RoleRepository {
+
+    private final RoleDao roleDao;
+
+    public RoleRepository(final RoleDao roleDao) {
+        this.roleDao = roleDao;
+    }
+
+    /**
+     * find by primary key
+     * 
+     * @param id
+     *            role id
+     * @return role
+     */
+    public Optional<Role> findByPrimaryKey(final String id) {
+        return Optional.ofNullable(roleDao.selectById(id));
+    }
+
+    /**
+     * 対象ユーザーの未割りてのロール一覧を取得
+     * 
+     * @param userId
+     *            ユーザーID
+     * @param name
+     *            ロール名
+     * @param pageable
+     *            ページャー
+     * @param executionUserId
+     *            実行ユーザーID
+     * @param permissionEnumList
+     *            パーミッションリスト
+     * @return ロールリスト
+     */
+    public RoleSearchResultDto findUnassignedRoleByUserIdAndLikeName(final String userId, final String name,
+            final Pageable pageable, final String executionUserId, final List<PermissionEnum> permissionEnumList) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllRole = permissionEnumList.contains(PermissionEnum.VIEW_ALL_ROLE);
+        final var roleList = roleDao.selectUnassignedRoleByUserIdAndLikeName(userId, name, hasViewAllRole,
+                executionUserId, selectOptions);
+        return new RoleSearchResultDto(roleList, pageable.getOffset(), selectOptions.getCount());
+    }
+}

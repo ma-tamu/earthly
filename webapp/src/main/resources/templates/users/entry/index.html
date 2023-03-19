@@ -78,8 +78,8 @@
                         <label for="language" class="form-label" th:text="#{page.label.user.language}"></label>
                         <select id="language" name="language" class="form-select" th:classappend="${#fields.hasErrors('language')}?'is-invalid'">
                             <option></option>
-                            <option value="ja" th:text="#{page.select.language.japanese}"></option>
-                            <option value="en" th:text="#{page.select.language.english}"></option>
+                            <option value="ja" th:selected="${#strings.equals('ja', userEntryForm.language)}" th:text="#{page.select.language.japanese}"></option>
+                            <option value="en"  th:selected="${#strings.equals('en', userEntryForm.language)}" th:text="#{page.select.language.english}"></option>
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
                             言語は必須です。
@@ -92,7 +92,8 @@
                         <select id="timezone" name="timezone" class="form-select"
                                 th:classappend="${#fields.hasErrors('timezone')}?'is-invalid'">
                             <option></option>
-                            <option th:each="t: ${timezone}" th:text="${t.id}" th:value="${t.id}"></option>
+                            <option th:each="t: ${timezone}" th:text="${t.id}" th:value="${t.id}"
+                                    th:selected="${#strings.equals(t.id, userEntryForm.timezone)}"></option>
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('timezone')}" th:errors="*{timezone}">
                             タイムゾーンは必須です。

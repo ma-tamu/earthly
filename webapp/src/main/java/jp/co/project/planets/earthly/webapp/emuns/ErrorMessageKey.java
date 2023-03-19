@@ -15,6 +15,8 @@ public final class ErrorMessageKey {
     public static final String FORBIDDEN_ENTRY_USER = "exception.forbidden.entry.user";
     /** ユーザー編集の権限がありません。 */
     public static final String FORBIDDEN_EDIT_USER = "exception.forbidden.edit.user";
+    /** ユーザー削除の権限がありません。 */
+    public static final String FORBIDDEN_DELETE_USER = "exception.forbidden.delete.user";
     /** 所属会社の編集ができません。 */
     public static final String NOT_MODIFY_BELONG_COMPANY = "exception.modify.company";
     /** 新しいパスワードと新しいパスワードの再入力が一致しません。 */

@@ -21,10 +21,10 @@ function execute(url, method, contentType, param) {
         cache: false
     }).then(
         function (data, response) {
-            deferred.resolve(data);
+            deferred.resolve(data, response);
         },
         function (data, response) {
-            deferred.resolve(data);
+            deferred.resolve(data, response);
         }
     );
     return deferred.promise();

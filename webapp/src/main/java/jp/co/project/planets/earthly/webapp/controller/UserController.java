@@ -2,6 +2,9 @@ package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 
+import java.util.Collections;
+
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
+import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.model.dto.UserSearchDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -80,6 +85,7 @@ public class UserController {
                 userEntity.is2fa());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userDetailDto);
+        modelAndView.addObject("rolePage", new PageImpl(Collections.EMPTY_LIST));
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -265,6 +271,7 @@ public class UserController {
      *            ユーザー情報
      * @return ユーザーリスト
      */
+    @PostMapping("{userId}/delete")
     public ModelAndView delete(@PathVariable("userId") final String id, final RedirectAttributes redirectAttributes,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
@@ -273,9 +280,19 @@ public class UserController {
             redirectAttributes.addFlashAttribute(SUCCESS, message);
             final var modelAndView = new ModelAndView("redirect:/users");
             return modelAndView;
-        } catch (final ForbiddenException e) {
+        } catch (final BadRequestException | ForbiddenException e) {
             final var modelAndView = new ModelAndView("redirect:/users/%s".formatted(id));
             return modelAndView;
         }
+    }
+
+    @GetMapping("{userId}/roles")
+    public ModelAndView searchUnassignedRole(@PathVariable("userId") final String id,
+            final UserUnassignedRoleSearchForm form, @PageableDefault final Pageable pageable,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var rolePage = userService.findUnassignedRole(id, form.roleName(), pageable, userInfoDto);
+        final var modelAndView = new ModelAndView("users/assign::searchResult");
+        modelAndView.addObject("rolePage", rolePage);
+        return modelAndView;
     }
 }

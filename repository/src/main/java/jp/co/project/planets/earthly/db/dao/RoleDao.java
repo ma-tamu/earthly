@@ -17,10 +17,46 @@ import jp.co.project.planets.earthly.db.entity.Role;
 @ConfigAutowireable
 public interface RoleDao extends RoleBaseDao {
 
+    /**
+     * 対象ユーザーに割り当てられているロールを取得 ただし、実行ユーザーが閲覧できるものに限る
+     * 
+     * @param userId
+     *            ユーザーID
+     * @param hasViewAllRole
+     *            view_all_roleパーミッションを持っているか
+     * @param executionUserId
+     *            実行ユーザー
+     * @return ロールリスト
+     */
     @Select
     List<Role> selectGrantedRoleByUserId(String userId, boolean hasViewAllRole, String executionUserId);
 
+    /**
+     * 対象ユーザーの未割りてのロール一覧を取得
+     *
+     * @param userId
+     *            ユーザーID
+     * @param name
+     *            ロール名
+     * @param hasViewAllRole
+     *            view_all_roleパーミッションを持っているか
+     * @param executionUserId
+     *            実行ユーザーID
+     * @param options
+     *            select option
+     * @return ロールリスト
+     */
     @Select
     List<Role> selectUnassignedRoleByUserIdAndLikeName(String userId, String name,
             boolean hasViewAllRole, String executionUserId, SelectOptions options);
+
+    /**
+     * 対象ユーザーに割り当てられているロールを取得
+     *
+     * @param userId
+     *            ユーザーID
+     * @return ロールリスト
+     */
+    @Select
+    List<Role> selectByAssignedRoleByUserId(String userId);
 }

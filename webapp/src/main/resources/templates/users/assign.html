@@ -28,7 +28,7 @@
             </div>
           </div>
         </form>
-        <form method="post">
+        <form method="post" name="assignRole" th:action="@{/users/__${id}__/roles/assigns}">
           <div class="card role-list">
             <div class="card-body" th:fragment="searchResult" th:if="${!rolePage.isEmpty()}">
               <th:block th:replace="parts/pagination::pagination(${rolePage})"/>
@@ -56,8 +56,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-        <button type="button" class="btn btn-primary">割り当て</button>
+        <button class="btn btn-secondary cancel" data-bs-dismiss="modal" type="button">キャンセル</button>
+        <button class="btn btn-primary role assign" type="button">割り当て</button>
       </div>
     </div>
   </div>

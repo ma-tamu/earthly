@@ -24,6 +24,10 @@ public final class ErrorMessageKey {
 
     /** 半角英数字で入力してください。 */
     public static final String VALIDATION_ALPHANUMERIC = "exception.validation.alphanumeric";
+    /** 割り当てるロールを選択してください。 */
+    public static final String NOT_SELECTION_ASSIGN_ROLE = "exception.user.assign.role.not.selection";
+    /** 割り当てられないロールが含まれています。 */
+    public static final String ACCESS_DENIED_ASSIGN_ROLE = "exception.user.assign.role.access.denied";
 
     /** {0}の登録に失敗しました。 */
     public static final String FAILED_INSERT = "exception.failed.insert";

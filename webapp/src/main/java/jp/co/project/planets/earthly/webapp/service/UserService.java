@@ -422,6 +422,19 @@ public class UserService {
         throw new ForbiddenException(EWA4XX008);
     }
 
+    /**
+     * 対象ユーザーが割り当てられてないロールを取得
+     * 
+     * @param id
+     *            ユーザーID
+     * @param roleName
+     *            ロール名
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return ロールページ
+     */
     @Transactional
     public PageImpl<Role> findUnassignedRole(final String id, final String roleName, final Pageable pageable,
             final EarthlyUserInfoDto userInfoDto) {
@@ -430,6 +443,16 @@ public class UserService {
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
     }
 
+    /**
+     * ロール割り当て
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     */
     @Transactional
     public void assignRole(final String id, final List<String> assignRoleList, final EarthlyUserInfoDto userInfoDto) {
 
@@ -443,6 +466,18 @@ public class UserService {
         }
     }
 
+    /**
+     * 割り当てれるロールか検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws ForbiddenException
+     *             ロールを割り当てられない場合に発生
+     */
     @VisibleForTesting
     void validateAssignableRole(final String id, final List<String> assignRoleList,
             final EarthlyUserInfoDto userInfoDto) {
@@ -456,6 +491,16 @@ public class UserService {
         }
     }
 
+    /**
+     * 割り当てロールの重複検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @throws ForbiddenException
+     *             割り当てロールが重複している場合に発生
+     */
     @VisibleForTesting
     void validateGrantingRoleDuplication(final String id, final List<String> assignRoleList) {
         final var assignedRoleIdList = roleRepository.findByAssignedRoleByUserId(id).stream().map(Role::getId).toList();

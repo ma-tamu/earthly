@@ -312,6 +312,19 @@ public class UserController {
         return modelAndView;
     }
 
+    /**
+     * ロール割り当て
+     * 
+     * @param id
+     *            ユーザーID
+     * @param form
+     *            ロール割り当てFROM
+     * @param bindingResult
+     *            binding result
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return トースト
+     */
     @PostMapping("{userId}/roles/assigns")
     public ModelAndView assignRole(@PathVariable("userId") final String id, @Validated final UserAssignRoleForm form,
             final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {

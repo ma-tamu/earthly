@@ -375,6 +375,25 @@
         searchRole();
     });
 
+    $('.cancel').on('click', function () {
+        $('input[name=assign]').prop("checked", false);
+    })
+
+    $('.role.assign').on('click', function () {
+        const form = $('form[name=assignRole]');
+        let body = form.serialize();
+        let url = form.attr('action');
+        let deferred = doFormPost(url, body);
+        deferred.done(function (data, response) {
+            $('form[name=roleSearch]').prepend(data);
+            searchRole();
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    })
+
     function searchRole() {
         const form = $('form[name=roleSearch]');
         let body = form.serialize();

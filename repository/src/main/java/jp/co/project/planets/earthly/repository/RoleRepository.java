@@ -58,4 +58,15 @@ public class RoleRepository {
                 executionUserId, selectOptions);
         return new RoleSearchResultDto(roleList, pageable.getOffset(), selectOptions.getCount());
     }
+
+    /**
+     * 対象ユーザーに割り当てられているロールを取得
+     * 
+     * @param userId
+     *            ユーザーID
+     * @return ロールリスト
+     */
+    public List<Role> findByAssignedRoleByUserId(final String userId) {
+        return roleDao.selectByAssignedRoleByUserId(userId);
+    }
 }

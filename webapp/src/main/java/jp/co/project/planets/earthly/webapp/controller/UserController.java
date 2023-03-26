@@ -1,6 +1,8 @@
 package jp.co.project.planets.earthly.webapp.controller;
 
+import static jp.co.project.planets.earthly.webapp.constant.MessageKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
+import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
 import java.util.Collections;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
@@ -286,6 +289,19 @@ public class UserController {
         }
     }
 
+    /**
+     * 対象ユーザーの未割当ロールを検索
+     * 
+     * @param id
+     *            ユーザーID
+     * @param form
+     *            検索フォーム
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
     @GetMapping("{userId}/roles")
     public ModelAndView searchUnassignedRole(@PathVariable("userId") final String id,
             final UserUnassignedRoleSearchForm form, @PageableDefault final Pageable pageable,
@@ -294,5 +310,33 @@ public class UserController {
         final var modelAndView = new ModelAndView("users/assign::searchResult");
         modelAndView.addObject("rolePage", rolePage);
         return modelAndView;
+    }
+
+    /**
+     * ロール割り当て
+     * 
+     * @param id
+     *            ユーザーID
+     * @param form
+     *            ロール割り当てFROM
+     * @param bindingResult
+     *            binding result
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return トースト
+     */
+    @PostMapping("{userId}/roles/assigns")
+    public ModelAndView assignRole(@PathVariable("userId") final String id, @Validated final UserAssignRoleForm form,
+            final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("parts/alert::danger", MESSAGE, NOT_SELECTION_ASSIGN_ROLE);
+        }
+
+        try {
+            userService.assignRole(id, form.assign(), userInfoDto);
+            return new ModelAndView("parts/alert::succes", MESSAGE, ASSIGN_SUCCESS);
+        } catch (final ForbiddenException e) {
+            return new ModelAndView("parts/alert::danger", MESSAGE, e.getErrorCode().getMessageKey());
+        }
     }
 }

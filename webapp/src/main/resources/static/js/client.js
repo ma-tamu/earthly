@@ -6,7 +6,11 @@ function doPost(url, body) {
     return execute(url, "POST", "application/json", body);
 }
 
-function doPost(url, contentType,  body) {
+function doFormPost(url, body) {
+    return execute(url, "POST", "application/x-www-form-urlencoded", body);
+}
+
+function doPost(url, contentType, body) {
     return execute(url, "POST", contentType, body);
 }
 

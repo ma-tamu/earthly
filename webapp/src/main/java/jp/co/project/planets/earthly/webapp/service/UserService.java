@@ -2,8 +2,12 @@ package jp.co.project.planets.earthly.webapp.service;
 
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorCode.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,11 +31,13 @@ import jp.co.project.planets.earthly.common.logic.CryptoLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.db.entity.Role;
+import jp.co.project.planets.earthly.db.entity.UserRole;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.RoleRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.repository.UserRoleRepository;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -51,6 +57,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
 
     private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
@@ -67,6 +74,8 @@ public class UserService {
      *            company repository
      * @param roleRepository
      *            role repository
+     * @param userRoleRepository
+     *            user role repository
      * @param messageSource
      *            message source
      * @param passwordEncoder
@@ -76,11 +85,13 @@ public class UserService {
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
             final CompanyRepository companyRepository, final RoleRepository roleRepository,
-            final MessageSource messageSource, final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
+            final UserRoleRepository userRoleRepository, final MessageSource messageSource,
+            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.roleRepository = roleRepository;
+        this.userRoleRepository = userRoleRepository;
         this.messageSource = messageSource;
         this.passwordEncoder = passwordEncoder;
         this.cryptoLogic = cryptoLogic;
@@ -209,7 +220,7 @@ public class UserService {
 
     /**
      * ユーザー作成
-     * 
+     *
      * @param userDto
      *            user dto
      * @param userInfoDto
@@ -228,7 +239,7 @@ public class UserService {
 
     /**
      * 編集内容の検証
-     * 
+     *
      * @param id
      *            ユーザーID
      * @param userDto
@@ -252,7 +263,7 @@ public class UserService {
 
     /**
      * 編集権限を持っているか
-     * 
+     *
      * @param id
      *            id
      * @param userDto
@@ -280,7 +291,7 @@ public class UserService {
 
     /**
      * 所属会社の変更可能か
-     * 
+     *
      * @param userDto
      *            user dto
      * @param userInfoDto
@@ -328,7 +339,7 @@ public class UserService {
 
     /**
      * ユーザー更新
-     * 
+     *
      * @param id
      *            ユーザーID
      * @param userDto
@@ -348,7 +359,7 @@ public class UserService {
 
     /**
      * ユーザー削除
-     * 
+     *
      * @param id
      *            ユーザーID
      * @param userInfoDto
@@ -367,7 +378,7 @@ public class UserService {
 
     /**
      * 削除操作の検証
-     * 
+     *
      * @param id
      *            ユーザーID
      * @param userInfoDto
@@ -386,7 +397,7 @@ public class UserService {
 
     /**
      * 削除権限の検証
-     * 
+     *
      * @param id
      *            ユーザーID
      * @param userInfoDto
@@ -411,11 +422,91 @@ public class UserService {
         throw new ForbiddenException(EWA4XX008);
     }
 
+    /**
+     * 対象ユーザーが割り当てられてないロールを取得
+     * 
+     * @param id
+     *            ユーザーID
+     * @param roleName
+     *            ロール名
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return ロールページ
+     */
     @Transactional
     public PageImpl<Role> findUnassignedRole(final String id, final String roleName, final Pageable pageable,
             final EarthlyUserInfoDto userInfoDto) {
         final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, roleName, pageable,
                 userInfoDto.id(), userInfoDto.permissionEnumList());
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
+    }
+
+    /**
+     * ロール割り当て
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    @Transactional
+    public void assignRole(final String id, final List<String> assignRoleList, final EarthlyUserInfoDto userInfoDto) {
+
+        validateAccessible(id, userInfoDto);
+        validateAssignableRole(id, assignRoleList, userInfoDto);
+        validateGrantingRoleDuplication(id, assignRoleList);
+
+        for (final var roleId : assignRoleList) {
+            final var userRole = new UserRole(null, id, roleId, LocalDateTime.now(ZoneOffset.UTC), userInfoDto.id());
+            userRoleRepository.insert(userRole);
+        }
+    }
+
+    /**
+     * 割り当てれるロールか検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws ForbiddenException
+     *             ロールを割り当てられない場合に発生
+     */
+    @VisibleForTesting
+    void validateAssignableRole(final String id, final List<String> assignRoleList,
+            final EarthlyUserInfoDto userInfoDto) {
+        final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, StringUtils.EMPTY,
+                Pageable.ofSize(Integer.MAX_VALUE), userInfoDto.id(), userInfoDto.permissionEnumList());
+        final var unassignedRoleIdList = roleSearchResultDto.roleList().stream().map(Role::getId).toList();
+        final var accessDeniedUnassignedRole = assignRoleList.stream().filter(s -> !unassignedRoleIdList.contains(s))
+                .collect(Collectors.joining(", "));
+        if (StringUtils.isNotBlank(accessDeniedUnassignedRole)) {
+            throw new ForbiddenException(EWA4XX009);
+        }
+    }
+
+    /**
+     * 割り当てロールの重複検証
+     * 
+     * @param id
+     *            ユーザーID
+     * @param assignRoleList
+     *            割り当てるロールリスト
+     * @throws ForbiddenException
+     *             割り当てロールが重複している場合に発生
+     */
+    @VisibleForTesting
+    void validateGrantingRoleDuplication(final String id, final List<String> assignRoleList) {
+        final var assignedRoleIdList = roleRepository.findByAssignedRoleByUserId(id).stream().map(Role::getId).toList();
+        final boolean hasAssignedRole = assignRoleList.stream().anyMatch(assignedRoleIdList::contains);
+        if (hasAssignedRole) {
+            throw new ForbiddenException(EWA4XX009);
+        }
     }
 }

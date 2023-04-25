@@ -36,6 +36,32 @@ public class RoleRepository {
     }
 
     /**
+     * 対象ユーザーの割り当て済みのロールを検索
+     * 
+     * @param userId
+     *            ユーザーID
+     * @param nameOptional
+     *            ロール名
+     * @param pageable
+     *            ページャー
+     * @param executionUserId
+     *            実行ユーザーID
+     * @param permissionEnumList
+     *            パーミッションリスト
+     * @return ロールリスト
+     */
+    public RoleSearchResultDto findAssignedRoleByUserIdAndLikeName(final String userId,
+            final Optional<String> nameOptional, final Pageable pageable, final String executionUserId,
+            final List<PermissionEnum> permissionEnumList) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllRole = permissionEnumList.contains(PermissionEnum.VIEW_ALL_ROLE);
+        final var name = nameOptional.orElse(null);
+        final var roleList = roleDao.selectAssignedRoleByUserIdAndLikeName(userId, name, hasViewAllRole,
+                executionUserId, selectOptions);
+        return new RoleSearchResultDto(roleList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    /**
      * 対象ユーザーの未割りてのロール一覧を取得
      * 
      * @param userId

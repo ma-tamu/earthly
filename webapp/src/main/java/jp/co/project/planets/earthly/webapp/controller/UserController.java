@@ -5,6 +5,7 @@ import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jp.co.project.planets.earthly.db.entity.Role;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
@@ -88,7 +91,7 @@ public class UserController {
                 userEntity.is2fa());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userDetailDto);
-        modelAndView.addObject("rolePage", new PageImpl(Collections.EMPTY_LIST));
+        modelAndView.addObject(ROLE_PAGE, new PageImpl<Role>(Collections.emptyList()));
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -281,12 +284,32 @@ public class UserController {
         try {
             final var message = userService.delete(id, userInfoDto);
             redirectAttributes.addFlashAttribute(SUCCESS, message);
-            final var modelAndView = new ModelAndView("redirect:/users");
-            return modelAndView;
+            return new ModelAndView("redirect:/users");
         } catch (final BadRequestException | ForbiddenException e) {
-            final var modelAndView = new ModelAndView("redirect:/users/%s".formatted(id));
-            return modelAndView;
+            return new ModelAndView("redirect:/users/%s".formatted(id));
         }
+    }
+
+    /**
+     * 割り当て済みロールを検索
+     * 
+     * @param id
+     *            ユーザーID
+     * @param roleNameOptional
+     *            検索キーワード（ロール名）
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
+    @GetMapping("{userId}/roles/assigns")
+    public ModelAndView searchAssignedRole(@PathVariable("userId") final String id,
+            @RequestParam("roleName") final Optional<String> roleNameOptional,
+            @PageableDefault final Pageable pageable,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var rolePage = userService.findAssignedRole(id, roleNameOptional, pageable, userInfoDto);
+        return new ModelAndView("", ROLE_PAGE, rolePage);
     }
 
     /**

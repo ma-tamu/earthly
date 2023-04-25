@@ -14,4 +14,6 @@ public final class ModelKey {
     public static final String ERROR_CODE = "errorCode";
 
     public static final String MESSAGE_ARGS = "messageArgs";
+
+    public static final String ROLE_PAGE = "rolePage";
 }

@@ -31,6 +31,10 @@ public interface RoleDao extends RoleBaseDao {
     @Select
     List<Role> selectGrantedRoleByUserId(String userId, boolean hasViewAllRole, String executionUserId);
 
+    @Select
+    List<Role> selectAssignedRoleByUserIdAndLikeName(String userId, String name, boolean hasViewAllRole,
+            String executionUserId, SelectOptions options);
+
     /**
      * 対象ユーザーの未割りてのロール一覧を取得
      *

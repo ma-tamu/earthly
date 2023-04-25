@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -420,6 +421,13 @@ public class UserService {
             return;
         }
         throw new ForbiddenException(EWA4XX008);
+    }
+
+    public Page<Role> findAssignedRole(final String id, final Optional<String> roleNameOptional,
+            final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final var roleSearchResultDto = roleRepository.findAssignedRoleByUserIdAndLikeName(id, roleNameOptional,
+                pageable, userInfoDto.id(), userInfoDto.permissionEnumList());
+        return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
     }
 
     /**

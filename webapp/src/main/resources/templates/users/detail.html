@@ -248,6 +248,18 @@
               </button>
             </div>
           </div>
+          <form method="get" name="searchAssignedRole"
+                onsubmit="return false;"
+                th:action="@{/users/__${userDetailDto.userEntity.id}__/roles/assigns}">
+            <div class="row">
+              <div class="col-sm-4">
+                <input class="form-control" placeholder="ロール名" type="text">
+              </div>
+              <div class="col-sm-2">
+                <button class="btn btn-primary assigned-role" type="button">検索</button>
+              </div>
+            </div>
+          </form>
         </div>
         <table class="table table-striped table-borderless">
           <thead>
@@ -393,6 +405,21 @@
             window.location.href = "/earthly/error";
         });
     })
+
+    $('.assigned-role').on('click', function () {
+        const form = $('form[name=assignRole]');
+        let body = form.serialize();
+        let url = form.attr('action');
+        let deferred = doGet(url, body);
+        deferred.done(function (data, response) {
+            $('form[name=roleSearch]').prepend(data);
+            searchRole();
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    });
 
     function searchRole() {
         const form = $('form[name=roleSearch]');

@@ -25,19 +25,24 @@ jobs:
           chmod +x gradlew
           ./gradlew :repository:flywayMigrate
           ./gradlew check --info
+      - name: Upload Report
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: report.xml
+          paths: |
+            ${{ github.workspace }}/repository/build/reports/jacoco/test/jacocoTestReport.xml,
+            ${{ github.workspace }}/webapp/build/reports/jacoco/test/jacocoTestReport.xml
       - name: JaCoCo Report
-        if: cancelled() != true
+        id: jacoco
         uses: madrapps/jacoco-report@v1.3
         with:
           paths: |
-                   ${{ github.workspace }}/repository/build/reports/jacoco/test/jacocoTestReport.xml,
-                   ${{ github.workspace }}/webapp/build/reports/jacoco/test/jacocoTestReport.xml
+            ${{ github.workspace }}/repository/build/reports/jacoco/test/jacocoTestReport.xml,
+            ${{ github.workspace }}/webapp/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 40
           min-coverage-changed-files: 60
-
-#      - name: upload report
-#        if: always()
-#        with:
-#          name: test result
-#          path: build/test-results/test
+      - name: Get the Coverage info
+        run: |
+          echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
+          echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"

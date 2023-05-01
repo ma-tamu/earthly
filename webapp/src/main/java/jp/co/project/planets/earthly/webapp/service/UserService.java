@@ -517,4 +517,24 @@ public class UserService {
             throw new ForbiddenException(EWA4XX009);
         }
     }
+
+    @Transactional
+    public void unassignedRole(final String id, final List<String> unassignedRoleList,
+            final EarthlyUserInfoDto userInfoDto) {
+        validateAccessible(id, userInfoDto);
+        //        validateAssignableRole(id, unassignedRoleList, userInfoDto);
+
+        final var userRoleList = userRoleRepository.findByUserIdAndRoleId(id, unassignedRoleList);
+        if (userRoleList.size() < unassignedRoleList.size()) {
+            throw new BadRequestException(EWA4XX010);
+        }
+        for (final var userRole : userRoleList) {
+            userRoleRepository.delete(userRole);
+        }
+    }
+
+    void validate(final String id, final List<String> unassignedRoleList,
+            final EarthlyUserInfoDto userInfoDto) {
+
+    }
 }

@@ -24,7 +24,9 @@ public enum ErrorCode implements Code {
     /** ユーザー削除の権限がありません。 */
     EWA4XX008("EWA4XX008", FORBIDDEN_DELETE_USER),
     /** 割り当てられないロールが含まれています。 */
-    EWA4XX009("EWA4XX000", ACCESS_DENIED_ASSIGN_ROLE),
+    EWA4XX009("EWA4XX009", ACCESS_DENIED_ASSIGN_ROLE),
+    /** 解除できないロールが含まれています。 */
+    EWA4XX010("EWA4XX010", ACCESS_DENIED_UNASSIGNED_ROLE),
 
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),

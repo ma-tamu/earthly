@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jp.co.project.planets.earthly.db.entity.Role;
+
 /**
  * user entity
  *
@@ -44,7 +46,7 @@ import java.util.List;
  */
 public record UserEntity(String id, String loginId, String name, String gender, String mail, String password,
         String language, String timezone, Boolean lockout, Boolean is2fa, String secret, BelongCompanyEntity company,
-        List<RoleSimpleEntity> roleList, List<CompanySimpleEntity> managementCompanyList, LocalDateTime createdAt,
+        List<Role> roleList, List<CompanySimpleEntity> managementCompanyList, LocalDateTime createdAt,
         OperationUser createdBy, LocalDateTime updatedAt, OperationUser updatedBy, Boolean isDeleted)
         implements Serializable {
 }

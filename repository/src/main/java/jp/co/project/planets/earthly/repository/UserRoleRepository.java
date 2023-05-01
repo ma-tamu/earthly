@@ -1,5 +1,7 @@
 package jp.co.project.planets.earthly.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.db.dao.UserRoleDao;
@@ -21,6 +23,19 @@ public class UserRoleRepository {
      */
     public UserRoleRepository(final UserRoleDao userRoleDao) {
         this.userRoleDao = userRoleDao;
+    }
+
+    /**
+     * ユーザーに紐づいているロールを取得
+     *
+     * @param userId
+     *            ユーザーID
+     * @param roleIds
+     *            取得対象のロールID
+     * @return ユーザーに紐づくロールリスト
+     */
+    public List<UserRole> findByUserIdAndRoleId(final String userId, final List<String> roleIds) {
+        return userRoleDao.selectByUserIdAndRoleId(userId, roleIds);
     }
 
     /**

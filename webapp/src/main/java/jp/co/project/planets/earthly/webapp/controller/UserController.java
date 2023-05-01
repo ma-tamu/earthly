@@ -4,7 +4,6 @@ import static jp.co.project.planets.earthly.webapp.constant.MessageKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageImpl;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jp.co.project.planets.earthly.db.entity.Role;
+import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
@@ -91,7 +91,7 @@ public class UserController {
                 userEntity.is2fa());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userDetailDto);
-        modelAndView.addObject(ROLE_PAGE, new PageImpl<Role>(Collections.emptyList()));
+        modelAndView.addObject(ROLE_PAGE, new PageImpl<>(userEntity.roleList()));
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -309,7 +309,7 @@ public class UserController {
             @PageableDefault final Pageable pageable,
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var rolePage = userService.findAssignedRole(id, roleNameOptional, pageable, userInfoDto);
-        return new ModelAndView("", ROLE_PAGE, rolePage);
+        return new ModelAndView("users/detail::roleContent", ROLE_PAGE, rolePage);
     }
 
     /**
@@ -352,14 +352,42 @@ public class UserController {
     public ModelAndView assignRole(@PathVariable("userId") final String id, @Validated final UserAssignRoleForm form,
             final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("parts/alert::danger", MESSAGE, NOT_SELECTION_ASSIGN_ROLE);
+            return new ModelAndView(ViewName.ALERT_DANGER, MESSAGE, NOT_SELECTION_ASSIGN_ROLE);
         }
 
         try {
             userService.assignRole(id, form.assign(), userInfoDto);
-            return new ModelAndView("parts/alert::succes", MESSAGE, ASSIGN_SUCCESS);
+            return new ModelAndView(ViewName.ALERT_SUCCESS, MESSAGE, ASSIGN_SUCCESS);
         } catch (final ForbiddenException e) {
-            return new ModelAndView("parts/alert::danger", MESSAGE, e.getErrorCode().getMessageKey());
+            return new ModelAndView(ViewName.ALERT_DANGER, MESSAGE, e.getErrorCode().getMessageKey());
+        }
+    }
+
+    /**
+     * ロール解除
+     * 
+     * @param id
+     *            ユーザーID
+     * @param form
+     *            ロール解除FORM
+     * @param bindingResult
+     *            binding result
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return トースト
+     */
+    @PostMapping("{userId}/roles/unassigns")
+    public ModelAndView a(@PathVariable("userId") final String id, UserUnassignedRoleForm form,
+            final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(ViewName.ALERT_DANGER, MESSAGE, NOT_SELECTION_ASSIGN_ROLE);
+        }
+        try {
+            userService.unassignedRole(id, form.unassigns(), userInfoDto);
+            return new ModelAndView(ViewName.ALERT_SUCCESS, MESSAGE, ASSIGN_SUCCESS);
+        } catch (final ForbiddenException e) {
+            return new ModelAndView(ViewName.ALERT_DANGER, MESSAGE, e.getErrorCode().getMessageKey());
         }
     }
 }

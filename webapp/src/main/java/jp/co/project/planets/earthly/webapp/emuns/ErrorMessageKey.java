@@ -28,6 +28,8 @@ public final class ErrorMessageKey {
     public static final String NOT_SELECTION_ASSIGN_ROLE = "exception.user.assign.role.not.selection";
     /** 割り当てられないロールが含まれています。 */
     public static final String ACCESS_DENIED_ASSIGN_ROLE = "exception.user.assign.role.access.denied";
+    /** 解除できないロールが含まれています。 */
+    public static final String ACCESS_DENIED_UNASSIGNED_ROLE = "exception.user.unassigned.role.access.denied";
 
     /** {0}の登録に失敗しました。 */
     public static final String FAILED_INSERT = "exception.failed.insert";

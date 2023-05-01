@@ -22,7 +22,6 @@ import jp.co.project.planets.earthly.model.entity.CompanySimpleEntity;
 import jp.co.project.planets.earthly.model.entity.CountryEntity;
 import jp.co.project.planets.earthly.model.entity.LanguageEntity;
 import jp.co.project.planets.earthly.model.entity.RegionEntity;
-import jp.co.project.planets.earthly.model.entity.RoleSimpleEntity;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
 
 /**
@@ -110,14 +109,12 @@ public class UserRepository {
                 languageEntity, regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity(companyEntity.id(), companyEntity.name(),
                 countryEntity);
-        final var roleSimpleEntityList = roleList.stream().map(
-                it -> new RoleSimpleEntity(it.getId(), it.getName())).toList();
         final var companySimpleEntityList = managementCompanyList.stream()
                 .map(it -> new CompanySimpleEntity(it.getId(), it.getName())).toList();
 
         return new UserEntity(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
                 user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(),
-                user.getTwoFactorAuthentication(), user.getSecret(), belongCompanyEntity, roleSimpleEntityList,
+                user.getTwoFactorAuthentication(), user.getSecret(), belongCompanyEntity, roleList,
                 companySimpleEntityList, user.getCreatedAt(), null, user.getUpdatedAt(), null, user.getIsDeleted());
     }
 

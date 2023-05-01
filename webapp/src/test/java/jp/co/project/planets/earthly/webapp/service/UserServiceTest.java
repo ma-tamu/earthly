@@ -22,13 +22,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.core.enums.Timezone;
+import jp.co.project.planets.earthly.db.entity.Role;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.model.entity.CountryEntity;
 import jp.co.project.planets.earthly.model.entity.LanguageEntity;
 import jp.co.project.planets.earthly.model.entity.RegionEntity;
-import jp.co.project.planets.earthly.model.entity.RoleSimpleEntity;
 import jp.co.project.planets.earthly.model.entity.UserEntity;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
@@ -62,7 +62,7 @@ class UserServiceTest {
         final var countryEntity = new CountryEntity("d92bf311652a77227d2725c204a5396b", "Japan", languageEntity,
                 regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
-        final var role01 = new RoleSimpleEntity("ROLE_ID_01", "ROLE_NAME_01");
+        final var role01 = new Role("ROLE_ID_01", "ROLE_NAME_01", null, null, null, null, false);
         final var roleList = List.of(role01);
         final var userEntity = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
                 "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",

@@ -25,6 +25,21 @@ jobs:
           chmod +x gradlew
           ./gradlew :repository:flywayMigrate
           ./gradlew check --info
+      - name: JaCoCo Report
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: |
+            ${{ github.workspace }}/auth/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/aws/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/common/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/core/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/repository/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/webapp/build/jacoco/jacoco.xml,
+            ${{ github.workspace }}/webservice/build/jacoco/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 40
+          min-coverage-changed-files: 60
+
 #      - name: upload report
 #        if: always()
 #        with:

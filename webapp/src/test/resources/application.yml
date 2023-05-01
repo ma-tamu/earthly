@@ -2,11 +2,9 @@ server:
   servlet:
     context-path: /earthly
 
-logging:
-  level:
-    root: debug
-
 spring:
+  profiles:
+    active: test
   datasource:
     url: ${earthly.datasource.url}
     name: ${earthly.datasource.name}
@@ -42,7 +40,7 @@ spring:
 earthly:
   datasource:
     host: ${MYSQL_HOST:localhost}
-    port: ${MYSQL_PORT:3306}
+    port: ${MYSQL_PORT:3307}
     name: ${MYSQL_USER_NAME:earthly}
     password: ${MYSQL_PASSWORD:earthly}
     schema: ${MYSQL_SCHEMA:earthly}

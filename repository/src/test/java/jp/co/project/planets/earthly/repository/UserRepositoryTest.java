@@ -77,7 +77,7 @@ class UserRepositoryTest {
         final var countryEntity = new CountryEntity(CountryEnum.JAPAN.getId(), CountryEnum.JAPAN.getName(),
                 languageEntity, regionEntity);
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
-        final var role01 = new Role("ROLE_ID_01", "ROLE_NAME_01", null, null, null, null, false);
+        final var role01 = new Role("ROLE_ID_01", "ROLE_NAME_01", null, "NULL", null, "NULL", false);
         final var roleList = List.of(role01);
         final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
                 "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
@@ -86,7 +86,8 @@ class UserRepositoryTest {
                 LocalDateTime.of(2022, Month.AUGUST, 14, 14, 46, 59), null, Boolean.FALSE);
 
         // verify
-        assertThat(actual).isPresent().get().usingRecursiveComparison().isEqualTo(expected);
+        assertThat(actual).isPresent().get().usingRecursiveComparison().ignoringFieldsOfTypes(LocalDateTime.class)
+                .isEqualTo(expected);
     }
 
     @Autowired

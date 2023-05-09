@@ -17,7 +17,7 @@ public final class RequestUtils {
 
     /**
      * get http servlet request
-     * 
+     *
      * @return HttpServletRequest
      */
     public static HttpServletRequest getRequest() {
@@ -26,7 +26,7 @@ public final class RequestUtils {
 
     /**
      * get http session
-     * 
+     *
      * @return HttpSession
      */
     public static HttpSession getSession() {
@@ -35,13 +35,18 @@ public final class RequestUtils {
 
     /**
      * get saved request
-     * 
+     *
      * @return DefaultSavedRequest
      */
     public static DefaultSavedRequest getSavedRequest() {
         return (DefaultSavedRequest) getSession().getAttribute("SPRING_SECURITY_SAVED_REQUEST");
     }
 
+    /**
+     * 認証前のURLを取得
+     *
+     * @return 認証前のURL
+     */
     public static Optional<String> getSavedRequestRedirectUrl() {
         return Optional.ofNullable(getSavedRequest()).map(v -> {
             final var builder = UriComponentsBuilder.fromPath(v.getRequestURI());

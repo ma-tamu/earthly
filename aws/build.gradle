@@ -1,3 +1,11 @@
+bootJar {
+    enabled = false;
+}
+
+jar {
+    enabled = true
+}
+
 dependencies {
     implementation 'software.amazon.awssdk:s3:2.19.20'
     implementation 'software.amazon.awssdk:ses:2.19.20'

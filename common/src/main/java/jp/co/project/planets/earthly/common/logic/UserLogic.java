@@ -93,7 +93,7 @@ public class UserLogic {
         roleLogic.grantDefaultRole(id, operationUserId);
         insertRecoveryCode(id);
         insertPasswordToken(id);
-        //        mailLogic.postUserCreationNotification(id);
+        mailLogic.postUserCreationNotification(id);
         return userOptional;
     }
 

@@ -1,14 +1,12 @@
 package jp.co.project.planets.earthly.repository;
 
-import jp.co.project.planets.earthly.db.dao.GrantTypeDao;
-import jp.co.project.planets.earthly.db.dao.OAuthClientDao;
-import jp.co.project.planets.earthly.db.dao.RedirectUriDao;
-import jp.co.project.planets.earthly.db.dao.ScopeDao;
-import jp.co.project.planets.earthly.db.entity.OauthClient;
-import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
+import java.util.Objects;
+
 import org.springframework.stereotype.Repository;
 
-import java.util.Objects;
+import jp.co.project.planets.earthly.db.dao.*;
+import jp.co.project.planets.earthly.db.entity.OauthClient;
+import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
 
 /**
  * oauth client repository
@@ -21,20 +19,23 @@ public class OAuthClientRepository {
     private final ScopeDao scopeDao;
     private final RedirectUriDao redirectUriDao;
 
+    private final LogoutRedirectUrlDao logoutRedirectUrlDao;
+
     public OAuthClientRepository(final OAuthClientDao oauthClientDao, final GrantTypeDao grantTypeDao,
-            final ScopeDao scopeDao,
-            final RedirectUriDao redirectUriDao) {
+            final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
+            final LogoutRedirectUrlDao logoutRedirectUrlDao) {
         this.oauthClientDao = oauthClientDao;
         this.grantTypeDao = grantTypeDao;
         this.scopeDao = scopeDao;
         this.redirectUriDao = redirectUriDao;
+        this.logoutRedirectUrlDao = logoutRedirectUrlDao;
     }
 
     /**
      * find by id
      *
      * @param id
-     *         id
+     *            id
      * @return OAuthClientEntity
      */
     public OAuthClientEntity findById(final String id) {
@@ -49,7 +50,7 @@ public class OAuthClientRepository {
      * find by client id
      *
      * @param clientId
-     *         client id
+     *            client id
      * @return OAuthClientEntity
      */
     public OAuthClientEntity findByClientId(final String clientId) {
@@ -64,7 +65,7 @@ public class OAuthClientRepository {
      * OAuthClientEntityを生成
      *
      * @param oauthClient
-     *         OAuthクライアント
+     *            OAuthクライアント
      * @return OAuthClientEntity
      */
     private OAuthClientEntity generateOAuthClientEntity(final OauthClient oauthClient) {
@@ -72,7 +73,9 @@ public class OAuthClientRepository {
         final var grantTypes = grantTypeDao.selectByClientId(id);
         final var scopes = scopeDao.selectByClientId(id);
         final var redirectUris = redirectUriDao.selectByClientId(id);
+        final var logoutRedirectUrls = logoutRedirectUrlDao.selectByClientId(id);
+
         return new OAuthClientEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
-                oauthClient.getName(), scopes, grantTypes, redirectUris);
+                oauthClient.getName(), scopes, grantTypes, redirectUris, logoutRedirectUrls);
     }
 }

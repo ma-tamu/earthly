@@ -1,10 +1,10 @@
 package jp.co.project.planets.earthly.auth.model.dto;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * user info dto
@@ -30,17 +30,17 @@ public class UserInfoDto implements UserDetails {
      * new instances user info dto
      *
      * @param id
-     *         id
+     *            id
      * @param loginId
-     *         login id
+     *            login id
      * @param password
-     *         password
+     *            password
      * @param name
-     *         username
+     *            username
      * @param lockout
-     *         lockout
+     *            lockout
      * @param deleted
-     *         deleted
+     *            deleted
      */
     public UserInfoDto(final String id, final String loginId, final String password, final String name,
             final boolean lockout, final boolean deleted) {

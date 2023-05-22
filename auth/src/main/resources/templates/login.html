@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" th:href="@{/favicon.ico}">
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link th:href="@{/css/login.css}" type="text/css" rel="stylesheet">
+
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+          crossorigin="anonymous"></script>
+  <title th:text="#{page.title.authorize}">Authorize</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<div class="form-bg">
+  <div class="container">
+    <div class="row">
+      <div class="offset-md-3 col-md-6">
+        <form class="form-horizontal" th:action="@{/login}" method="post">
+          <div class="alert alert-danger alert-dismissible" role="alert"
+               th:if="${session.SPRING_SECURITY_LAST_EXCEPTION}">
+            <div th:text="#{exception.authorize.login.failed}">ユーザーID又はパスワードが誤っています。</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+          </div>
+          <span class="heading" th:text="#{page.title.authorize}">Planet Authorize</span>
+          <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="LoginID"
+                   th:placeholder="#{page.placeholder.authorize.loginid}">
+            <i class="fa fa-user"></i>
+          </div>
+          <div class="form-group help">
+            <input type="password" class="form-control" name="password" placeholder="Password"
+                   th:placeholder="#{page.placeholder.authorize.password}">
+            <i class="fa fa-lock"></i>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-default" th:text="#{page.button.authorize}">Authorize</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+server:
+  port: 9000 #重複しないポートに変更してください。
+
+logging:
+  level:
+    root: info #適切なログレベルに変更してください。
+
+auth:
+  host: #ホスト名
+  datasource:
+    host: ${MYSQL_HOST:localhost} #docker-compose.ymlに記載しているホスト名と同じ。
+    port: ${MYSQL_PORT:3306}  #docker-compose.ymlに記載しているポート番号と同じ。
+  security:
+    authorization:
+      token:
+        expire: 28800 # トークンの有効時間(秒)
+
+aws:
+  ses:
+    region: ap-northeast-1

@@ -5,10 +5,11 @@ server:
 
 logging:
   level:
-    root: debug
-
+    root: info
 
 spring:
+  profiles:
+    active: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     name: ${auth.datasource.name}
@@ -21,6 +22,12 @@ spring:
       jdbc-url: ${auth.datasource.url}
       username: ${auth.datasource.name}
       password: ${auth.datasource.password}
+  docker:
+    compose:
+      enabled: true
+      profiles:
+        active: all
+      lifecycle-management: start_only
   flyway:
     driver-class-name: com.mysql.cj.jdbc.Driver
     user: ${auth.datasource.name}
@@ -28,11 +35,18 @@ spring:
     url: ${auth.datasource.url}
     schemas: ${auth.datasource.schema}
     table: earthly_version
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            enabled: true
 
 doma:
   dialect: mysql
 
 auth:
+  host: localhost
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}
@@ -40,6 +54,13 @@ auth:
     password: ${MYSQL_USER_PASSWORD:earthly}
     schema: ${MYSQL_SCHEMA:earthly}
     url: jdbc:mysql://${auth.datasource.host}:${auth.datasource.port}/${auth.datasource.schema}?allowPublicKeyRetrieval=true&useSSL=false
-  oauth2:
-    token:
-      expire: 28800 # 秒指定
+  security:
+    authorization:
+      issuer: http://${auth.host}:${server.port}${server.servlet.context-path}
+      token:
+        expire: 28800 # 秒指定
+
+aws:
+  ses:
+    from: noreply@example.com
+    region: ap-northeast-1

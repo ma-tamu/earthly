@@ -1,5 +1,6 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.client;
 
+import java.time.Duration;
 import java.time.Instant;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +22,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     private final OAuthClientRepository oauthClientRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenSettings tokenSettings;
+    private final int TOKEN_EXPIRE = 64800;
 
     /**
      * new instances custom registered client repository
@@ -30,15 +31,11 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
      *            oauth client repository
      * @param passwordEncoder
      *            password encoder
-     * @param tokenSettings
-     *            token settings
      */
     public CustomRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
-            final PasswordEncoder passwordEncoder,
-            final TokenSettings tokenSettings) {
+            final PasswordEncoder passwordEncoder) {
         this.oauthClientRepository = oauthClientRepository;
         this.passwordEncoder = passwordEncoder;
-        this.tokenSettings = tokenSettings;
     }
 
     @Override
@@ -72,13 +69,17 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
         oauthClient.scopes().stream().map(Scope::getName).forEach(builder::scope);
         oauthClient.grantTypes().stream().map(it -> new AuthorizationGrantType(it.getType())) //
                 .forEach(builder::authorizationGrantType);
-        builder.clientSecretExpiresAt(Instant.ofEpochSecond(28800));
+        builder.clientSecretExpiresAt(Instant.now().plusSeconds(28800));
         oauthClient.redirectUrls().forEach(builder::redirectUri);
+        oauthClient.logoutRedirectUrls().forEach(builder::postLogoutRedirectUri);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         builder.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
+        final var tokenSettings = TokenSettings.builder().accessTokenTimeToLive(Duration.ofSeconds(TOKEN_EXPIRE))
+                .authorizationCodeTimeToLive(Duration.ofMinutes(5)).refreshTokenTimeToLive(Duration.ofHours(24))
+                .reuseRefreshTokens(false).build();
         builder.tokenSettings(tokenSettings);
-        builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build());
+        builder.clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build());
         return builder.build();
     }
 }

@@ -1,43 +1,32 @@
 package jp.co.project.planets.earthly.model.entity;
 
-import jp.co.project.planets.earthly.db.entity.GrantType;
-import jp.co.project.planets.earthly.db.entity.Scope;
-
 import java.io.Serializable;
 import java.util.List;
+
+import jp.co.project.planets.earthly.db.entity.GrantType;
+import jp.co.project.planets.earthly.db.entity.Scope;
 
 /**
  * oauth client entity
  *
  * @param id
- *         id
+ *            id
  * @param clientId
- *         クライアントID
+ *            クライアントID
  * @param secret
- *         クライアントシークレット
+ *            クライアントシークレット
  * @param name
- *         クライアント名
+ *            クライアント名
  * @param scopes
- *         スコープ
+ *            スコープ
  * @param grantTypes
- *         付与タイプ
+ *            付与タイプ
  * @param redirectUrls
- *         リダイレクトURL
+ *            リダイレクトURL
+ * @param logoutRedirectUrls
+ *            ログアウトリダイレクトURL
  */
-public record OAuthClientEntity(
-        /** id */
-        String id,
-        /** クライアントID */
-        String clientId,
-        /** クライアントシークレット */
-        String secret,
-        /** クライアント名 */
-        String name,
-        /** スコープ */
-        List<Scope> scopes,
-        /** 付与タイプ */
-        List<GrantType> grantTypes,
-        /** リダイレクトURL */
-        List<String> redirectUrls
-) implements Serializable {
+public record OAuthClientEntity(String id, String clientId, String secret, String name, List<Scope> scopes,
+        List<GrantType> grantTypes, List<String> redirectUrls, List<String> logoutRedirectUrls)
+        implements Serializable {
 }

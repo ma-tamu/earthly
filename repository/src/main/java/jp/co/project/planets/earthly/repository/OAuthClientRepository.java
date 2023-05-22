@@ -54,11 +54,7 @@ public class OAuthClientRepository {
      * @return OAuthClientEntity
      */
     public OAuthClientEntity findByClientId(final String clientId) {
-        final var oauthClientOptional = oauthClientDao.selectByClientId(clientId);
-        if (oauthClientOptional.isEmpty()) {
-            return null;
-        }
-        return generateOAuthClientEntity(oauthClientOptional.get());
+        return oauthClientDao.selectByClientId(clientId).map(this::generateOAuthClientEntity).orElse(null);
     }
 
     /**

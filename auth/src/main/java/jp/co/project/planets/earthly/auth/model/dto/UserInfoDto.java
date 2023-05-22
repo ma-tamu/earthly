@@ -1,5 +1,6 @@
 package jp.co.project.planets.earthly.auth.model.dto;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public class UserInfoDto implements UserDetails {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** user id */

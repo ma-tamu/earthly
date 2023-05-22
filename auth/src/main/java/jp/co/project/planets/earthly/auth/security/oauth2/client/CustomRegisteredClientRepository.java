@@ -22,7 +22,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     private final OAuthClientRepository oauthClientRepository;
     private final PasswordEncoder passwordEncoder;
-    private final int TOKEN_EXPIRE = 64800;
+    private static final int TOKEN_EXPIRE = 64800;
 
     /**
      * new instances custom registered client repository

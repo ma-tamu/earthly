@@ -1,9 +1,9 @@
 # earthy
 ![CI workflow](https://github.com/ma-tamu/earthly/actions/workflows/ci.yml/badge.svg)
 
-<p align="center">
+<p>
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=java,gradle,spring,js,html,css,mysql,docker" />
+    <img alt="development env" src="https://skillicons.dev/icons?i=java,gradle,spring,js,html,css,mysql,docker" />
   </a>
 </p>
 

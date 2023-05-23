@@ -228,7 +228,7 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
                     oauth2Authorization.getOidcIdTokenIssuedAt().toInstant(OffsetDateTime.now().getOffset()),
                     oauth2Authorization.getOidcIdTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()),
                     claims);
-            builder.token(oidcToken, (metadata) -> metadata.putAll(claims));
+            builder.token(oidcToken, metadata -> metadata.putAll(claims));
         }
         if (StringUtils.isNotBlank(oauth2Authorization.getAuthorizationGrantType())) {
             builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));

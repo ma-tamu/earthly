@@ -1,4 +1,4 @@
-package jp.co.project.planets.earthly.auth.security;
+package jp.co.project.planets.earthly.auth.security.oauth2;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

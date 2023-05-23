@@ -31,9 +31,9 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
-import jp.co.project.planets.earthly.auth.security.AuthorizationProperties;
 import jp.co.project.planets.earthly.auth.security.CustomAuthenticationProvider;
 import jp.co.project.planets.earthly.auth.security.LoginUserDetailService;
+import jp.co.project.planets.earthly.auth.security.oauth2.AuthorizationProperties;
 import jp.co.project.planets.earthly.auth.security.oauth2.client.CustomRegisteredClientRepository;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationConsentService;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationService;

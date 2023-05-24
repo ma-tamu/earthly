@@ -5,7 +5,7 @@ server:
 
 logging:
   level:
-    root: info
+    root: debug
 
 spring:
   profiles:
@@ -41,12 +41,28 @@ spring:
         strategy:
           content:
             enabled: true
+  data:
+    redis:
+      host: ${auth.redis.host}
+      port: ${auth.redis.port}
+      connect-timeout: 10s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, quickTEST, fullTEST
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
 
 doma:
   dialect: mysql
 
 auth:
   host: localhost
+  version: @version@
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}
@@ -59,6 +75,9 @@ auth:
       issuer: http://${auth.host}:${server.port}${server.servlet.context-path}
       token:
         expire: 28800 # 秒指定
+  redis:
+    host: localhost
+    port: 6379
 
 aws:
   ses:

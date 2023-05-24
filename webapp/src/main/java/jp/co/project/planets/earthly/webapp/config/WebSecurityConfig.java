@@ -2,10 +2,12 @@ package jp.co.project.planets.earthly.webapp.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -39,11 +41,11 @@ public class WebSecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityException(final HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.httpBasic().disable();
-        httpSecurity
+        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
+        httpSecurity.securityMatcher(EndpointRequest.toAnyEndpoint())
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/static/**",
-                                "/vendor/**").permitAll().anyRequest().authenticated())
+                                "/vendor/**", "/quickTEST").permitAll().anyRequest().authenticated())
                 .formLogin(formLoginConfigurer -> formLoginConfigurer.loginPage("/login").usernameParameter("loginId")
                         .passwordParameter("password").successHandler(new LoginSuccessHandler())
                         .failureHandler(new LoginFailureHandler()));

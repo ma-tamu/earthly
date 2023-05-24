@@ -39,6 +39,13 @@ spring:
           content:
             enabled: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,quickTEST
+      base-path: /
+
 earthly:
   datasource:
     host: ${MYSQL_HOST:localhost}

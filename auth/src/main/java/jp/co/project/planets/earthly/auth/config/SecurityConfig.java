@@ -122,7 +122,7 @@ public class SecurityConfig {
         return http.securityMatcher(EndpointRequest.toAnyEndpoint()).authorizeHttpRequests(
                 auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/favicon.ico", "/health",
-                                "/quickTEST", "/fullTEST")
+                                "/quickTEST", "/fullTEST", "/awesomeTEST")
                         .permitAll()
                         .anyRequest().authenticated())
                 .formLogin(config -> config.loginPage("/login"))

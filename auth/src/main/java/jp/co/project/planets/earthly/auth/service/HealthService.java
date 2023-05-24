@@ -46,8 +46,8 @@ public class HealthService {
         final var componentStatusDto = new ComponentStatusDto("DB", dbStatus);
         final var componentStatusDtoList = List.of(componentStatusDto);
         final var status = componentStatusDtoList.stream().anyMatch(it -> StringUtils.equals(it.status(), STATUS_DOWN))
-                ? STATUS_UP
-                : STATUS_DOWN;
+                ? STATUS_DOWN
+                : STATUS_UP;
         return new HealthResultDto(version, status, componentStatusDtoList);
     }
 

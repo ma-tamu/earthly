@@ -51,7 +51,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, quickTEST, fullTEST
+        include: health, quickTEST, fullTEST, awesomeTEST
       base-path: /
   endpoint:
     health:
@@ -62,7 +62,7 @@ doma:
 
 auth:
   host: localhost
-  version: @version@
+  version: "@version@"
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}

@@ -17,6 +17,13 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableRedisHttpSession
 public class RedisConfig {
 
+    /**
+     * generate redis connection factory
+     * 
+     * @param redisProperties
+     *            redis properties
+     * @return LettuceConnectionFactory
+     */
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(final RedisProperties redisProperties) {
         final var configuration = new RedisStandaloneConfiguration(redisProperties.getHost(),
@@ -24,6 +31,11 @@ public class RedisConfig {
         return new LettuceConnectionFactory(configuration);
     }
 
+    /**
+     * redis configure action
+     * 
+     * @return ConfigureRedisAction
+     */
     @Bean
     public ConfigureRedisAction configureRedisAction() {
         return ConfigureRedisAction.NO_OP;

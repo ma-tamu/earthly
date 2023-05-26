@@ -40,6 +40,11 @@ public class HealthService {
         return systemHealth();
     }
 
+    /**
+     * awesome test health
+     * 
+     * @return HealthResultDto
+     */
     public HealthResultDto healthAwesome() {
         final boolean isHealthyDb = systemHealth();
         final var dbStatus = isHealthyDb ? STATUS_UP : STATUS_DOWN;

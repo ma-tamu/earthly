@@ -24,6 +24,11 @@ public class FullTestEndpoint {
         this.healthService = healthService;
     }
 
+    /**
+     * full health
+     *
+     * @return health result
+     */
     @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> health() {
         if (healthService.healthFull()) {

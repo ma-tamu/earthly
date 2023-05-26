@@ -11,6 +11,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * request filter
+ */
 public class RequestFilter extends GenericFilterBean {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)

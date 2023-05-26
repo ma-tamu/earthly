@@ -25,6 +25,11 @@ public class AwesomeTestEndpoint {
         this.healthService = healthService;
     }
 
+    /**
+     * awesome health
+     * 
+     * @return health result
+     */
     @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> health() {
         final var healthResultDto = healthService.healthAwesome();

@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 @Endpoint(id = "quickTEST")
 public class QuickTestEndpoint {
 
+    /**
+     * quick health
+     *
+     * @return health result
+     */
     @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public String health() {
         return """

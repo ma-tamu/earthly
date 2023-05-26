@@ -11,6 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jp.co.project.planets.earthly.auth.filter.RequestFilter;
 
+/**
+ * web config
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 

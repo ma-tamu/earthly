@@ -61,6 +61,7 @@ spring:
             redirect-uri: http://127.0.0.1:${server.port}${server.servlet.context-path}/login/oauth2/code
             scope:
               - openid
+              - me
 
 management:
   server:

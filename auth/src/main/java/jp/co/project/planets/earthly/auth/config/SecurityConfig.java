@@ -59,12 +59,17 @@ public class SecurityConfig {
      * new instances security config
      *
      * @param authorizationProperties
+     *            authorization properties
      * @param loginUserDetailService
      *            user detail service
      * @param oauthClientRepository
+     *            oauth client repository
      * @param authorizationRepository
+     *            authorization repository
      * @param authClientConsentRepository
+     *            auth client consent repository
      * @param convertHelper
+     *            convert helper
      */
     public SecurityConfig(final AuthorizationProperties authorizationProperties,
             final LoginUserDetailService loginUserDetailService, final OAuthClientRepository oauthClientRepository,
@@ -79,6 +84,15 @@ public class SecurityConfig {
         this.convertHelper = convertHelper;
     }
 
+    /**
+     * building authorization server security filter chain
+     * 
+     * @param http
+     *            http security
+     * @return SecurityFilterChain
+     * @throws Exception
+     *             filed building security filter chain
+     */
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(final HttpSecurity http) throws Exception {
@@ -90,42 +104,69 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * oauth client repository
+     * 
+     * @return RegisteredClientRepository
+     */
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         return new CustomRegisteredClientRepository(oauthClientRepository, passwordEncoder());
     }
 
+    /**
+     * oauth2 authorization service
+     * 
+     * @return OAuth2AuthorizationService
+     */
     @Bean
     public OAuth2AuthorizationService authorizationService() {
         return new CustomOAuth2AuthorizationService(registeredClientRepository(),
                 authorizationRepository, convertHelper);
     }
 
+    /**
+     * oauth2 authorization consent service
+     * 
+     * @return OAuth2AuthorizationConsentService
+     */
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService() {
         return new CustomOAuth2AuthorizationConsentService(authClientConsentRepository,
                 convertHelper);
     }
 
+    /**
+     * authorization server setting
+     * 
+     * @return AuthorizationServerSettings
+     */
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder().issuer(authorizationProperties.getIssuer()).build();
     }
 
+    /**
+     * build default security filter chain
+     * 
+     * @param http
+     *            http security
+     * @return SecurityFilterChain
+     * @throws Exception
+     *             filed building security filter chain
+     */
     @Bean
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http) throws Exception {
         final CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return http.authorizeHttpRequests(
-                auth -> auth
+        return http
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/favicon.ico", "/health",
                                 "/quickTEST", "/fullTEST", "/awesomeTEST")
-                        .permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(config -> config.loginPage("/login"))
-                .authenticationProvider(authenticationProvider).build();
+                        .permitAll().anyRequest().authenticated())
+                .formLogin(config -> config.loginPage("/login")).authenticationProvider(authenticationProvider).build();
     }
 
     /**
@@ -138,6 +179,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * jwk source
+     * 
+     * @return JWKSource
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
         final KeyPair keyPair = generateRsaKey();
@@ -163,6 +209,13 @@ public class SecurityConfig {
         return keyPair;
     }
 
+    /**
+     * jwk decoder
+     * 
+     * @param jwkSource
+     *            jwks
+     * @return JwtDecoder
+     */
     @Bean
     public JwtDecoder jwtDecoder(final JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);

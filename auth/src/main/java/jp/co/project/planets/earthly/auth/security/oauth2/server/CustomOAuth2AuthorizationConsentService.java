@@ -1,14 +1,15 @@
 package jp.co.project.planets.earthly.auth.security.oauth2.server;
 
-import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
-import jp.co.project.planets.earthly.db.entity.OauthClientConsent;
-import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
+import java.util.Set;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
+import jp.co.project.planets.earthly.db.entity.OauthClientConsent;
+import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
 
 /**
  * custom oauth2 authorization consent service
@@ -22,9 +23,9 @@ public class CustomOAuth2AuthorizationConsentService implements OAuth2Authorizat
      * new instance custom oauth2 authorization consent service
      *
      * @param oauthClientConsentRepository
-     *         OAuthクライアント承認DAO
+     *            OAuthクライアント承認DAO
      * @param convertHelper
-     *         convert helper
+     *            convert helper
      */
     public CustomOAuth2AuthorizationConsentService(final OAuthClientConsentRepository oauthClientConsentRepository,
             final ConvertHelper convertHelper) {

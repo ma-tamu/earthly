@@ -1,16 +1,22 @@
 package jp.co.project.planets.earthly.auth.model.dto;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 /**
  * user info dto
  */
-public class UserInfoDto implements UserDetails {
+public class UserInfoDto implements OidcUser, UserDetails {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** user id */
@@ -30,17 +36,17 @@ public class UserInfoDto implements UserDetails {
      * new instances user info dto
      *
      * @param id
-     *         id
+     *            id
      * @param loginId
-     *         login id
+     *            login id
      * @param password
-     *         password
+     *            password
      * @param name
-     *         username
+     *            username
      * @param lockout
-     *         lockout
+     *            lockout
      * @param deleted
-     *         deleted
+     *            deleted
      */
     public UserInfoDto(final String id, final String loginId, final String password, final String name,
             final boolean lockout, final boolean deleted) {
@@ -50,6 +56,11 @@ public class UserInfoDto implements UserDetails {
         this.name = name;
         this.lockout = lockout;
         this.deleted = deleted;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
     }
 
     @Override
@@ -130,5 +141,20 @@ public class UserInfoDto implements UserDetails {
      */
     public boolean isDeleted() {
         return deleted;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return null;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return null;
     }
 }

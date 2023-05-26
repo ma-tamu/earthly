@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -68,7 +70,6 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      *
      * @param authorization
      *            OAuth2Authorization
-     *
      * @return Oauth2Authorization
      */
     private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization) {
@@ -82,7 +83,6 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      *            OAuth2Authorization
      * @param oauth2Authorization
      *            Oauth2Authorization
-     *
      * @return Oauth2Authorization
      */
     private Oauth2Authorization generateOauth2Authorization(final OAuth2Authorization authorization,
@@ -91,6 +91,8 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         oauth2Authorization.setRegisteredClientId(authorization.getRegisteredClientId());
         oauth2Authorization.setPrincipalName(authorization.getPrincipalName());
         oauth2Authorization.setAuthorizationGrantType(authorization.getAuthorizationGrantType().getValue());
+        oauth2Authorization
+                .setAccessTokenScopes(StringUtils.join(authorization.getAuthorizedScopes(), StringUtils.SPACE));
         final var authorizationCode = authorization.getToken(OAuth2AuthorizationCode.class);
         if (Objects.nonNull(authorizationCode)) {
             final var authorizationCodeToken = authorizationCode.getToken();
@@ -175,7 +177,6 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
      *
      * @param oauth2Authorization
      *            oauth2 authorization
-     *
      * @return OAuth2Authorization
      */
     private OAuth2Authorization generateOAuth2Authorization(final Oauth2Authorization oauth2Authorization) {
@@ -186,12 +187,15 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
         final var map = (Map<String, Object>) convertHelper.convertJsonIntoObject(oauth2Authorization.getAttributes(),
                 Map.class);
         map.forEach(builder::attribute);
+        final var scopes = Optional.ofNullable(oauth2Authorization.getAccessTokenScopes()).stream()
+                .flatMap(s -> Stream.of(s.split(StringUtils.SPACE))).collect(Collectors.toSet());
+        builder.authorizedScopes(scopes);
         if (StringUtils.isNotBlank(oauth2Authorization.getAccessTokenValue())) {
             final var oauth2AccessToken = new OAuth2AccessToken( //
                     OAuth2AccessToken.TokenType.BEARER, //
                     oauth2Authorization.getAccessTokenValue(), //
                     oauth2Authorization.getAccessTokenIssuedAt().toInstant(OffsetDateTime.now().getOffset()), //
-                    oauth2Authorization.getAccessTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()) //
+                    oauth2Authorization.getAccessTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()), scopes //
             );
             builder.accessToken(oauth2AccessToken);
         }
@@ -212,6 +216,19 @@ public class CustomOAuth2AuthorizationService implements OAuth2AuthorizationServ
             );
             builder.token(token);
             builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));
+        }
+        if (StringUtils.isNotBlank(oauth2Authorization.getOidcIdTokenValue())) {
+            final var idTokenMetadata = convertHelper.convertJsonIntoObject(
+                    oauth2Authorization.getOidcIdTokenMetadata(),
+                    Map.class);
+            final var claims = (Map<String, Object>) idTokenMetadata
+                    .get(OAuth2Authorization.Token.CLAIMS_METADATA_NAME);
+            final OidcIdToken oidcToken = new OidcIdToken(
+                    oauth2Authorization.getOidcIdTokenValue(),
+                    oauth2Authorization.getOidcIdTokenIssuedAt().toInstant(OffsetDateTime.now().getOffset()),
+                    oauth2Authorization.getOidcIdTokenExpiresAt().toInstant(OffsetDateTime.now().getOffset()),
+                    claims);
+            builder.token(oidcToken, metadata -> metadata.putAll(claims));
         }
         if (StringUtils.isNotBlank(oauth2Authorization.getAuthorizationGrantType())) {
             builder.authorizationGrantType(new AuthorizationGrantType(oauth2Authorization.getAuthorizationGrantType()));

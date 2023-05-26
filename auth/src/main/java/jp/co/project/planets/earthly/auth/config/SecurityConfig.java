@@ -6,7 +6,6 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -119,7 +118,7 @@ public class SecurityConfig {
         final CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider();
         authenticationProvider.setUserDetailsService(loginUserDetailService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return http.securityMatcher(EndpointRequest.toAnyEndpoint()).authorizeHttpRequests(
+        return http.authorizeHttpRequests(
                 auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/favicon.ico", "/health",
                                 "/quickTEST", "/fullTEST", "/awesomeTEST")

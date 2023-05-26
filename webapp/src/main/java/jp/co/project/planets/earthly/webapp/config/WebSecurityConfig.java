@@ -2,7 +2,6 @@ package jp.co.project.planets.earthly.webapp.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,7 +41,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityException(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
-        httpSecurity.securityMatcher(EndpointRequest.toAnyEndpoint())
+        httpSecurity
                 .authorizeHttpRequests(
                         auth -> auth.requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/static/**",
                                 "/vendor/**", "/quickTEST").permitAll().anyRequest().authenticated())

@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class FullTestEndpoint {
         this.healthService = healthService;
     }
 
-    @ReadOperation
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> health() {
         if (healthService.healthFull()) {
             return ResponseEntity.ok(Map.of("message", "OK"));

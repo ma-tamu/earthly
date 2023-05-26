@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.auth.api.health.endpoint;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Endpoint(id = "quickTEST")
 public class QuickTestEndpoint {
 
-    @ReadOperation
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public String health() {
         return """
                 {

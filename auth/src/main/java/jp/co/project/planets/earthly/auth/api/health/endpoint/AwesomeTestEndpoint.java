@@ -2,7 +2,6 @@ package jp.co.project.planets.earthly.auth.api.health.endpoint;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,14 +25,14 @@ public class AwesomeTestEndpoint {
         this.healthService = healthService;
     }
 
-    @ReadOperation
+    @ReadOperation(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> health() {
         final var healthResultDto = healthService.healthAwesome();
         final var awesomeTestResponse = AwesomeTestResponseMapper.INSTANCE.convertToResponse(healthResultDto);
         try {
             // TODO Bean登録しているObjectMapperを使用するとjson内にjava.util.ArrayListが混入されるので見直しが必要。
             final var json = new ObjectMapper().writeValueAsString(awesomeTestResponse);
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(json);
+            return ResponseEntity.ok(json);
         } catch (final JsonProcessingException e) {
             throw new RuntimeException(e);
         }

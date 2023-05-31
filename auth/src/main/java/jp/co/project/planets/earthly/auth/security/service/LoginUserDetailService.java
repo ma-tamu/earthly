@@ -1,4 +1,4 @@
-package jp.co.project.planets.earthly.auth.security;
+package jp.co.project.planets.earthly.auth.security.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UserDetails;

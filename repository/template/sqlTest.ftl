@@ -1,5 +1,5 @@
 <#-- See also org.seasar.doma.gradle.codegen.desc.SqlTestDesc -->
-<#import "./lib.ftl" as lib>
+<#import "/lib.ftl" as lib>
 <#if lib.copyright??>
 ${lib.copyright}
 </#if>

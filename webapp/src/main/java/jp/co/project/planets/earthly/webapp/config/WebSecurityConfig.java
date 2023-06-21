@@ -43,8 +43,10 @@ public class WebSecurityConfig {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/static/**",
-                                "/vendor/**", "/quickTEST").permitAll().anyRequest().authenticated())
+                        auth -> auth
+                                .requestMatchers("/login", "/forgets/**", "/css/**", "/js/**", "/img/**", "/static/**",
+                                        "/vendor/**", "/quickTEST", "/error")
+                                .permitAll().anyRequest().authenticated())
                 .formLogin(formLoginConfigurer -> formLoginConfigurer.loginPage("/login").usernameParameter("loginId")
                         .passwordParameter("password").successHandler(new LoginSuccessHandler())
                         .failureHandler(new LoginFailureHandler()));

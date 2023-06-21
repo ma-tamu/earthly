@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -48,10 +47,6 @@ public final class RequestUtils {
      * @return 認証前のURL
      */
     public static Optional<String> getSavedRequestRedirectUrl() {
-        return Optional.ofNullable(getSavedRequest()).map(v -> {
-            final var builder = UriComponentsBuilder.fromPath(v.getRequestURI());
-            v.getParameterMap().forEach(builder::queryParam);
-            return builder.build().toString();
-        });
+        return Optional.ofNullable(getSavedRequest()).map(DefaultSavedRequest::getRedirectUrl);
     }
 }

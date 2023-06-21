@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Earthly Login</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body>
+<main>
+  <div class="container">
+    <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-5 col-md-7 d-flex flex-column align-items-center justify-content-center">
+            <div class="card mb-3">
+
+              <div class="card-body">
+
+                <div class="pt-4 pb-2">
+                  <h5 class="card-title text-center pb-0 fs-4">Forgot Password you?</h5>
+                  <p class="text-center small">
+                    アカウントに関連付けられたメールアドレスを入力すると <br>
+                    パスワードをリセットするためのリンクが送信されます。
+                  </p>
+                </div>
+
+                <form method="post" th:action="@{/forgets/password}" th:object="${resetPasswordMailForm}">
+                  <label for="loginId">ログインID</label>
+                  <div class="row mb-3">
+                    <input class="form-control" id="loginId" name="loginId" th:classappend="${#fields.hasErrors('loginId')}?'is-invalid'"
+                           type="text">
+                    <div class="invalid-feedback" th:errors="*{loginId}" th:if="${#fields.hasErrors('loginId')}">
+                      ログインIDは必須です。
+                    </div>
+                  </div>
+
+                  <label for="mail">メールアドレス</label>
+                  <div class="row mb-3">
+                    <input class="form-control" id="mail" name="mail" th:classappend="${#fields.hasErrors('mail')}?'is-invalid'"
+                           type="text">
+                    <div class="invalid-feedback" th:errors="*{mail}" th:if="${#fields.hasErrors('mail')}">
+                      メールは必須です。
+                    </div>
+                  </div>
+                  <button class="btn btn-primary" type="submit">送信</button>
+                </form>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

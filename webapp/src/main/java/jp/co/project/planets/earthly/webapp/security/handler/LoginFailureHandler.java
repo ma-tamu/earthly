@@ -8,6 +8,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jp.co.project.planets.earthly.webapp.constant.ModelKey;
 
 /**
  * login failure handler
@@ -16,6 +17,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
             final AuthenticationException exception) throws IOException, ServletException {
+        request.getSession().setAttribute(ModelKey.EXCEPTION, exception);
         response.sendRedirect("./login");
     }
 }

@@ -14,8 +14,8 @@ buildscript {
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
         classpath "org.flywaydb:flyway-gradle-plugin:9.18.0"
         classpath "org.flywaydb:flyway-mysql:9.18.0"
-        classpath "gradle.plugin.org.seasar.doma:codegen:1.4.1"
-        classpath "gradle.plugin.org.seasar.doma:compile:1.1.0"
+        classpath "org.domaframework.doma:codegen:2.0.0"
+        classpath "org.domaframework.doma:compile:2.0.0"
     }
 }
 

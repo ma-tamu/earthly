@@ -1,10 +1,11 @@
 package jp.co.project.planets.earthly.db.dao;
 
-import jp.co.project.planets.earthly.db.dao.base.Oauth2AuthorizationBaseDao;
-import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
-import org.seasar.doma.boot.ConfigAutowireable;
+
+import jp.co.project.planets.earthly.db.annotation.ConfigAutowireable;
+import jp.co.project.planets.earthly.db.dao.base.Oauth2AuthorizationBaseDao;
+import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
 
 /**
  * oauth2 authorization dao

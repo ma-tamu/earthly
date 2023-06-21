@@ -38,6 +38,11 @@ spring:
         strategy:
           content:
             enabled: true
+  data:
+    redis:
+      host: ${earthly.redis.host}
+      port: ${earthly.redis.port}
+      connect-timeout: 10s
 
 management:
   endpoints:
@@ -58,6 +63,9 @@ earthly:
     provider:
       earthly:
         base-path: http://localhost:9000/earthly
+  redis:
+    host: localhost
+    port: 6379
 
 aws:
   ses:

@@ -1,1 +1,1 @@
-<#assign annotationHash={ "ConfigAutowireable": "org.seasar.doma.boot.ConfigAutowireable" }>
+<#assign annotationHash={ "ConfigAutowireable": "jp.co.project.planets.earthly.db.annotation.ConfigAutowireable" }>

@@ -14,6 +14,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import jp.co.project.planets.earthly.aws.client.MailClient;
 import jp.co.project.planets.earthly.common.model.dto.MailContentDto;
+import jp.co.project.planets.earthly.db.entity.PasswordToken;
 import jp.co.project.planets.earthly.repository.CompanyRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
 
@@ -48,6 +49,18 @@ public class MailLogic {
         mailClient.post(createdUser.getMail(), mailTemplate.subject(), body);
     }
 
+    @Async
+    public void postPasswordRestNotification(final String baseUrl, final PasswordToken passwordToken) {
+
+        final var user = userRepository.findByPrimaryKey(passwordToken.getUserId())
+                .orElseThrow(() -> new RuntimeException("user not found."));
+        final var locale = Locale.forLanguageTag(user.getLanguage());
+        final var mailTemplate = getMailTemplate(locale, "forgot", "password");
+        final var body = new ST(mailTemplate.body()).add("name", user.getName()).add("baseUrl", baseUrl)
+                .add("token", passwordToken.getToken()).render();
+        mailClient.post(user.getMail(), mailTemplate.subject(), body);
+    }
+
     /**
      * メールテンプレートを取得
      * 
@@ -74,7 +87,7 @@ public class MailLogic {
 
     /**
      * メール設定読み込む
-     * 
+     *
      * @param locale
      *            ロケール
      * @return 設定マップ

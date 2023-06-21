@@ -5,15 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
+import org.seasar.doma.jdbc.criteria.Entityql;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.config.DomaConfig;
 import jp.co.project.planets.earthly.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.db.dao.RoleDao;
 import jp.co.project.planets.earthly.db.dao.UserDao;
 import jp.co.project.planets.earthly.db.entity.Company;
 import jp.co.project.planets.earthly.db.entity.Role;
 import jp.co.project.planets.earthly.db.entity.User;
+import jp.co.project.planets.earthly.db.entity.User_;
 import jp.co.project.planets.earthly.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.model.dto.UserSearchResultDto;
 import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
@@ -34,6 +37,8 @@ public class UserRepository {
     private final CompanyDao companyDao;
     private final RoleDao roleDao;
 
+    private final Entityql entityql;
+
     /**
      * new instance user repository
      *
@@ -43,11 +48,14 @@ public class UserRepository {
      *            company dao
      * @param roleDao
      *            role dao
+     * @param domaConfig
      */
-    public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao) {
+    public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao,
+            final DomaConfig domaConfig) {
         this.userDao = userDao;
         this.companyDao = companyDao;
         this.roleDao = roleDao;
+        this.entityql = new Entityql(domaConfig);
     }
 
     /**
@@ -126,6 +134,22 @@ public class UserRepository {
         final var userList = userDao.selectByLoginIdAndNameAndCompany(loginId, name, company, hasViewAllCompany,
                 executionUserId, selectOptions);
         return new UserSearchResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    /**
+     * find by mail
+     * 
+     * @param mail
+     *            メールアドレス
+     * @return user
+     */
+    public Optional<User> findByMail(final String loginId, final String mail) {
+        final var user = new User_();
+        return entityql.from(user).where(w -> {
+            w.eq(user.loginId, loginId);
+            w.eq(user.mail, mail);
+            w.eq(user.isDeleted, false);
+        }).fetchOptional();
     }
 
     /**

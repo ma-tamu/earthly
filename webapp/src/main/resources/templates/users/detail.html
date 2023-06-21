@@ -18,6 +18,12 @@
       <div class="col-3">
         <div class="text-end">
           <div class="btn-group">
+            <div data-bs-placement="top" data-bs-toggle="tooltip" th:title="#{page.tooltip.edit.password}">
+              <button class="btn btn-info rounded-pill m-1 edit-password" data-bs-target="#passwordModal"
+                      data-bs-toggle="modal">
+                <i class="bx bxs-key"></i>
+              </button>
+            </div>
             <div data-bs-toggle="tooltip" data-bs-placement="top" th:title="#{page.tooltip.edit}">
               <button class="btn btn-info rounded-pill m-1 edit">
                 <i class="bx bx-edit"></i>
@@ -262,7 +268,8 @@
           </form>
         </div>
         <form method="post" name="roleUnassigned" onsubmit="return false;"
-              th:action="@{/users/__${userDetailDto.userEntity.id}__/roles/unassigns}" th:if="${!#lists.isEmpty(rolePage.content)}">
+              th:action="@{/users/__${userDetailDto.userEntity.id}__/roles/unassigns}"
+              th:if="${!#lists.isEmpty(rolePage.content)}">
           <div id="roleContent">
             <th:block th:fragment="roleContent">
               <th:block th:replace="parts/pagination::pagination(${rolePage})"/>
@@ -331,8 +338,12 @@
       </div>
     </div>
   </section>
-  <div th:replace="users/delete::modal(${userDetailDto.userEntity.id})"></div>
+  <div th:replace="users/modal::passwordModal(${userDetailDto.userEntity.id})"></div>
+  <div th:replace="users/modal::delete(${userDetailDto.userEntity.id})"></div>
   <div th:replace="users/assign::roleModal(${userDetailDto.userEntity.id})"></div>
+  <th:block th:if="${errorCode}">
+    <div th:replace="parts/alert::danger"></div>
+  </th:block>
 </main>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
@@ -370,8 +381,9 @@
     $('button.update').on('click', function () {
         let id = $("#companyDataList option[value='" + $('#company').val() + "']").text();
         $('#companyId').val(id);
-        $('div.card.edit').find('input').prop('disabled', false);
-        $('div.card.edit').find('select').prop('disabled', false);
+        const cardEdit = $('div.card.edit');
+        cardEdit.find('input').prop('disabled', false);
+        cardEdit.find('select').prop('disabled', false);
     });
 
     function cancel() {

@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.MessageKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
+import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
 import java.util.Optional;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
+import jp.co.project.planets.earthly.webapp.controller.form.user.PasswordEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserSearchForm;
@@ -177,7 +179,7 @@ public class UserController {
         }
         try {
             final var userId = userService.create(userEntryForm.toDto(), userInfoDto);
-            return new ModelAndView(String.format("redirect:/users/%s", userId));
+            return new ModelAndView(REDIRECT_USER_DETAIL.formatted(userId));
         } catch (final ForbiddenException e) {
             model.asMap().forEach(redirectAttributes::addFlashAttribute);
             redirectAttributes.addFlashAttribute(ERROR_CODE, e.getErrorCode());
@@ -377,7 +379,7 @@ public class UserController {
      * @return トースト
      */
     @PostMapping("{userId}/roles/unassigns")
-    public ModelAndView a(@PathVariable("userId") final String id, UserUnassignedRoleForm form,
+    public ModelAndView unassigns(@PathVariable("userId") final String id, final UserUnassignedRoleForm form,
             final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         if (bindingResult.hasErrors()) {
@@ -389,5 +391,31 @@ public class UserController {
         } catch (final ForbiddenException e) {
             return new ModelAndView(ViewName.ALERT_DANGER, MESSAGE, e.getErrorCode().getMessageKey());
         }
+    }
+
+    /**
+     * パスワード編集
+     * 
+     * @param id
+     *            ユーザーID
+     * @param passwordEditForm
+     *            パスワード編集FROM
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return ユーザー詳細
+     */
+    @PostMapping("{userId}/password/edit")
+    public ModelAndView editPassword(@PathVariable("userId") final String id, final PasswordEditForm passwordEditForm,
+            final RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        try {
+            userService.editPassword(id, passwordEditForm.currentPassword(), passwordEditForm.newPassword(),
+                    passwordEditForm.confirmNewPassword(), userInfoDto);
+            redirectAttributes.addFlashAttribute(MESSAGE, UPDATE_PASSWORD_SUCCESS);
+        } catch (final BadRequestException | ForbiddenException e) {
+            redirectAttributes.addFlashAttribute(ERROR_CODE, e.getErrorCode());
+            redirectAttributes.addFlashAttribute(MESSAGE, e.getErrorCode().getMessageKey());
+        }
+        return new ModelAndView(REDIRECT_USER_DETAIL.formatted(id));
     }
 }

@@ -1,16 +1,17 @@
 package jp.co.project.planets.earthly.db.dao.base;
 
+import jp.co.project.planets.earthly.config.DomaConfig;
 import jp.co.project.planets.earthly.db.entity.Oauth2Authorization;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
-import org.seasar.doma.boot.ConfigAutowireable;
+import jp.co.project.planets.earthly.db.annotation.ConfigAutowireable;
 
 /**
  */
-@Dao
+@Dao(config = DomaConfig.class)
 @ConfigAutowireable
 public interface Oauth2AuthorizationBaseDao {
 

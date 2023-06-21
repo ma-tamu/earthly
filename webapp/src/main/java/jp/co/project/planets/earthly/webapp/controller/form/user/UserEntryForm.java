@@ -2,6 +2,8 @@ package jp.co.project.planets.earthly.webapp.controller.form.user;
 
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
@@ -31,8 +33,8 @@ public record UserEntryForm(
                 + "}") String loginId,
         @NotBlank @Length(min = 1, max = 128) String name, @NotBlank @Email String mail,
         @NotBlank @Pattern(regexp = "ja|en") String language, @NotBlank @Timezone String timezone,
-        @NotBlank @Pattern(regexp = "M|F|-") String gender, @NotBlank String company,
-        String companyName) {
+        @NotBlank @Pattern(regexp = "[MF\\-]") String gender, @NotBlank String company,
+        String companyName) implements Serializable {
 
     public static final UserEntryForm EMPTY = new UserEntryForm(null, null, null, null, null, null, null, null);
 

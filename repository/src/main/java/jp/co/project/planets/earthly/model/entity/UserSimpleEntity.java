@@ -7,21 +7,21 @@ import org.seasar.doma.jdbc.entity.NamingType;
  * user simple entity
  *
  * @param id
- *         ユーザーID
+ *            ユーザーID
  * @param loginId
- *         ログインID
+ *            ログインID
  * @param name
- *         ユーザー名
+ *            ユーザー名
  * @param mail
- *         メールアドレス
+ *            メールアドレス
  * @param gender
- *         性別
+ *            性別
  * @param companyId
- *         所属会社ID
+ *            所属会社ID
  * @param companyName
- *         所属会社名
+ *            所属会社名
  */
-@Entity(naming = NamingType.LENIENT_SNAKE_LOWER_CASE)
+@Entity(naming = NamingType.SNAKE_LOWER_CASE)
 public record UserSimpleEntity(String id, String loginId, String name, String mail, String gender, Boolean lockout,
-                               String companyId, String companyName) {
+        String companyId, String companyName) {
 }

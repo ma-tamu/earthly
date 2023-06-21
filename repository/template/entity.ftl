@@ -1,5 +1,5 @@
 <#-- See also org.seasar.doma.gradle.codegen.desc.EntityDesc -->
-<#import "./lib.ftl" as lib>
+<#import "/lib.ftl" as lib>
 <#if lib.copyright??>
     ${lib.copyright}
 </#if>
@@ -19,14 +19,17 @@
     * @author ${lib.author}
 </#if>
 */
-@Entity<#if useListener || namingType != "NONE" || useMetamodel>(</#if><#if useListener>listener = ${listenerClassSimpleName}.class</#if><#if namingType != "NONE"><#if useListener>, </#if>naming = ${namingType.referenceName}</#if><#if useMetamodel><#if useListener || namingType != "NONE"> </#if>)</#if>
+@Entity<#if useListener || namingType != "NONE" || useMetamodel>(</#if><#if useListener>listener = ${listenerClassSimpleName}.class</#if><#if namingType != "NONE"><#if useListener>, </#if>naming = ${namingType.referenceName}</#if><#if useMetamodel><#if useListener || namingType != "NONE">, </#if>metamodel = @Metamodel</#if><#if useListener || namingType != "NONE" || useMetamodel>)</#if>
 <#if showCatalogName && catalogName?? || showSchemaName && schemaName?? || showTableName && tableName??>
     @Table(<#if showCatalogName && catalogName??>catalog = "${catalogName}"</#if><#if showSchemaName && schemaName??><#if showCatalogName && catalogName??>, </#if>schema = "${schemaName}"</#if><#if showTableName><#if showCatalogName && catalogName?? || showSchemaName && schemaName??>, </#if>name = "${tableName}"</#if>)
 </#if>
 public class <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if><#if superclassSimpleName??> extends ${superclassSimpleName}</#if> implements java.io.Serializable {
 
+@java.io.Serial
 private static final long serialVersionUID = 1L;
+
 <#list ownEntityPropertyDescs as property>
+
 
     <#if showDbComment && property.comment??>
         /** ${property.comment} */
@@ -59,20 +62,21 @@ private static final long serialVersionUID = 1L;
     <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if> ${originalStatesPropertyName};
 </#if>
 
-    public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>() {
-    }
-    /**
-     * new instance
-     <#list ownEntityPropertyDescs as property>
-     * @Param ${property.name}
-     *         ${property.comment}
-     </#list>
-     */
-    public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>(<#list ownEntityPropertyDescs as property>final ${property.propertyClassSimpleName} ${property.name}<#if property_has_next>,</#if></#list>) {
-        <#list ownEntityPropertyDescs as property>
-        this.${property.name} = ${property.name};
-        </#list>
-    }
+public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>() {
+}
+/**
+* new instance
+<#list ownEntityPropertyDescs as property>
+    * @Param ${property.name}
+    *         ${property.comment}
+</#list>
+*/
+public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>(<#list ownEntityPropertyDescs as property>final ${property.propertyClassSimpleName} ${property.name}<#if property_has_next>,</#if></#list>) {
+<#list ownEntityPropertyDescs as property>
+    this.${property.name} = ${property.name};
+</#list>
+}
+
 <#if useAccessor>
     <#list ownEntityPropertyDescs as property>
 

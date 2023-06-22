@@ -48,6 +48,8 @@ public class ForgotPasswordController {
     }
 
     /**
+     * パスワード再設定メール送信
+     * 
      * @param form
      *            パスワード忘れFORM
      * @param bindingResult
@@ -61,7 +63,7 @@ public class ForgotPasswordController {
      *             対象ユーザーが存在しない場合に発生
      */
     @PostMapping
-    public ModelAndView confirm(@ModelAttribute @Validated final ResetPasswordMailForm form,
+    public ModelAndView send(@ModelAttribute @Validated final ResetPasswordMailForm form,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addAllAttributes(model.asMap());
@@ -69,11 +71,21 @@ public class ForgotPasswordController {
         }
         try {
             forgotPasswordService.send(form.loginId(), form.mail());
-            return new ModelAndView("");
+            return new ModelAndView("redirect:/forgets/passwords/complete");
         } catch (final BadRequestException e) {
             redirectAttributes.addAllAttributes(model.asMap());
             redirectAttributes.addFlashAttribute(ModelKey.EXCEPTION, e);
             return new ModelAndView("redirect:/" + FORGOT_PASSWORD);
         }
+    }
+
+    /**
+     * パスワード再設定メール完了
+     * 
+     * @return 通知完了画面
+     */
+    @GetMapping("complete")
+    public ModelAndView complete() {
+        return new ModelAndView("forgets/passwords/complete");
     }
 }

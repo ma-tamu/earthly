@@ -12,6 +12,7 @@ import jp.co.project.planets.earthly.common.logic.MailLogic;
 import jp.co.project.planets.earthly.db.entity.PasswordToken;
 import jp.co.project.planets.earthly.repository.PasswordTokenRepository;
 import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.webapp.EarthlyProperty;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 
@@ -22,11 +23,15 @@ public class ForgotPasswordService {
     private final PasswordTokenRepository passwordTokenRepository;
     private final MailLogic mailLogic;
 
+    private final EarthlyProperty earthlyProperty;
+
     public ForgotPasswordService(final UserRepository userRepository,
-            final PasswordTokenRepository passwordTokenRepository, final MailLogic mailLogic) {
+            final PasswordTokenRepository passwordTokenRepository, final MailLogic mailLogic,
+            final EarthlyProperty earthlyProperty) {
         this.userRepository = userRepository;
         this.passwordTokenRepository = passwordTokenRepository;
         this.mailLogic = mailLogic;
+        this.earthlyProperty = earthlyProperty;
     }
 
     @Transactional
@@ -38,6 +43,6 @@ public class ForgotPasswordService {
                 UUID.randomUUID().toString().replace("-", StringUtils.EMPTY), expire);
         passwordTokenRepository.insert(passwordToken);
 
-        mailLogic.postPasswordRestNotification(null, passwordToken);
+        mailLogic.postPasswordRestNotification(earthlyProperty.baseUrl(), passwordToken);
     }
 }

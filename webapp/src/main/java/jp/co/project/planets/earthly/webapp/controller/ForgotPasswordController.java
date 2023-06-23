@@ -71,7 +71,7 @@ public class ForgotPasswordController {
         }
         try {
             forgotPasswordService.send(form.loginId(), form.mail());
-            return new ModelAndView("redirect:/forgets/passwords/complete");
+            return new ModelAndView("redirect:/forgets/password/complete");
         } catch (final BadRequestException e) {
             redirectAttributes.addAllAttributes(model.asMap());
             redirectAttributes.addFlashAttribute(ModelKey.EXCEPTION, e);

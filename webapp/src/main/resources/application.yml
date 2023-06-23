@@ -1,6 +1,7 @@
 server:
   servlet:
     context-path: /earthly
+  port: 8080
 
 logging:
   level:
@@ -52,6 +53,7 @@ management:
       base-path: /
 
 earthly:
+  base-url: http://localhost:${server.port}${server.servlet.context-path}
   datasource:
     host: ${MYSQL_HOST:localhost}
     port: ${MYSQL_PORT:3306}
@@ -68,6 +70,10 @@ earthly:
     port: 6379
 
 aws:
-  ses:
-    from: noreply@example.com
+  provider:
+    service: local
     region: ap-northeast-1
+    endpoint: http://localhost:4566 # docker-compose.ymlのlocalstackに記載している内容に合わせてください。
+  ses:
+    from: noreply@planet-system.co.jp
+    region: ${aws.provider.region}

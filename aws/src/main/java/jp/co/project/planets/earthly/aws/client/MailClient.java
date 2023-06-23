@@ -1,8 +1,11 @@
 package jp.co.project.planets.earthly.aws.client;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import jp.co.project.planets.earthly.aws.AwsProviderProperty;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ses.SesClient;
@@ -18,10 +21,14 @@ import software.amazon.awssdk.services.ses.model.SesException;
 @Component
 public class MailClient {
 
+    private final AwsProviderProperty providerProperty;
+
     private final String from;
     private final String region;
 
-    public MailClient(@Value("${aws.ses.from}") final String from, @Value("${aws.ses.region}") final String region) {
+    public MailClient(final AwsProviderProperty providerProperty, @Value("${aws.ses.from}") final String from,
+            @Value("${aws.ses.region}") final String region) {
+        this.providerProperty = providerProperty;
         this.from = from;
         this.region = region;
     }
@@ -51,10 +58,15 @@ public class MailClient {
      * @return SesClient
      */
     private SesClient generateClient() {
-        return SesClient.builder() //
+        final var builder = SesClient.builder() //
                 .region(Region.of(region)) //
-                .credentialsProvider(DefaultCredentialsProvider.create()) //
-                .build();
+                .credentialsProvider(DefaultCredentialsProvider.create());
+
+        if (providerProperty.isLocalStack()) {
+            builder.applyMutation(b -> b.endpointOverride(URI.create(providerProperty.getEndpoint())));
+        }
+
+        return builder.build();
     }
 
     /**

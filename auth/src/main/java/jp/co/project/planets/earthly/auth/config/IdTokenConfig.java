@@ -9,9 +9,19 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 
 import jp.co.project.planets.earthly.auth.security.service.OidcUserInfoService;
 
+/**
+ * id token config
+ */
 @Configuration
 public class IdTokenConfig {
 
+    /**
+     * oauth2 token customizer
+     * 
+     * @param userInfoService
+     *            oidc user info service
+     * @return OAuth2TokenCustomizer
+     */
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(final OidcUserInfoService userInfoService) {
         return context -> {

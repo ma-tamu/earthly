@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import jp.co.project.planets.earthly.emuns.GenderEnum;
 import jp.co.project.planets.earthly.repository.UserRepository;
 
+/**
+ * open id connect user inf service
+ */
 @Service
 public class OidcUserInfoService {
 
@@ -17,6 +20,13 @@ public class OidcUserInfoService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * user load
+     * 
+     * @param username
+     *            ユーザーID
+     * @return OidcUserInfo
+     */
     public OidcUserInfo loadUser(final String username) {
 
         final var userOptional = userRepository.findByLoginId(username);

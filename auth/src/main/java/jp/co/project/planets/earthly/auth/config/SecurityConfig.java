@@ -32,11 +32,11 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
 import jp.co.project.planets.earthly.auth.security.CustomAuthenticationProvider;
-import jp.co.project.planets.earthly.auth.security.LoginUserDetailService;
 import jp.co.project.planets.earthly.auth.security.oauth2.AuthorizationProperties;
 import jp.co.project.planets.earthly.auth.security.oauth2.client.CustomRegisteredClientRepository;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationConsentService;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationService;
+import jp.co.project.planets.earthly.auth.security.service.LoginUserDetailService;
 import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
 import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
 import jp.co.project.planets.earthly.repository.OAuthClientRepository;
@@ -163,7 +163,7 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/favicon.ico", "/health",
+                        .requestMatchers("/login", "/css/**", "/js/**", "/img/**", "/**.ico", "/health",
                                 "/quickTEST", "/fullTEST", "/awesomeTEST")
                         .permitAll().anyRequest().authenticated())
                 .formLogin(config -> config.loginPage("/login")).authenticationProvider(authenticationProvider).build();

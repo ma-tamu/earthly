@@ -1,13 +1,14 @@
 package jp.co.project.planets.earthly.webapp.service;
 
-import jp.co.project.planets.earthly.db.entity.Company;
-import jp.co.project.planets.earthly.repository.CompanyRepository;
-import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import jp.co.project.planets.earthly.schema.db.entity.Company;
+import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
  * suggest service
@@ -21,7 +22,7 @@ public class SuggestService {
      * new instance suggest service
      *
      * @param companyRepository
-     *         company repository
+     *            company repository
      */
     public SuggestService(final CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
@@ -31,9 +32,9 @@ public class SuggestService {
      * 操作ユーザーの閲覧できる会社を検索。
      *
      * @param keywordOptional
-     *         検索キーワード
+     *            検索キーワード
      * @param userInfoDto
-     *         ユーザー情報
+     *            ユーザー情報
      * @return 会社リスト
      */
     @Transactional

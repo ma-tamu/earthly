@@ -1,1 +1,1 @@
-<#assign annotationHash={ "ConfigAutowireable": "jp.co.project.planets.earthly.db.annotation.ConfigAutowireable" }>
+<#assign annotationHash={ "ConfigAutowireable": "jp.co.project.planets.earthly.schema.db.annotation.ConfigAutowireable" }>

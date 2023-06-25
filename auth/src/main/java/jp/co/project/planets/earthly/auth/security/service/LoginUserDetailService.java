@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import jp.co.project.planets.earthly.auth.model.dto.UserInfoDto;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 
 /**
  * login user detail service

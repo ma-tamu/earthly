@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.project.planets.earthly.common.logic.MailLogic;
-import jp.co.project.planets.earthly.db.entity.PasswordToken;
-import jp.co.project.planets.earthly.repository.PasswordTokenRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.db.entity.PasswordToken;
+import jp.co.project.planets.earthly.schema.repository.PasswordTokenRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.EarthlyProperty;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;

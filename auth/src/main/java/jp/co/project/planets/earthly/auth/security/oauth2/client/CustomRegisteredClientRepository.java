@@ -11,9 +11,9 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
-import jp.co.project.planets.earthly.db.entity.Scope;
-import jp.co.project.planets.earthly.model.entity.OAuthClientEntity;
-import jp.co.project.planets.earthly.repository.OAuthClientRepository;
+import jp.co.project.planets.earthly.schema.db.entity.Scope;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 
 /**
  * custom registered client repository

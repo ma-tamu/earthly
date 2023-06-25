@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.common.logic;
 
 import org.springframework.stereotype.Component;
 
-import jp.co.project.planets.earthly.db.entity.UserRole;
+import jp.co.project.planets.earthly.schema.db.entity.UserRole;
 
 /**
  * role logic

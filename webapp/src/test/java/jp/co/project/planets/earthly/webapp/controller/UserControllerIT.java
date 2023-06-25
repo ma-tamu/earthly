@@ -21,11 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import jp.co.project.planets.earthly.core.enums.Timezone;
-import jp.co.project.planets.earthly.model.entity.BelongCompanyEntity;
-import jp.co.project.planets.earthly.model.entity.CountryEntity;
-import jp.co.project.planets.earthly.model.entity.LanguageEntity;
-import jp.co.project.planets.earthly.model.entity.RegionEntity;
-import jp.co.project.planets.earthly.model.entity.UserEntity;
+import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
+import jp.co.project.planets.earthly.schema.model.entity.CountryEntity;
+import jp.co.project.planets.earthly.schema.model.entity.LanguageEntity;
+import jp.co.project.planets.earthly.schema.model.entity.RegionEntity;
+import jp.co.project.planets.earthly.schema.model.entity.UserEntity;
 import jp.co.project.planets.earthly.webapp.model.dto.UserDetailDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 

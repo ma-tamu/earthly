@@ -17,12 +17,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jp.co.project.planets.earthly.core.enums.Timezone;
-import jp.co.project.planets.earthly.db.entity.Company;
-import jp.co.project.planets.earthly.db.entity.User;
-import jp.co.project.planets.earthly.emuns.GenderEnum;
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.repository.CompanyRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.db.entity.Company;
+import jp.co.project.planets.earthly.schema.db.entity.User;
+import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
 import jp.co.project.planets.earthly.webapp.security.dto.CompanyDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;

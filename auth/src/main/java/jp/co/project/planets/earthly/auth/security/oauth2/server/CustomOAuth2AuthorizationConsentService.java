@@ -8,8 +8,8 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
-import jp.co.project.planets.earthly.db.entity.OauthClientConsent;
-import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientConsent;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientConsentRepository;
 
 /**
  * custom oauth2 authorization consent service

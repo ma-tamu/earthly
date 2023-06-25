@@ -14,9 +14,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import jp.co.project.planets.earthly.aws.client.MailClient;
 import jp.co.project.planets.earthly.common.model.dto.MailContentDto;
-import jp.co.project.planets.earthly.db.entity.PasswordToken;
-import jp.co.project.planets.earthly.repository.CompanyRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.db.entity.PasswordToken;
+import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 
 /**
  * mail logic

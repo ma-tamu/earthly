@@ -37,9 +37,9 @@ import jp.co.project.planets.earthly.auth.security.oauth2.client.CustomRegistere
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationConsentService;
 import jp.co.project.planets.earthly.auth.security.oauth2.server.CustomOAuth2AuthorizationService;
 import jp.co.project.planets.earthly.auth.security.service.LoginUserDetailService;
-import jp.co.project.planets.earthly.repository.OAuth2AuthorizationRepository;
-import jp.co.project.planets.earthly.repository.OAuthClientConsentRepository;
-import jp.co.project.planets.earthly.repository.OAuthClientRepository;
+import jp.co.project.planets.earthly.schema.repository.OAuth2AuthorizationRepository;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientConsentRepository;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 
 /**
  * security config

@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import jp.co.project.planets.earthly.db.entity.User;
+import jp.co.project.planets.earthly.schema.db.entity.User;
 
 /**
  * user dto

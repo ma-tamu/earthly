@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,6 +67,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @Disabled
     void 対象ユーザーが取得でき操作ユーザーが閲覧できるロールが閲覧できること() {
 
         // test

@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import jp.co.project.planets.earthly.repository.CompanyRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
 import jp.co.project.planets.earthly.webapp.security.dto.CompanyDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;

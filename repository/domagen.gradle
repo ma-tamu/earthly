@@ -7,11 +7,12 @@ domaCodeGen {
         templateDir = file("$rootDir/repository/template")
         ignoredTableNamePattern = 'earthly_version'
         entity {
-            packageName = 'jp.co.project.planets.earthly.db.entity'
+            packageName = 'jp.co.project.planets.earthly.schema.db.entity'
             overwriteListener = true
         }
         dao {
-            packageName = 'jp.co.project.planets.earthly.db.dao.base'
+            packageName = 'jp.co.project.planets.earthly.schema.db.dao.base'
+            configClassName = 'jp.co.project.planets.earthly.schema.config.DomaConfig'
             overwrite = true
             suffix = 'BaseDao'
         }

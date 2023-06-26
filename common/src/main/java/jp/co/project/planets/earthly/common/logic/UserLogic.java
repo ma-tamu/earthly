@@ -17,14 +17,14 @@ import com.google.common.annotations.VisibleForTesting;
 import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
 import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
-import jp.co.project.planets.earthly.db.entity.PasswordToken;
-import jp.co.project.planets.earthly.db.entity.RecoveryCode;
-import jp.co.project.planets.earthly.db.entity.User;
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.model.entity.UserEntity;
-import jp.co.project.planets.earthly.repository.PasswordTokenRepository;
-import jp.co.project.planets.earthly.repository.RecoveryCodeRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.db.entity.PasswordToken;
+import jp.co.project.planets.earthly.schema.db.entity.RecoveryCode;
+import jp.co.project.planets.earthly.schema.db.entity.User;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.entity.UserEntity;
+import jp.co.project.planets.earthly.schema.repository.PasswordTokenRepository;
+import jp.co.project.planets.earthly.schema.repository.RecoveryCodeRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 
 /**
  * user logic

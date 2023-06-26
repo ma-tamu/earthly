@@ -11,17 +11,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.7.0'
-
-    implementation 'org.seasar.doma:doma:2.29.0'
-    implementation 'org.seasar.doma:doma-gen:2.28.0'
-
-    annotationProcessor 'org.seasar.doma:doma:2.29.0'
-    annotationProcessor 'org.seasar.doma:doma-gen:2.28.0'
+    implementation 'org.seasar.doma:doma-core:2.53.3'
+    annotationProcessor 'org.seasar.doma:doma-processor:2.53.3'
 
     implementation project(":core")
 }
 
-apply plugin: "org.seasar.doma.codegen"
-apply plugin: "org.seasar.doma.compile"
+apply plugin: "org.domaframework.doma.codegen"
+apply plugin: "org.domaframework.doma.compile"
 apply from: "flyway.gradle"
 apply from: "domagen.gradle"

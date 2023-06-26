@@ -1,5 +1,7 @@
 package jp.co.project.planets.earthly.webapp.controller.form.user;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.Email;
@@ -13,7 +15,7 @@ public record UserUpdateForm(@NotBlank @Length(min = 1, max = 128) String name,
         @NotBlank @Email String mail, @NotBlank @Pattern(regexp = "ja|en") String language,
         @NotBlank @Timezone String timezone, @NotBlank String company, @NotBlank String companyId, Boolean lockout,
         Boolean is2fa)
-        implements DtoConvertible<UserDto> {
+        implements Serializable, DtoConvertible<UserDto> {
 
     @Override
     public UserDto toDto() {

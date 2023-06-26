@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.webapp.service;
 
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorCode.*;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -31,15 +32,16 @@ import dev.samstevens.totp.util.Utils;
 import jp.co.project.planets.earthly.common.logic.CryptoLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
-import jp.co.project.planets.earthly.db.entity.Role;
-import jp.co.project.planets.earthly.db.entity.UserRole;
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.model.entity.UserSimpleEntity;
-import jp.co.project.planets.earthly.repository.CompanyRepository;
-import jp.co.project.planets.earthly.repository.RoleRepository;
-import jp.co.project.planets.earthly.repository.UserRepository;
-import jp.co.project.planets.earthly.repository.UserRoleRepository;
+import jp.co.project.planets.earthly.schema.db.entity.Role;
+import jp.co.project.planets.earthly.schema.db.entity.UserRole;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.entity.UserSimpleEntity;
+import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.schema.repository.RoleRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRoleRepository;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
+import jp.co.project.planets.earthly.webapp.constant.RegexConstant;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
@@ -63,6 +65,8 @@ public class UserService {
     private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
     private final CryptoLogic cryptoLogic;
+
+    private static final int MIN_PASSWORD_LENGTH = 8;
 
     /**
      * new instance user service
@@ -315,7 +319,66 @@ public class UserService {
 
         // 管理している会社の場合は、変更可能とする。
         final var companyList = companyRepository.findManagementCompanyByUserId(userInfoDto.id());
-        return companyList.contains(afterCompanyId);
+        return CollectionUtils.containsAny(companyList, afterCompanyId);
+    }
+
+    /**
+     * パスワード編集
+     * 
+     * @param id
+     *            ユーザーID
+     * @param currentPassword
+     *            操作ユーザーバスワード
+     * @param newPassword
+     *            新しいパスワード
+     * @param confirmNewPassword
+     *            新しいパスワードの確認
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             操作ユーザーのパスワードが一致しない。または新しいパスワードと新しいパスワードの確認と一致しない場合に発生。
+     */
+    @Transactional
+    public void editPassword(final String id, final String currentPassword, final String newPassword,
+            final String confirmNewPassword, final EarthlyUserInfoDto userInfoDto) {
+
+        if (!passwordEncoder.matches(currentPassword, userInfoDto.getPassword())) {
+            throw new BadRequestException(EWA4XX011);
+        }
+
+        // パスワード強度の検証
+        validateNewPasswordStrength(newPassword);
+        if (!StringUtils.equals(newPassword, confirmNewPassword)) {
+            throw new BadRequestException(EWA4XX012);
+        }
+
+        final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+        final var encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setUpdatedBy(userInfoDto.id());
+        user.setUpdatedAt(LocalDateTime.now(Clock.systemUTC()));
+        userRepository.update(user);
+    }
+
+    /**
+     * 新しいパスワード強度の検証
+     * 
+     * @param newPassword
+     *            新しいパスワード
+     * @throws BadRequestException
+     *             パスワードの最小桁数未満もしくは、大文字、小文字の英字、数字、記号が含まれていない場合に発生
+     */
+    @VisibleForTesting
+    void validateNewPasswordStrength(final String newPassword) {
+
+        if (newPassword.length() < MIN_PASSWORD_LENGTH) {
+            throw new BadRequestException(EWA4XX013);
+        }
+
+        final var newPasswordMatcher = RegexConstant.PASSWORD_STRENGTH_PATTERN.matcher(newPassword);
+        if (!newPasswordMatcher.matches()) {
+            throw new BadRequestException(EWA4XX014);
+        }
     }
 
     @Transactional

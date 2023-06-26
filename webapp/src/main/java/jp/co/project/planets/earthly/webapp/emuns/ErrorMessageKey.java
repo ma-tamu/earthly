@@ -34,4 +34,24 @@ public final class ErrorMessageKey {
     /** {0}の登録に失敗しました。 */
     public static final String FAILED_INSERT = "exception.failed.insert";
 
+    /** 現在のパスワードが誤っています。 */
+    public static final String CURRENT_PASSWORD = "exception.user.password.current";
+
+    /** 新しいパスワードが一致しません。 */
+    public static final String MISMATCH_NEW_PASSWORD = "exception.user.password.new.mismatch";
+
+    /** 8文字以上入力してください。 */
+    public static final String PASSWORD_LENGTH = "exception.user.password.new.length";
+
+    /**
+     * 大文字、小文字の英字、数字、記号(ASCII 標準文字のみ)を組み合わせてください。<br>
+     * アクセント記号やアクセント記号付き文字は使用できません。
+     */
+    public static final String PASSWORD_NEW_INSUFFICIENT_STRENGTH = "exception.user.password.new.insufficient.strength";
+
+    /** 入力されたメールアドレスが正しくありません。 */
+    public static final String NOT_FOUND_MAIL_USER = "exception.notfound.forgot.password.mail";
+
+    private ErrorMessageKey() {
+    }
 }

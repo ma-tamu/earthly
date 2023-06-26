@@ -5,8 +5,8 @@ import java.util.Locale;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.stereotype.Service;
 
-import jp.co.project.planets.earthly.emuns.GenderEnum;
-import jp.co.project.planets.earthly.repository.UserRepository;
+import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 
 /**
  * open id connect user inf service

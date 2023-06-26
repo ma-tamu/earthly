@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jp.co.project.planets.earthly.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 
 /**
  * ユーザー情報DTO

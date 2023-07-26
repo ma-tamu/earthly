@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
+import org.seasar.doma.boot.ConfigAutowireable;
 import org.seasar.doma.jdbc.SelectOptions;
 
-import jp.co.project.planets.earthly.schema.db.annotation.ConfigAutowireable;
 import jp.co.project.planets.earthly.schema.db.dao.base.RoleBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
 

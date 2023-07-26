@@ -34,6 +34,14 @@ public class ForgotPasswordService {
         this.earthlyProperty = earthlyProperty;
     }
 
+    /**
+     * パスワード変更通知
+     * 
+     * @param loginId
+     *            ログインID
+     * @param mail
+     *            メールアドレス
+     */
     @Transactional
     public void send(final String loginId, final String mail) {
         final var user = userRepository.findByMail(loginId, mail)
@@ -43,6 +51,6 @@ public class ForgotPasswordService {
                 UUID.randomUUID().toString().replace("-", StringUtils.EMPTY), expire);
         passwordTokenRepository.insert(passwordToken);
 
-        mailLogic.postPasswordRestNotification(earthlyProperty.baseUrl(), passwordToken);
+        mailLogic.postPasswordRestNotification(earthlyProperty.getBaseUrl(), passwordToken);
     }
 }

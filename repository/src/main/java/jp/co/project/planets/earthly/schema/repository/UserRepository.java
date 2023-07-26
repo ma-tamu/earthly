@@ -9,7 +9,6 @@ import org.seasar.doma.jdbc.criteria.Entityql;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import jp.co.project.planets.earthly.schema.config.DomaConfig;
 import jp.co.project.planets.earthly.schema.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.schema.db.dao.RoleDao;
 import jp.co.project.planets.earthly.schema.db.dao.UserDao;
@@ -48,14 +47,14 @@ public class UserRepository {
      *            company dao
      * @param roleDao
      *            role dao
-     * @param domaConfig
+     * @param entityql
      */
     public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao,
-            final DomaConfig domaConfig) {
+            final Entityql entityql) {
         this.userDao = userDao;
         this.companyDao = companyDao;
         this.roleDao = roleDao;
-        this.entityql = new Entityql(domaConfig);
+        this.entityql = entityql;
     }
 
     /**

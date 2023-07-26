@@ -8,6 +8,8 @@ logging:
     root: debug
 
 spring:
+  profiles:
+    active: local
   datasource:
     url: ${earthly.datasource.url}
     name: ${earthly.datasource.name}

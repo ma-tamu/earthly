@@ -5,14 +5,13 @@ import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
+import org.seasar.doma.boot.ConfigAutowireable;
 
-import jp.co.project.planets.earthly.schema.config.DomaConfig;
-import jp.co.project.planets.earthly.schema.db.annotation.ConfigAutowireable;
 import jp.co.project.planets.earthly.schema.db.entity.Permission;
 
 /**
  */
-@Dao(config = DomaConfig.class)
+@Dao
 @ConfigAutowireable
 public interface PermissionBaseDao {
 

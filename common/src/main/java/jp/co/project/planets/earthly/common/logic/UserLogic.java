@@ -12,10 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import dev.samstevens.totp.recovery.RecoveryCodeGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.schema.db.entity.PasswordToken;
 import jp.co.project.planets.earthly.schema.db.entity.RecoveryCode;
@@ -35,6 +31,8 @@ public class UserLogic {
     private final RoleLogic roleLogic;
     private final MailLogic mailLogic;
     private final CryptoLogic cryptoLogic;
+
+    private final TotpLogic totpLogic;
     private final UserRepository userRepository;
     private final PasswordTokenRepository passwordTokenRepository;
     private final RecoveryCodeRepository recoveryCodeRepository;
@@ -42,11 +40,13 @@ public class UserLogic {
     private static final Logger log = LoggerFactory.getLogger(UserLogic.class);
 
     public UserLogic(final RoleLogic roleLogic, final MailLogic mailLogic, final CryptoLogic cryptoLogic,
-            final UserRepository userRepository, final PasswordTokenRepository passwordTokenRepository,
+            final TotpLogic totpLogic, final UserRepository userRepository,
+            final PasswordTokenRepository passwordTokenRepository,
             final RecoveryCodeRepository recoveryCodeRepository) {
         this.roleLogic = roleLogic;
         this.mailLogic = mailLogic;
         this.cryptoLogic = cryptoLogic;
+        this.totpLogic = totpLogic;
         this.userRepository = userRepository;
         this.passwordTokenRepository = passwordTokenRepository;
         this.recoveryCodeRepository = recoveryCodeRepository;
@@ -106,13 +106,11 @@ public class UserLogic {
      *            操作ユーザーID
      * @return User
      */
-    @VisibleForTesting
     User generateUser(final UserDto userDto, final String operationUserId) {
         final var user = userDto.toEntity();
         // MFAコード発行用のシークレットを発行
         // https://github.com/samdjstevens/java-totp
-        final var secretGenerator = new DefaultSecretGenerator();
-        final var secret = secretGenerator.generate();
+        final var secret = totpLogic.generateSecret();
         user.setSecret(secret);
         user.setCreatedBy(operationUserId);
         user.setUpdatedBy(operationUserId);
@@ -126,8 +124,7 @@ public class UserLogic {
      *            user id
      */
     void insertRecoveryCode(final String id) {
-        final var recoveryCodeGenerator = new RecoveryCodeGenerator();
-        final var recoveryCodes = recoveryCodeGenerator.generateCodes(6);
+        final var recoveryCodes = totpLogic.generateRecoveryCode();
         for (final var recoveryCode : recoveryCodes) {
             final var entity = new RecoveryCode(null, id, recoveryCode, false);
             recoveryCodeRepository.insert(entity);

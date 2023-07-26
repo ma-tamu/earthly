@@ -52,6 +52,9 @@ public final class ErrorMessageKey {
     /** 入力されたメールアドレスが正しくありません。 */
     public static final String NOT_FOUND_MAIL_USER = "exception.notfound.forgot.password.mail";
 
+    /** 想定外のエラーが発生しました。 */
+    public static final String UNEXPECTED = "exception.internal.unexpected";
+
     private ErrorMessageKey() {
     }
 }

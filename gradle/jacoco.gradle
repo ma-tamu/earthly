@@ -15,9 +15,9 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "jp/co/project/planets/earthly/db/dao/**",
-                    "jp/co/project/planets/earthly/db/entity/**",
-                    "jp/co/project/planets/earthly/model/entity/**"
+                    "jp/co/project/planets/earthly/schema/db/dao/**",
+                    "jp/co/project/planets/earthly/schema/db/entity/**",
+                    "jp/co/project/planets/earthly/schema/model/entity/**"
             ])
         }))
     }
@@ -37,9 +37,9 @@ jacocoTestCoverageVerification {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, excludes: [
-                    'jp/co/project/planets/earthly/db/dao/**/**',
-                    'jp/co/project/planets/earthly/db/entity/**',
-                    'jp/co/project/planets/earthly/model/entity/**'
+                    'jp/co/project/planets/earthly/schema/db/dao/**/**',
+                    'jp/co/project/planets/earthly/schema/db/entity/**',
+                    'jp/co/project/planets/earthly/schema/model/entity/**'
             ])
         }))
     }

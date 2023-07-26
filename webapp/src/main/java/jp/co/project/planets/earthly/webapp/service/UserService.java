@@ -24,12 +24,8 @@ import org.springframework.util.Assert;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import dev.samstevens.totp.code.HashingAlgorithm;
-import dev.samstevens.totp.exceptions.QrGenerationException;
-import dev.samstevens.totp.qr.QrData;
-import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.util.Utils;
 import jp.co.project.planets.earthly.common.logic.CryptoLogic;
+import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
@@ -66,6 +62,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final CryptoLogic cryptoLogic;
 
+    private final TotpLogic totpLogic;
+
     private static final int MIN_PASSWORD_LENGTH = 8;
 
     /**
@@ -87,11 +85,12 @@ public class UserService {
      *            password encoder
      * @param cryptoLogic
      *            crypto logic
+     * @param totpLogic
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
             final CompanyRepository companyRepository, final RoleRepository roleRepository,
             final UserRoleRepository userRoleRepository, final MessageSource messageSource,
-            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic) {
+            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic, final TotpLogic totpLogic) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
@@ -100,6 +99,7 @@ public class UserService {
         this.messageSource = messageSource;
         this.passwordEncoder = passwordEncoder;
         this.cryptoLogic = cryptoLogic;
+        this.totpLogic = totpLogic;
     }
 
     /**
@@ -119,17 +119,8 @@ public class UserService {
         if (!userEntity.is2fa()) {
             return new UserDetailDto(userEntity, null);
         }
-        final var builder = new QrData.Builder();
-        final var qrData = builder.issuer("Planet Systems").label(userEntity.loginId()).secret(userEntity.secret())
-                .algorithm(HashingAlgorithm.SHA1).digits(6).period(30).build();
-        final var zxingPngQrGenerator = new ZxingPngQrGenerator();
-        try {
-            final byte[] bytes = zxingPngQrGenerator.generate(qrData);
-            final var image = Utils.getDataUriForImage(bytes, zxingPngQrGenerator.getImageMimeType());
-            return new UserDetailDto(userEntity, image);
-        } catch (final QrGenerationException e) {
-            throw new RuntimeException(e);
-        }
+        final var image = totpLogic.generateQrImage(userEntity.loginId(), userEntity.secret());
+        return new UserDetailDto(userEntity, image);
     }
 
     /**

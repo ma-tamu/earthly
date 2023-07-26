@@ -75,7 +75,7 @@
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
             <div class="col-lg-9 col-md-8">
               <th:block
-                  th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
+                  th:text="${T(jp.co.project.planets.earthly.schema.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
                 M
               </th:block>
             </div>
@@ -157,7 +157,7 @@
               <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
               <div class="col-lg-9 col-md-8">
                 <th:block
-                    th:text="${T(jp.co.project.planets.earthly.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
+                    th:text="${T(jp.co.project.planets.earthly.schema.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
                   M
                 </th:block>
               </div>

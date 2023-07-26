@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
+import org.seasar.doma.boot.ConfigAutowireable;
 
-import jp.co.project.planets.earthly.schema.db.annotation.ConfigAutowireable;
 import jp.co.project.planets.earthly.schema.db.dao.base.CompanyBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;

@@ -1,11 +1,12 @@
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    
+
     implementation 'commons-io:commons-io:2.11.0'
-    implementation 'commons-codec:commons-codec:1.15'
     implementation 'org.antlr:ST4:4.3.4'
-    implementation 'dev.samstevens.totp:totp:1.7.1'
+
+    implementation 'commons-codec:commons-codec:1.16.0'
+    implementation 'com.google.zxing:javase:3.5.1'
 
     implementation project(":core")
     implementation project(":repository")

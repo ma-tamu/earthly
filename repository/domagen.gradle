@@ -12,7 +12,7 @@ domaCodeGen {
         }
         dao {
             packageName = 'jp.co.project.planets.earthly.schema.db.dao.base'
-            configClassName = 'jp.co.project.planets.earthly.schema.config.DomaConfig'
+//            configClassName = 'org.seasar.doma.boot.autoconfigure.DomaConfig'
             overwrite = true
             suffix = 'BaseDao'
         }

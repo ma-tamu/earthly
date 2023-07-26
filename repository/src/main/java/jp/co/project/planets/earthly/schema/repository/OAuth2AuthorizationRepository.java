@@ -1,9 +1,11 @@
 package jp.co.project.planets.earthly.schema.repository;
 
+import org.seasar.doma.jdbc.criteria.Entityql;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.OAuth2AuthorizationDao;
 import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization;
+import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization_;
 
 /**
  * oauth2 authorization repository
@@ -12,9 +14,11 @@ import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization;
 public class OAuth2AuthorizationRepository {
 
     private final OAuth2AuthorizationDao oauth2AuthorizationDao;
+    private final Entityql entityql;
 
-    public OAuth2AuthorizationRepository(final OAuth2AuthorizationDao oauth2AuthorizationDao) {
+    public OAuth2AuthorizationRepository(final OAuth2AuthorizationDao oauth2AuthorizationDao, final Entityql entityql) {
         this.oauth2AuthorizationDao = oauth2AuthorizationDao;
+        this.entityql = entityql;
     }
 
     /**
@@ -36,7 +40,8 @@ public class OAuth2AuthorizationRepository {
      * @return Oauth2Authorization
      */
     public Oauth2Authorization findByState(final String state) {
-        return oauth2AuthorizationDao.selectByState(state);
+        final var oauth2Authorization = new Oauth2Authorization_();
+        return entityql.from(oauth2Authorization).where(w -> w.eq(oauth2Authorization.state, state)).fetchOne();
     }
 
     /**
@@ -47,7 +52,9 @@ public class OAuth2AuthorizationRepository {
      * @return Oauth2Authorization
      */
     public Oauth2Authorization findByCode(final String code) {
-        return oauth2AuthorizationDao.selectByCode(code);
+        final var oauth2Authorization = new Oauth2Authorization_();
+        return entityql.from(oauth2Authorization).where(w -> w.eq(oauth2Authorization.authorizationCodeValue, code))
+                .fetchOne();
     }
 
     /**
@@ -58,7 +65,9 @@ public class OAuth2AuthorizationRepository {
      * @return Oauth2Authorization
      */
     public Oauth2Authorization findByAccessToken(final String accessToken) {
-        return oauth2AuthorizationDao.selectByAccessToken(accessToken);
+        final var oauth2Authorization = new Oauth2Authorization_();
+        return entityql.from(oauth2Authorization).where(w -> w.eq(oauth2Authorization.accessTokenValue, accessToken))
+                .fetchOne();
     }
 
     /**
@@ -69,7 +78,9 @@ public class OAuth2AuthorizationRepository {
      * @return Oauth2Authorization
      */
     public Oauth2Authorization findByRefreshToken(final String refreshToken) {
-        return oauth2AuthorizationDao.selectByRefreshToken(refreshToken);
+        final var oauth2Authorization = new Oauth2Authorization_();
+        return entityql.from(oauth2Authorization).where(w -> w.eq(oauth2Authorization.refreshTokenValue, refreshToken))
+                .fetchOne();
     }
 
     /**
@@ -80,7 +91,13 @@ public class OAuth2AuthorizationRepository {
      * @return Oauth2Authorization
      */
     public Oauth2Authorization findByUnknownToken(final String token) {
-        return oauth2AuthorizationDao.selectByUnknownToken(token);
+        final var oauth2Authorization = new Oauth2Authorization_();
+        return entityql.from(oauth2Authorization)
+                .where(w -> w.or(() -> {
+                    w.eq(oauth2Authorization.accessTokenValue, token);
+                    w.eq(oauth2Authorization.accessTokenValue, token);
+                    w.eq(oauth2Authorization.refreshTokenValue, token);
+                })).fetchOne();
     }
 
     public int insert(final Oauth2Authorization oauth2Authorization) {

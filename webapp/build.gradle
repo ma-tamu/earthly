@@ -13,8 +13,6 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-    implementation 'dev.samstevens.totp:totp:1.7.1'
-
     implementation project(":core")
     implementation project(":repository")
     implementation project(":common")

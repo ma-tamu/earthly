@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.webapp.util;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,6 +48,11 @@ public final class RequestUtils {
      * @return 認証前のURL
      */
     public static Optional<String> getSavedRequestRedirectUrl() {
-        return Optional.ofNullable(getSavedRequest()).map(DefaultSavedRequest::getRedirectUrl);
+        return Optional.ofNullable(getSavedRequest()).map(request -> {
+            if (StringUtils.isBlank(request.getQueryString())) {
+                return request.getRequestURI();
+            }
+            return request.getRequestURI() + "?" + request.getQueryString();
+        });
     }
 }

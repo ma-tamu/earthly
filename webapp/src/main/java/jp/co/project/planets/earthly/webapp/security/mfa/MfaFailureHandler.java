@@ -1,4 +1,4 @@
-package jp.co.project.planets.earthly.webapp.security.handler;
+package jp.co.project.planets.earthly.webapp.security.mfa;
 
 import java.io.IOException;
 
@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jp.co.project.planets.earthly.webapp.constant.ModelKey;
 
-/**
- * login failure handler
- */
-public class LoginFailureHandler implements AuthenticationFailureHandler {
+public class MfaFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
             final AuthenticationException exception) throws IOException, ServletException {

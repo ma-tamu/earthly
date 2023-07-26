@@ -4,16 +4,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.time.SystemTimeProvider;
+import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
  * authentication service
  */
 @Service
-public class AuthenticationService {
+public class MfaService {
+
+    private final TotpLogic totpLogic;
+
+    public MfaService(final TotpLogic totpLogic) {
+        this.totpLogic = totpLogic;
+    }
 
     /**
      * 2要素認証コードの検証
@@ -25,11 +29,7 @@ public class AuthenticationService {
      * @return true: 検証OK false: 検証失敗
      */
     public boolean verify(final String code, final EarthlyUserInfoDto userInfoDto) {
-
-        final var systemTimeProvider = new SystemTimeProvider();
-        final var defaultCodeGenerator = new DefaultCodeGenerator();
-        final var codeVerifier = new DefaultCodeVerifier(defaultCodeGenerator, systemTimeProvider);
-        return codeVerifier.isValidCode(userInfoDto.secret(), code);
+        return totpLogic.verifyCode(code, userInfoDto.secret());
     }
 
     /**

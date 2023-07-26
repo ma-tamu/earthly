@@ -8,7 +8,7 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:3.1.2"
         classpath "io.spring.gradle:dependency-management-plugin:1.1.0"
         classpath 'com.mysql:mysql-connector-j:8.0.33'
-        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.8"
+        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14"
         classpath "de.aaschmid:gradle-cpd-plugin:3.3"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513"
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"

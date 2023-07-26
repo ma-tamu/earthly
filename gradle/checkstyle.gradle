@@ -1,15 +1,15 @@
 apply plugin: 'checkstyle'
 
 checkstyle {
-    toolVersion = '9.2'
+    toolVersion = '10.3.3'
     ignoreFailures = true
     showViolations = true
 }
 
 tasks.withType(Checkstyle) {
     reports {
-        xml.enabled true
-        html.enabled true
+        xml.required = true
+        html.required = true
     }
     source = sourceSets.main.allJava
     exclude '**/*DaoImpl.java'

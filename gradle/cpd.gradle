@@ -7,8 +7,8 @@ cpd {
 
 cpdCheck {
     reports {
-        text.enabled = false
-        xml.enabled = true
+        text.required = false
+        xml.required = true
     }
     source = sourceSets.main.allJava
     exclude '**/*DaoImpl.java'

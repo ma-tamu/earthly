@@ -112,12 +112,12 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.2fa}">2要素認証</div>
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mfa}">2要素認証</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:if="${userDetailDto.userEntity.is2fa}">
+              <th:block th:if="${userDetailDto.userEntity.mfa}">
                 <img th:src="${userDetailDto.qrcode}" alt="QR" height="200" width="200">
               </th:block>
-              <th:block th:unless="${userDetailDto.userEntity.is2fa}">
+              <th:block th:unless="${userDetailDto.userEntity.mfa}">
                 無効
               </th:block>
             </div>
@@ -211,13 +211,13 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.2fa}">2要素認証</div>
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mfa}">2要素認証</div>
               <div class="col-lg-9 col-md-8">
                 <div class="form-check form-switch">
-                  <input type="checkbox" class="form-check-input" th:data-before="${userDetailDto.userEntity.is2fa}"
-                         th:classappend="${#fields.hasErrors('is2fa')}?'is-invalid'" id="is2fa"
-                         th:field="*{is2fa}" th:disabled="${readOnly}">
-                  <label for="is2fa">enable 2fa ?</label>
+                  <input class="form-check-input" id="mfa" th:classappend="${#fields.hasErrors('mfa')}?'is-invalid'"
+                         th:data-before="${userDetailDto.userEntity.mfa}" th:disabled="${readOnly}"
+                         th:field="*{mfa}" type="checkbox">
+                  <label for="mfa">enable mfa ?</label>
                 </div>
               </div>
             </div>

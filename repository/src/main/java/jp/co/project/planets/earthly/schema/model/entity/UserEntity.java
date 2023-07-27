@@ -27,8 +27,8 @@ import jp.co.project.planets.earthly.schema.db.entity.Role;
  *            タイムゾーン
  * @param lockout
  *            ロックアウト
- * @param is2fa
- *            2要素認証の有無
+ * @param isMfa
+ *            多要素認証の有無
  * @param company
  *            所属会社
  * @param roleList
@@ -45,7 +45,8 @@ import jp.co.project.planets.earthly.schema.db.entity.Role;
  *            削除フラグ
  */
 public record UserEntity(String id, String loginId, String name, String gender, String mail, String password,
-        String language, String timezone, Boolean lockout, Boolean is2fa, String secret, BelongCompanyEntity company,
+        String language, String timezone, Boolean lockout, Boolean isMfa, String secret,
+        BelongCompanyEntity company,
         List<Role> roleList, List<CompanySimpleEntity> managementCompanyList, LocalDateTime createdAt,
         OperationUser createdBy, LocalDateTime updatedAt, OperationUser updatedBy, Boolean isDeleted)
         implements Serializable {

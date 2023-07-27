@@ -116,7 +116,7 @@ public class UserService {
         validateAccessible(id, userInfoDto);
         final var userEntity = userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id())
                 .orElseThrow(() -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
-        if (!userEntity.is2fa()) {
+        if (!userEntity.isMfa()) {
             return new UserDetailDto(userEntity, null);
         }
         final var image = totpLogic.generateQrImage(userEntity.loginId(), userEntity.secret());

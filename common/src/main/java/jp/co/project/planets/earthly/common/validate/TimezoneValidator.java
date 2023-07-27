@@ -6,7 +6,10 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jp.co.project.planets.earthly.common.annotation.validate.Timezone;
 
-public class TimezoneValidator implements ConstraintValidator<Timezone, String> {
+/**
+ * timezone validator
+ */
+public final class TimezoneValidator implements ConstraintValidator<Timezone, String> {
 
     @Override
     public void initialize(final Timezone timezone) {
@@ -15,9 +18,6 @@ public class TimezoneValidator implements ConstraintValidator<Timezone, String> 
     @Override
     public boolean isValid(final String value, final ConstraintValidatorContext context) {
         final var timezone = jp.co.project.planets.earthly.core.enums.Timezone.of(value);
-        if (Objects.isNull(timezone)) {
-            return false;
-        }
-        return true;
+        return !Objects.isNull(timezone);
     }
 }

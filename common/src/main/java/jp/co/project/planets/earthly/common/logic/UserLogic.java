@@ -87,6 +87,7 @@ public class UserLogic {
         final var userOptional = userRepository.findByLoginId(userDto.loginId());
         if (userOptional.isEmpty()) {
             log.error("user not found? loginId:{}", userDto.loginId());
+            return Optional.empty();
         }
         final var createdUser = userOptional.get();
         final var id = createdUser.getId();
@@ -159,7 +160,7 @@ public class UserLogic {
         user.setMail(userDto.mail());
         final var lockout = StringUtils.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
         user.setLockout(lockout);
-        user.setTwoFactorAuthentication(BooleanUtils.isTrue(userDto.is2fa()));
+        user.setTwoFactorAuthentication(BooleanUtils.isTrue(userDto.isMfa()));
         user.setLanguage(userDto.language());
         user.setTimezone(userDto.timezone());
         user.setCompanyId(userDto.company());

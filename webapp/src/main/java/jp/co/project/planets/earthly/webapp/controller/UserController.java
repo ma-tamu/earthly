@@ -90,7 +90,7 @@ public class UserController {
         final var userEntity = userDetailDto.userEntity();
         final var userUpdateForm = new UserUpdateForm(userEntity.name(), userEntity.mail(), userEntity.language(),
                 userEntity.timezone(), userEntity.company().name(), userEntity.company().id(), userEntity.lockout(),
-                userEntity.is2fa());
+                userEntity.isMfa());
         modelAndView.addObject(userUpdateForm);
         modelAndView.addObject(userDetailDto);
         modelAndView.addObject(ROLE_PAGE, new PageImpl<>(userEntity.roleList()));

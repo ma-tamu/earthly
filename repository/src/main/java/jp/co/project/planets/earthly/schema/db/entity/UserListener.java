@@ -14,27 +14,27 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class UserListener implements EntityListener<User> {
 
     @Override
-    public void preInsert(final User entity, final PreInsertContext<User> context) {
+    public void preInsert(User entity, PreInsertContext<User> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override
-    public void preUpdate(final User entity, final PreUpdateContext<User> context) {
+    public void preUpdate(User entity, PreUpdateContext<User> context) {
     }
 
     @Override
-    public void preDelete(final User entity, final PreDeleteContext<User> context) {
+    public void preDelete(User entity, PreDeleteContext<User> context) {
     }
 
     @Override
-    public void postInsert(final User entity, final PostInsertContext<User> context) {
+    public void postInsert(User entity, PostInsertContext<User> context) {
     }
 
     @Override
-    public void postUpdate(final User entity, final PostUpdateContext<User> context) {
+    public void postUpdate(User entity, PostUpdateContext<User> context) {
     }
 
     @Override
-    public void postDelete(final User entity, final PostDeleteContext<User> context) {
+    public void postDelete(User entity, PostDeleteContext<User> context) {
     }
 }

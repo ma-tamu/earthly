@@ -1,4 +1,4 @@
-package jp.co.project.planets.earthly.schema.db.dao;
+package jp.co.project.planets.earthly.schema.db.dao.base;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -14,26 +14,38 @@ import org.seasar.doma.jdbc.SqlFileRepository;
 import org.seasar.doma.jdbc.dialect.Dialect;
 
 /**
- * 
+ *
  */
-public class OAuthClientDaoTest {
+public class OauthClientManagementBaseDaoTest {
 
-    /** */
+    /**
+     *
+     */
     protected SqlFileRepository repository;
 
-    /** */
+    /**
+     *
+     */
     protected Dialect dialect;
 
-    /** */
+    /**
+     *
+     */
     protected Driver driver;
 
-    /** */
+    /**
+     *
+     */
     protected String url;
 
-    /** */
+    /**
+     *
+     */
     protected String user;
 
-    /** */
+    /**
+     *
+     */
     protected String password;
 
     @BeforeEach
@@ -80,29 +92,10 @@ public class OAuthClientDaoTest {
      * @throws Exception
      */
     @Test
-    public void testSelectByAccessible(final TestInfo testInfo) throws Exception {
+    public void testSelectById(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectByAccessible.sql", dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectByClientId(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectByClientId.sql", dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectByName(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectByName.sql", dialect);
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/base/OauthClientManagementBaseDao/selectById.sql",
+                dialect);
         execute(sqlFile);
     }
 

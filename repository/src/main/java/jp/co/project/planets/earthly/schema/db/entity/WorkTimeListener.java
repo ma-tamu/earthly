@@ -14,27 +14,27 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class WorkTimeListener implements EntityListener<WorkTime> {
 
     @Override
-    public void preInsert(final WorkTime entity, final PreInsertContext<WorkTime> context) {
+    public void preInsert(WorkTime entity, PreInsertContext<WorkTime> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override
-    public void preUpdate(final WorkTime entity, final PreUpdateContext<WorkTime> context) {
+    public void preUpdate(WorkTime entity, PreUpdateContext<WorkTime> context) {
     }
 
     @Override
-    public void preDelete(final WorkTime entity, final PreDeleteContext<WorkTime> context) {
+    public void preDelete(WorkTime entity, PreDeleteContext<WorkTime> context) {
     }
 
     @Override
-    public void postInsert(final WorkTime entity, final PostInsertContext<WorkTime> context) {
+    public void postInsert(WorkTime entity, PostInsertContext<WorkTime> context) {
     }
 
     @Override
-    public void postUpdate(final WorkTime entity, final PostUpdateContext<WorkTime> context) {
+    public void postUpdate(WorkTime entity, PostUpdateContext<WorkTime> context) {
     }
 
     @Override
-    public void postDelete(final WorkTime entity, final PostDeleteContext<WorkTime> context) {
+    public void postDelete(WorkTime entity, PostDeleteContext<WorkTime> context) {
     }
 }

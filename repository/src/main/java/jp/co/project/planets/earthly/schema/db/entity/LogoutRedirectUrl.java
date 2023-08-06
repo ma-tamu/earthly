@@ -18,20 +18,28 @@ public class LogoutRedirectUrl extends AbstractLogoutRedirectUrl implements java
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /** OAuthクライアントid */
+    /**
+     * OAuthクライアントid
+     */
     @Column(name = "oauth_client_id")
     String oauthClientId;
 
-    /** ログアウトリダイレクトURL */
+    /**
+     * ログアウトリダイレクトURL
+     */
     @Column(name = "redirect_url")
     String redirectUrl;
 
-    /** 作成日 */
+    /**
+     * 作成日
+     */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -56,7 +64,7 @@ public class LogoutRedirectUrl extends AbstractLogoutRedirectUrl implements java
 
     /**
      * new instance
-     * 
+     *
      * @Param id id
      * @Param oauthClientId OAuthクライアントid
      * @Param redirectUrl ログアウトリダイレクトURL

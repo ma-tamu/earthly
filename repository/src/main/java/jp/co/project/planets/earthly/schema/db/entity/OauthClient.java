@@ -18,20 +18,28 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /** OAuthクライアント名 */
+    /**
+     * OAuthクライアント名
+     */
     @Column(name = "name")
     String name;
 
-    /** クライアントID */
+    /**
+     * クライアントID
+     */
     @Column(name = "client_id")
     String clientId;
 
-    /** クライアントシークレット */
+    /**
+     * クライアントシークレット
+     */
     @Column(name = "client_secret")
     String clientSecret;
 
@@ -60,7 +68,7 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
 
     /**
      * new instance
-     * 
+     *
      * @Param id id
      * @Param name OAuthクライアント名
      * @Param clientId クライアントID

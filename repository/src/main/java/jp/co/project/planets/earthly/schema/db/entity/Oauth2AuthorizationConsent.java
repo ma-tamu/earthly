@@ -16,20 +16,28 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /**  */
+    /**
+     *
+     */
     @Column(name = "registered_client_id")
     String registeredClientId;
 
-    /**  */
+    /**
+     *
+     */
     @Column(name = "principal_name")
     String principalName;
 
-    /**  */
+    /**
+     *
+     */
     @Column(name = "authorities")
     String authorities;
 
@@ -38,7 +46,7 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
 
     /**
      * new instance
-     * 
+     *
      * @Param id
      * @Param registeredClientId
      * @Param principalName

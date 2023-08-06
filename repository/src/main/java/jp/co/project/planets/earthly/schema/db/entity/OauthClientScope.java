@@ -16,16 +16,22 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /** OAuthクライアントid */
+    /**
+     * OAuthクライアントid
+     */
     @Column(name = "oauth_client_id")
     String oauthClientId;
 
-    /** スコープid */
+    /**
+     * スコープid
+     */
     @Column(name = "scope_id")
     String scopeId;
 
@@ -34,7 +40,7 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
 
     /**
      * new instance
-     * 
+     *
      * @Param id id
      * @Param oauthClientId OAuthクライアントid
      * @Param scopeId スコープid

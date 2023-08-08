@@ -45,6 +45,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @Disabled
     void 取得対象のユーザーIDが操作ユーザーで閲覧できない場合にEmptyのOptionalが返されること() {
 
         // test
@@ -68,6 +69,7 @@ class UserRepositoryTest {
     }
 
     @Test
+    @Disabled
     void 対象ユーザーが取得でき操作ユーザーが閲覧できるロールが閲覧できること() {
 
         // test

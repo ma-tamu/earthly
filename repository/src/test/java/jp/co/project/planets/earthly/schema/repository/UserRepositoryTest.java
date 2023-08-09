@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +33,6 @@ import jp.co.project.planets.earthly.schema.test.emuns.RegionEnum;
 @SpringBootTest(classes = TestConfig.class)
 @Transactional
 @Sql(scripts = { "classpath:/datasets/users.sql" })
-@Disabled
 class UserRepositoryTest {
 
     @BeforeEach

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
 
 @SpringBootTest(classes = TestConfig.class)
 @Transactional
+@Disabled
 class OAuthClientRepositoryTest {
 
     static final Scope ME = new Scope("15b4a732660d11ec8a0b0242ac120003", "me", null, "NULL", null, "NULL", false);

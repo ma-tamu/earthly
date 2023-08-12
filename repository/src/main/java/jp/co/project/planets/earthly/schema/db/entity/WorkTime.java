@@ -20,16 +20,22 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /** 年月日 */
+    /**
+     * 年月日
+     */
     @Column(name = "work_date")
     LocalDate workDate;
 
-    /** 始業時間 */
+    /**
+     * 始業時間
+     */
     @Column(name = "start_time")
     LocalTime startTime;
 
@@ -37,11 +43,15 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     @Column(name = "end_time")
     LocalTime endTime;
 
-    /** 所定内通常勤務 */
+    /**
+     * 所定内通常勤務
+     */
     @Column(name = "official_working_time")
     LocalTime officialWorkingTime;
 
-    /** 所定内深夜勤務 */
+    /**
+     * 所定内深夜勤務
+     */
     @Column(name = "official_midnight_working_time")
     LocalTime officialMidnightWorkingTime;
 
@@ -74,7 +84,7 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
 
     /**
      * new instance
-     * 
+     *
      * @Param id id
      * @Param workDate 年月日
      * @Param startTime 始業時間

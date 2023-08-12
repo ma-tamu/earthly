@@ -14,27 +14,27 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class SubOfficeListener implements EntityListener<SubOffice> {
 
     @Override
-    public void preInsert(final SubOffice entity, final PreInsertContext<SubOffice> context) {
+    public void preInsert(SubOffice entity, PreInsertContext<SubOffice> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
     }
 
     @Override
-    public void preUpdate(final SubOffice entity, final PreUpdateContext<SubOffice> context) {
+    public void preUpdate(SubOffice entity, PreUpdateContext<SubOffice> context) {
     }
 
     @Override
-    public void preDelete(final SubOffice entity, final PreDeleteContext<SubOffice> context) {
+    public void preDelete(SubOffice entity, PreDeleteContext<SubOffice> context) {
     }
 
     @Override
-    public void postInsert(final SubOffice entity, final PostInsertContext<SubOffice> context) {
+    public void postInsert(SubOffice entity, PostInsertContext<SubOffice> context) {
     }
 
     @Override
-    public void postUpdate(final SubOffice entity, final PostUpdateContext<SubOffice> context) {
+    public void postUpdate(SubOffice entity, PostUpdateContext<SubOffice> context) {
     }
 
     @Override
-    public void postDelete(final SubOffice entity, final PostDeleteContext<SubOffice> context) {
+    public void postDelete(SubOffice entity, PostDeleteContext<SubOffice> context) {
     }
 }

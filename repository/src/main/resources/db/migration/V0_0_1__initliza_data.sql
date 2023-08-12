@@ -65,7 +65,7 @@ VALUES ('1b6a0d2a65f911ec8a0b0242ac120003', 'authorization_code', now(), 'NULL',
        ('0f4c8f7b660d11ec8a0b0242ac120003', 'password', now(), 'NULL', now(), 'NULL', 0);
 
 INSERT INTO `scope` (`id`, `name`, `created_at`, `created_by`, `updated_at`, `updated_by`, `is_deleted`)
-VALUES ('a85c1c6665fc11ec8a0b0242ac120003', 'open_id', now(), 'NULL', now(), 'NULL', 0),
+VALUES ('a85c1c6665fc11ec8a0b0242ac120003', 'openid', now(), 'NULL', now(), 'NULL', 0),
        ('15b4a732660d11ec8a0b0242ac120003', 'me', now(), 'NULL', now(), 'NULL', 0);
 
 INSERT INTO `oauth_client` (`id`, `name`, `client_id`, `client_secret`, `created_at`, `created_by`, `updated_at`,

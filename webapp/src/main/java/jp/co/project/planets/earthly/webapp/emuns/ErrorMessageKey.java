@@ -17,6 +17,10 @@ public final class ErrorMessageKey {
     public static final String FORBIDDEN_EDIT_USER = "exception.forbidden.edit.user";
     /** ユーザー削除の権限がありません。 */
     public static final String FORBIDDEN_DELETE_USER = "exception.forbidden.delete.user";
+    /**
+     * OAuthクライアントを閲覧することはできません。
+     */
+    public static final String FORBIDDEN_CLIENT = "exception.forbidden.client";
     /** 所属会社の編集ができません。 */
     public static final String NOT_MODIFY_BELONG_COMPANY = "exception.modify.company";
     /** 新しいパスワードと新しいパスワードの再入力が一致しません。 */

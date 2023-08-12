@@ -1,7 +1,10 @@
 package jp.co.project.planets.earthly.schema.repository;
 
+import java.util.List;
 import java.util.Objects;
 
+import org.seasar.doma.boot.Pageables;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.GrantTypeDao;
@@ -10,6 +13,8 @@ import jp.co.project.planets.earthly.schema.db.dao.OAuthClientDao;
 import jp.co.project.planets.earthly.schema.db.dao.RedirectUriDao;
 import jp.co.project.planets.earthly.schema.db.dao.ScopeDao;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
 
 /**
@@ -77,5 +82,42 @@ public class OAuthClientRepository {
 
         return new OAuthClientEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
                 oauthClient.getName(), scopes, grantTypes, redirectUris, logoutRedirectUrls);
+    }
+
+    /**
+     * 閲覧できるOAuthクライアントリスト取得
+     *
+     * @param permissionEnumList
+     *            パーミッションリスト
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return OAuthクライアントリスト
+     */
+    public List<OauthClient> findByAccessible(final List<PermissionEnum> permissionEnumList,
+            final String operatorUserId) {
+        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        return oauthClientDao.selectByAccessible(hasViewAllOAuthClient, operatorUserId);
+    }
+
+    /**
+     * OAuthクライアント名からOAuthクライアントリストを取得
+     *
+     * @param name
+     *            OAuthクライアント名
+     * @param pageable
+     *            ページャー
+     * @param permissionEnumList
+     *            パーミッションリスト
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return OAuthクライアントリスト
+     */
+    public OAuthClientSearchResultDto findByName(final String name, final Pageable pageable,
+            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var oauthClientList = oauthClientDao.selectByName(name, hasViewAllOAuthClient, operatorUserId,
+                selectOptions);
+        return new OAuthClientSearchResultDto(oauthClientList, pageable.getOffset(), selectOptions.getCount());
     }
 }

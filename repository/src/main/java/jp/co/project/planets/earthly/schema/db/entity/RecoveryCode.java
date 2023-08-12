@@ -16,16 +16,22 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**  */
+    /**
+     *
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /**  */
+    /**
+     *
+     */
     @Column(name = "userid")
     String userid;
 
-    /**  */
+    /**
+     *
+     */
     @Column(name = "code")
     String code;
 
@@ -38,7 +44,7 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
 
     /**
      * new instance
-     * 
+     *
      * @Param id
      * @Param userid
      * @Param code

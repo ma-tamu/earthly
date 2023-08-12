@@ -18,20 +18,28 @@ public class GrantType extends AbstractGrantType implements java.io.Serializable
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     @Id
     @Column(name = "id")
     String id;
 
-    /** 付与タイプ */
+    /**
+     * 付与タイプ
+     */
     @Column(name = "type")
     String type;
 
-    /** 作成日 */
+    /**
+     * 作成日
+     */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    /** 作成者 */
+    /**
+     * 作成者
+     */
     @Column(name = "created_by")
     String createdBy;
 
@@ -52,7 +60,7 @@ public class GrantType extends AbstractGrantType implements java.io.Serializable
 
     /**
      * new instance
-     * 
+     *
      * @Param id id
      * @Param type 付与タイプ
      * @Param createdAt 作成日

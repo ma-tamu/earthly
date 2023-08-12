@@ -9,33 +9,33 @@ import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
 /**
- * ユーザに紐づくロール
+ * OAuthクライアント管理者
  */
-@Entity(listener = UserRoleListener.class, metamodel = @Metamodel)
-@Table(name = "user_role")
-public class UserRole extends AbstractUserRole implements java.io.Serializable {
+@Entity(listener = OauthClientManagementListener.class, metamodel = @Metamodel)
+@Table(name = "oauth_client_management")
+public class OauthClientManagement extends AbstractOauthClientManagement implements java.io.Serializable {
 
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * id
+     * ID
      */
     @Id
     @Column(name = "id")
     String id;
 
     /**
-     * id
+     * OAuthクライアントId
+     */
+    @Column(name = "oauth_client_id")
+    String oauthClientId;
+
+    /**
+     * ユーザーID
      */
     @Column(name = "user_id")
     String userId;
-
-    /**
-     * id
-     */
-    @Column(name = "role_id")
-    String roleId;
 
     /**
      * 作成日
@@ -43,27 +43,29 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    /** 作成者 */
+    /**
+     * 作成者
+     */
     @Column(name = "created_by")
     String createdBy;
 
-    public UserRole() {
+    public OauthClientManagement() {
     }
 
     /**
      * new instance
      *
-     * @Param id id
-     * @Param userId id
-     * @Param roleId id
+     * @Param id ID
+     * @Param oauthClientId OAuthクライアントId
+     * @Param userId ユーザーID
      * @Param createdAt 作成日
      * @Param createdBy 作成者
      */
-    public UserRole(final String id, final String userId, final String roleId, final LocalDateTime createdAt,
-            final String createdBy) {
+    public OauthClientManagement(final String id, final String oauthClientId, final String userId,
+            final LocalDateTime createdAt, final String createdBy) {
         this.id = id;
+        this.oauthClientId = oauthClientId;
         this.userId = userId;
-        this.roleId = roleId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
     }
@@ -88,6 +90,25 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     }
 
     /**
+     * Returns the oauthClientId.
+     *
+     * @return the oauthClientId
+     */
+    public String getOauthClientId() {
+        return oauthClientId;
+    }
+
+    /**
+     * Sets the oauthClientId.
+     *
+     * @param oauthClientId
+     *            the oauthClientId
+     */
+    public void setOauthClientId(final String oauthClientId) {
+        this.oauthClientId = oauthClientId;
+    }
+
+    /**
      * Returns the userId.
      *
      * @return the userId
@@ -104,25 +125,6 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
      */
     public void setUserId(final String userId) {
         this.userId = userId;
-    }
-
-    /**
-     * Returns the roleId.
-     *
-     * @return the roleId
-     */
-    public String getRoleId() {
-        return roleId;
-    }
-
-    /**
-     * Sets the roleId.
-     *
-     * @param roleId
-     *            the roleId
-     */
-    public void setRoleId(final String roleId) {
-        this.roleId = roleId;
     }
 
     /**

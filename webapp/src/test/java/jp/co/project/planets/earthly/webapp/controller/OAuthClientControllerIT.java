@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -73,5 +74,19 @@ class OAuthClientControllerIT {
                 .containsExactly(oauthClientList);
         assertThat(actualPage.getTotalPages()).isEqualTo(2);
         assertThat(actualPage.getSize()).isEqualTo(10);
+    }
+
+    @Test
+    void view_all_oauth_clientを付与されていない且つ管理するクライアントもない場合にOAuthクライアントリストにアクセスするとNotFoundがかえされること() throws Exception {
+
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_04", "LOGIN_ID_04", "USER_NAME_04", "Tc4NUOcdm2V34",
+                false, false, false, null, null, Collections.emptyList(), Collections.emptyList());
+
+        // test
+        final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        mockMvc.perform(get("/clients").with(user(userInfoDto)).with(csrf())) //
+                .andExpect(status().isNotFound()) //
+                .andExpect(view().name("errors/404")) //
+                .andReturn();
     }
 }

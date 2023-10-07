@@ -23,11 +23,6 @@ import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 @ExtendWith(MockitoExtension.class)
 class OAuthClientServiceTest {
 
-    @InjectMocks
-    OAuthClientService oauthClientService;
-    @Mock
-    OAuthClientRepository oauthClientRepository;
-
     @BeforeEach
     void setUp() {
     }
@@ -36,8 +31,13 @@ class OAuthClientServiceTest {
     void tearDown() {
     }
 
+    @InjectMocks
+    OAuthClientService oauthClientService;
+    @Mock
+    OAuthClientRepository oauthClientRepository;
+
     @Test
-    void OAuthクライアントが1件も閲覧できないためForbiddenExceptionが発生する() {
+    void OAuthクライアントが1件も閲覧できないためForbiddenExceptionが発生すること() {
 
         when(oauthClientRepository.findByAccessible(anyList(), anyString())).thenReturn(Collections.emptyList());
 
@@ -48,4 +48,15 @@ class OAuthClientServiceTest {
         assertThatThrownBy(() -> oauthClientService.validateAccessibleClient(userInfoDto)).isInstanceOfSatisfying(
                 ForbiddenException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
+
+    @Test
+    void add_oauth_clientパーミッションを保持していない場合にForbiddenExceptionが発生すること() {
+
+        final var userInfoDto = new EarthlyUserInfoDto("dummy", null, null, null, false, false, true, null, null,
+                Collections.emptyList(), null);
+        final var expected = new ForbiddenException(ErrorCode.EWA4XX017);
+        assertThatThrownBy(() -> oauthClientService.validateEntryPermission(userInfoDto)).isInstanceOfSatisfying(
+                ForbiddenException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
+    }
+
 }

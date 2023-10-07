@@ -45,6 +45,7 @@ public enum ErrorCode implements Code {
      * OAuthクライアントを閲覧することはできません。
      */
     EWA4XX016("EWA4XX016", FORBIDDEN_CLIENT),
+    EWA4XX017("EWA4XX017", FORBIDDEN_ENTRY_CLIENT),
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     EWA5XX999("EWA5XX999", UNEXPECTED);

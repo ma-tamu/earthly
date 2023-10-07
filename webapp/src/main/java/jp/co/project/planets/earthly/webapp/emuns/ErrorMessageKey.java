@@ -21,6 +21,10 @@ public final class ErrorMessageKey {
      * OAuthクライアントを閲覧することはできません。
      */
     public static final String FORBIDDEN_CLIENT = "exception.forbidden.client";
+    /**
+     * OAuthクライアント登録の権限がありません。
+     */
+    public static final String FORBIDDEN_ENTRY_CLIENT = "exception.forbidden.entry.client";
     /** 所属会社の編集ができません。 */
     public static final String NOT_MODIFY_BELONG_COMPANY = "exception.modify.company";
     /** 新しいパスワードと新しいパスワードの再入力が一致しません。 */

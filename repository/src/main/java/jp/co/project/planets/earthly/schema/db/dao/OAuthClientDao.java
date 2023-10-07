@@ -49,4 +49,19 @@ public interface OAuthClientDao extends OauthClientBaseDao {
     @Select
     List<OauthClient> selectByName(String name, boolean hasViewAllOAuthClient,
             String operatorUserId, SelectOptions options);
+
+    /**
+     * クライアント名から閲覧できるOAuthクライアントを取得
+     *
+     * @param name
+     *            OAuthクライアント名
+     * @param hasViewAllOAuthClient
+     *            view_all_oauth_clientを持っているか
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return OAuthクライアント
+     */
+    @Select
+    Optional<OauthClient> selectByAccessibleName(String name, boolean hasViewAllOAuthClient, String operatorUserId);
+
 }

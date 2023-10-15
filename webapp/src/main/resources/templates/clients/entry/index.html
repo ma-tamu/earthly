@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+  <link rel="stylesheet" th:href="@{/css/select2.min.css}" type="text/css">
+  <script th:src="@{/js/select2.full.min.js}"></script>
+  <script th:src="@{/js/select2.min.js}"></script>
+</head>
+<body>
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main class="main" id="main">
+  <div class="pagetitle">
+    <div class="col-9">
+      <h1 th:text="#{page.title.client.entry}">OAuthクライアント追加</h1>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a th:href="@{/users}" th:text="#{page.title.client.list}">OAuthクライアントリスト</a>
+        </li>
+        <li class="breadcrumb-item active" th:text="#{page.title.client.entry}">
+          OAuthクライアント追加
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="container">
+    <div class="alert alert-danger alert-dismissible fade show" th:if="${errorCode}">
+      <i class="bi bi-exclamation-octagon me-1"></i>
+      <th:block th:text="${#messages.msgOrNullWithParams(errorCode.messageKey, messageArgs)}"></th:block>
+    </div>
+    <form method="post" th:action="@{/clients/__${action}__}" th:object="${OAuthClientEntryForm}"
+          th:with="action=${readOnly}? 'create' : 'entry'">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="name" th:text="#{page.label.client.name}">OAuthクライアント名</label>
+            <input class="form-control" id="name" th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:field="*{name}"
+                   th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+              OAuthクライアント名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" th:text="#{page.label.client.scope}"></label>
+            <select class="form-select" id="scope" multiple="multiple"
+                    name="scope" th:classappend="${#fields.hasErrors('scope')}?'is-invalid'"
+                    th:readonly="${readOnly}">
+              <th:block th:if="${#lists.isEmpty(OAuthClientEntryForm.scope())}">
+                <option th:each="scope : ${T(jp.co.project.planets.earthly.common.enums.Scope).values()}"
+                        th:text="${scope.name()}" th:value="${scope.id}"></option>
+              </th:block>
+              <th:block th:unless="${#lists.isEmpty(OAuthClientEntryForm.scope())}">
+                <option th:each="scope : ${T(jp.co.project.planets.earthly.common.enums.Scope).values()}"
+                        th:selected="${#lists.contains(OAuthClientEntryForm.scope(),scope.id)}" th:text="${scope.name()}"
+                        th:value="${scope.id}"></option>
+              </th:block>
+            </select>
+            <div class="invalid-feedback" th:errors="*{scope}" th:if="${#fields.hasErrors('scope')}">
+              スコープは必須です。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center" th:unless="${readOnly}">
+        <div class="col-6">
+          <button class="btn btn-secondary rounded-pill" data-bs-target="#cancelModal" data-bs-toggle="modal"
+                  th:text="#{page.button.back}" type="button">戻る
+          </button>
+          <div th:replace="users/entry/modal::cancel"></div>
+          <button class="btn btn-primary rounded-pill" th:text="#{page.button.confirm}" type="submit">確認
+          </button>
+        </div>
+      </div>
+      <div class="row text-center" th:if="${readOnly}">
+        <div class="col-6">
+          <button class="btn btn-secondary rounded-pill" data-bs-target="#cancelModal" data-bs-toggle="modal"
+                  th:text="#{page.button.back}" type="button">戻る
+          </button>
+          <button class="btn btn-primary rounded-pill" onclick="doSubmit()" th:text="#{page.button.create}"
+                  type="submit">登録
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+    $('#scope').select2();
+    [# th:if= "${readOnly}"]
+    $('#scope').prop("disabled", true);
+    [/]
+      function doSubmit() {
+          $('#scope').prop("disabled", false);
+      }
+</script>
+
+</body>
+</html>

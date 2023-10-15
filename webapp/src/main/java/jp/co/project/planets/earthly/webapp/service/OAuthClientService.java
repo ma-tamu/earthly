@@ -8,10 +8,13 @@ import org.springframework.util.CollectionUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
+import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientEntryDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
@@ -20,9 +23,12 @@ import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 @Service
 public class OAuthClientService {
 
+    private final OAuthClientLogic oauthClientLogic;
     private final OAuthClientRepository oauthClientRepository;
 
-    public OAuthClientService(final OAuthClientRepository oauthClientRepository) {
+    public OAuthClientService(final OAuthClientLogic oauthClientLogic,
+            final OAuthClientRepository oauthClientRepository) {
+        this.oauthClientLogic = oauthClientLogic;
         this.oauthClientRepository = oauthClientRepository;
     }
 
@@ -63,5 +69,49 @@ public class OAuthClientService {
         if (CollectionUtils.isEmpty(oauthClientList)) {
             throw new ForbiddenException(ErrorCode.EWA4XX016);
         }
+    }
+
+    /**
+     * OAuthクライアント登録パーミッション検証
+     *
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws ForbiddenException
+     *             add_oauth_clientを保持していない場合に発生
+     */
+    public void validateEntryPermission(final EarthlyUserInfoDto userInfoDto) {
+        // OAuthクライアント登録パーミッションを保持していない場合は、エラーとする。
+        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_OAUTH_CLIENT)) {
+            throw new ForbiddenException(ErrorCode.EWA4XX017);
+        }
+    }
+
+    /**
+     * OAuthクライアント登録検証
+     *
+     * @param oauthClientEntryDto
+     *            OAuthクライアント登録DTO
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    public void validateEntryOperation(final OAuthClientEntryDto oauthClientEntryDto,
+            final EarthlyUserInfoDto userInfoDto) {
+        validateEntryPermission(userInfoDto);
+    }
+
+    /**
+     * OAuthクライアント登録
+     *
+     * @param oauthClientEntryDto
+     *            OAuthクライアント登録DTO
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアントID
+     */
+    @Transactional
+    public String create(final OAuthClientEntryDto oauthClientEntryDto,
+            final EarthlyUserInfoDto userInfoDto) {
+        validateEntryPermission(userInfoDto);
+        return oauthClientLogic.create(oauthClientEntryDto.name(), oauthClientEntryDto.scopes(), userInfoDto.id());
     }
 }

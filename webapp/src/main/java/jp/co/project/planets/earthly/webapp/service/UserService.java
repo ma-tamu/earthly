@@ -20,10 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import jakarta.annotation.Nonnull;
 import jp.co.project.planets.earthly.common.logic.CryptoLogic;
 import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
@@ -373,10 +373,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(final String id, final String newPassword, final String renewPassword) {
-        Assert.notNull(id, "id must not be null");
-        Assert.notNull(newPassword, "newPassword must not be null");
-        Assert.notNull(renewPassword, "renewPassword must not be null");
+    public void updatePassword(@Nonnull final String id, @Nonnull final String newPassword,
+            @Nonnull final String renewPassword) {
 
         if (!StringUtils.equals(newPassword, renewPassword)) {
             throw new BadRequestException(EWA4XX007);
@@ -442,8 +440,7 @@ public class UserService {
      *             操作ユーザーと削除ユーザーが同じ場合に発生
      */
     @VisibleForTesting
-    void validateDeleteOperation(final String id, final EarthlyUserInfoDto userInfoDto) {
-        Assert.notNull(id, "id must not be null");
+    void validateDeleteOperation(@Nonnull final String id, final EarthlyUserInfoDto userInfoDto) {
         if (StringUtils.equals(id, userInfoDto.id())) {
             throw new BadRequestException(EWA4XX002);
         }

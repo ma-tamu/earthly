@@ -1,9 +1,12 @@
 package jp.co.project.planets.earthly.schema.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
+import org.seasar.doma.jdbc.criteria.Entityql;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -27,17 +30,19 @@ public class OAuthClientRepository {
     private final GrantTypeDao grantTypeDao;
     private final ScopeDao scopeDao;
     private final RedirectUriDao redirectUriDao;
-
     private final LogoutRedirectUrlDao logoutRedirectUrlDao;
+
+    private final Entityql entityql;
 
     public OAuthClientRepository(final OAuthClientDao oauthClientDao, final GrantTypeDao grantTypeDao,
             final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
-            final LogoutRedirectUrlDao logoutRedirectUrlDao) {
+            final LogoutRedirectUrlDao logoutRedirectUrlDao, final Entityql entityql) {
         this.oauthClientDao = oauthClientDao;
         this.grantTypeDao = grantTypeDao;
         this.scopeDao = scopeDao;
         this.redirectUriDao = redirectUriDao;
         this.logoutRedirectUrlDao = logoutRedirectUrlDao;
+        this.entityql = entityql;
     }
 
     /**
@@ -119,5 +124,25 @@ public class OAuthClientRepository {
         final var oauthClientList = oauthClientDao.selectByName(name, hasViewAllOAuthClient, operatorUserId,
                 selectOptions);
         return new OAuthClientSearchResultDto(oauthClientList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public Optional<OauthClient> findAccessibleByName(final String name, final List<PermissionEnum> permissionEnumList,
+            final String operationUserId) {
+        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        return oauthClientDao.selectByAccessibleName(name, hasViewAllOAuthClient, operationUserId);
+    }
+
+    /**
+     * insert oauthClient
+     *
+     * @param oauthClient
+     *            oauthClient
+     * @return insert count
+     */
+    public int insert(final OauthClient oauthClient) {
+        final var localDateTime = LocalDateTime.now();
+        oauthClient.setCreatedAt(localDateTime);
+        oauthClient.setUpdatedAt(localDateTime);
+        return oauthClientDao.insert(oauthClient);
     }
 }

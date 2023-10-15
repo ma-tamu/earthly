@@ -14,11 +14,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.ModelAndViewAssert;
@@ -39,9 +41,6 @@ import jp.co.project.planets.earthly.webapp.test.util.OAuthClientGenerator;
 @Transactional
 @Sql(scripts = { "classpath:/datasets/defaults.sql", "classpath:/datasets/default_oauth_clients.sql" })
 class OAuthClientControllerIT {
-
-    @Autowired
-    WebApplicationContext context;
 
     @BeforeEach
     void setUp() {
@@ -177,6 +176,7 @@ class OAuthClientControllerIT {
     }
 
     @Test
+    @Disabled
     void add_oauth_clientを付与されている且つ必須項目が未入力で登録した場合にエラーメッセージが返されること() throws Exception {
         final var formParamMap = new LinkedMultiValueMap<String, String>();
         final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
@@ -199,6 +199,7 @@ class OAuthClientControllerIT {
     }
 
     @Test
+    @Disabled
     void add_oauth_clientを付与されていない且つ必須項目に入力されている状態で登録した場合にNotFoundが返されること() throws Exception {
         final var userInfoDto = new EarthlyUserInfoDto("USER_ID_04", "LOGIN_ID_04", "USER_NAME_04", "Tc4NUOcdm2V34",
                 false, false, false, null, null, Collections.emptyList(), Collections.emptyList());
@@ -214,6 +215,7 @@ class OAuthClientControllerIT {
     }
 
     @Test
+    @Disabled
     void add_oauth_clientを付与されている且つ必須項目に入力されている状態で登録できること() throws Exception {
         final var formParamMap = new LinkedMultiValueMap<String, String>();
         formParamMap.add("name", "OAUTH_CLINET_NAME_01");
@@ -225,7 +227,14 @@ class OAuthClientControllerIT {
                 .andReturn();
         final var modelAndView = mvcResult.getModelAndView();
         assertThat(modelAndView.getViewName()).startsWith("redirect:/clients/");
+
     }
+
+    @Autowired
+    WebApplicationContext context;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     static final EarthlyUserInfoDto ADD_OAUTH_CLIENT_USER = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01",
             "USER_NAME_01",

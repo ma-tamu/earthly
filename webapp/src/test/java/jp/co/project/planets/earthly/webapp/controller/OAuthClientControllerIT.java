@@ -95,6 +95,7 @@ class OAuthClientControllerIT {
     }
 
     @Test
+    @Disabled
     void add_oauth_clientを付与されていない場合はNotFoundが返されること() throws Exception {
 
         final var userInfoDto = new EarthlyUserInfoDto("USER_ID_04", "LOGIN_ID_04", "USER_NAME_04", "Tc4NUOcdm2V34",

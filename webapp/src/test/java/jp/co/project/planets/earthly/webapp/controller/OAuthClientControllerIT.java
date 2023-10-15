@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.jdbc.Sql;
@@ -30,6 +32,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import jp.co.project.planets.earthly.common.enums.Scope;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -214,16 +219,55 @@ class OAuthClientControllerIT {
     @Test
     void add_oauth_clientを付与されている且つ必須項目に入力されている状態で登録できること() throws Exception {
         final var formParamMap = new LinkedMultiValueMap<String, String>();
-        formParamMap.add("name", "OAUTH_CLINET_NAME_01");
+        final var oauthClinetName = "OAUTH_CLINET_NAME_01";
+        formParamMap.add("name", oauthClinetName);
         formParamMap.add("scope", Scope.OPENID.getId());
         final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         final var mvcResult = mockMvc
                 .perform(post("/clients/create").params(formParamMap).with(user(ADD_OAUTH_CLIENT_USER)).with(csrf())) //
                 .andExpect(status().isFound()) //
                 .andReturn();
+
+        // verify
         final var modelAndView = mvcResult.getModelAndView();
         assertThat(modelAndView.getViewName()).startsWith("redirect:/clients/");
+        final var id = modelAndView.getViewName().replace("redirect:/clients/", StringUtils.EMPTY);
 
+        final var oauthClient = jdbcTemplate.queryForObject("""
+                SELECT
+                  *
+                FROM
+                  oauth_client
+                WHERE
+                  id = ?
+                  AND is_deleted = 0
+                """,
+                BeanPropertyRowMapper.newInstance(OauthClient.class), id);
+        assertThat(oauthClient).extracting("name").isEqualTo(oauthClinetName);
+
+        final var oauthClientScopeList = jdbcTemplate.query("""
+                SELECT
+                  *
+                FROM
+                  oauth_client_scope
+                WHERE
+                  oauth_client_id = ?
+                """, BeanPropertyRowMapper.newInstance(OauthClientScope.class), id);
+        final var openid = new OauthClientScope(null, id, Scope.OPENID.getId());
+        assertThat(oauthClientScopeList).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .contains(openid);
+
+        final var oauthClientManagement = jdbcTemplate.queryForObject("""
+                SELECT
+                  *
+                FROM
+                  oauth_client_management
+                WHERE
+                  oauth_client_id = ?
+                  AND user_id = ?
+                """, BeanPropertyRowMapper.newInstance(OauthClientManagement.class), id, ADD_OAUTH_CLIENT_USER.id());
+        assertThat(oauthClientManagement).extracting("oauthClientId", "userId").containsExactly(id,
+                ADD_OAUTH_CLIENT_USER.id());
     }
 
     @Autowired

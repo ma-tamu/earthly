@@ -5,7 +5,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jp.co.project.planets.earthly.common.enums.Scope;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientScopeRepository;
 
@@ -52,7 +55,22 @@ class OAuthClientLogicTest {
 
         // verify
         assertThat(actual).isNull();
+    }
 
+    @Test
+    void OAuthクライアントが登録されIDが返されること() {
+
+        when(oauthClientRepository.insert(any(OauthClient.class))).thenReturn(1);
+        final var id = UUID.randomUUID().toString().replace("-", StringUtils.EMPTY);
+        final var oauthClient = new OauthClient(id, null, null, null, null, null, null, null, false);
+        when(oauthClientRepository.findAccessibleByName(anyString(), anyList(), anyString())).thenReturn(Optional.of(oauthClient));
+        
+        // test
+        final var scopes = List.of(Scope.OPENID.getValue());
+        final var actual = oauthClientLogic.create("test_oauth_client_name", scopes, "USER_ID_01");
+
+        // verify
+        assertThat(actual).isEqualTo(id);
     }
 
     @InjectMocks
@@ -63,6 +81,7 @@ class OAuthClientLogicTest {
     @Mock
     OAuthClientScopeRepository oauthClientScopeRepository;
     @Mock
+    OAuthClientManagementRepository oauthClientManagementRepository;
+    @Mock
     CryptoLogic cryptoLogic;
-
 }

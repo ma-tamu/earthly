@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientScopeRepository;
 
@@ -23,13 +24,16 @@ public class OAuthClientLogic {
     private static final Logger log = LoggerFactory.getLogger(OAuthClientLogic.class);
     public final OAuthClientRepository oauthClientRepository;
     public final OAuthClientScopeRepository oauthClientScopeRepository;
+    public final OAuthClientManagementRepository oauthClientManagementRepository;
     private final CryptoLogic cryptoLogic;
 
     public OAuthClientLogic(final CryptoLogic cryptoLogic, final OAuthClientRepository oauthClientRepository,
-            final OAuthClientScopeRepository oauthClientScopeRepository) {
+            final OAuthClientScopeRepository oauthClientScopeRepository,
+            final OAuthClientManagementRepository oauthClientManagementRepository) {
         this.cryptoLogic = cryptoLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.oauthClientScopeRepository = oauthClientScopeRepository;
+        this.oauthClientManagementRepository = oauthClientManagementRepository;
     }
 
     /**
@@ -63,6 +67,7 @@ public class OAuthClientLogic {
             final var oauthClientScope = new OauthClientScope(null, id, scope);
             oauthClientScopeRepository.insert(oauthClientScope);
         }
+        oauthClientManagementRepository.insert(id, operationUserId);
         return id;
     }
 

@@ -13,11 +13,15 @@ import org.springframework.stereotype.Repository;
 import jp.co.project.planets.earthly.schema.db.dao.GrantTypeDao;
 import jp.co.project.planets.earthly.schema.db.dao.LogoutRedirectUrlDao;
 import jp.co.project.planets.earthly.schema.db.dao.OAuthClientDao;
+import jp.co.project.planets.earthly.schema.db.dao.OAuthClientManagementDao;
 import jp.co.project.planets.earthly.schema.db.dao.RedirectUriDao;
 import jp.co.project.planets.earthly.schema.db.dao.ScopeDao;
+import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl_;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl_;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
 
 /**
@@ -31,17 +35,20 @@ public class OAuthClientRepository {
     private final ScopeDao scopeDao;
     private final RedirectUriDao redirectUriDao;
     private final LogoutRedirectUrlDao logoutRedirectUrlDao;
+    private final OAuthClientManagementDao oauthClientManagementDao;
 
     private final Entityql entityql;
 
     public OAuthClientRepository(final OAuthClientDao oauthClientDao, final GrantTypeDao grantTypeDao,
             final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
-            final LogoutRedirectUrlDao logoutRedirectUrlDao, final Entityql entityql) {
+            final LogoutRedirectUrlDao logoutRedirectUrlDao, final OAuthClientManagementDao oauthClientManagementDao,
+            final Entityql entityql) {
         this.oauthClientDao = oauthClientDao;
         this.grantTypeDao = grantTypeDao;
         this.scopeDao = scopeDao;
         this.redirectUriDao = redirectUriDao;
         this.logoutRedirectUrlDao = logoutRedirectUrlDao;
+        this.oauthClientManagementDao = oauthClientManagementDao;
         this.entityql = entityql;
     }
 
@@ -87,6 +94,55 @@ public class OAuthClientRepository {
 
         return new OAuthClientEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
                 oauthClient.getName(), scopes, grantTypes, redirectUris, logoutRedirectUrls);
+    }
+
+    /**
+     * 閲覧できるOAuthクライアントを取得
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param permissionEnumList
+     *            パーミッションリスト
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return OAuthClientEntity
+     */
+    public Optional<OAuthClientDetailEntity> findAccessibleById(final String id,
+            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
+        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var hasViewAllUser = permissionEnumList.contains(PermissionEnum.VIEW_ALL_USER);
+        return oauthClientDao.selectAccessibleById(id, hasViewAllOAuthClient, operatorUserId)
+                .map(entity -> generateOAuthClientDetailEntity(entity, hasViewAllUser, operatorUserId));
+    }
+
+    /**
+     * OAuthクライアント詳細エンティティを生成
+     * 
+     * @param oauthClient
+     *            OAuthクライアント
+     * @param hasViewAllUser
+     *            view_all_userを付与さているか
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return OAuthClientDetailEntity
+     */
+    private OAuthClientDetailEntity generateOAuthClientDetailEntity(final OauthClient oauthClient,
+            final boolean hasViewAllUser, final String operatorUserId) {
+        final var id = oauthClient.getId();
+        final var grantTypes = grantTypeDao.selectByClientId(id);
+        final var scopes = scopeDao.selectByClientId(id);
+        final var oauthClientRedirectUrl = new OauthClientRedirectUrl_();
+        final var redirectUris = entityql.from(oauthClientRedirectUrl)
+                .where(w -> w.eq(oauthClientRedirectUrl.oauthClientId, id))
+                .orderBy(o -> o.asc(oauthClientRedirectUrl.id)).fetch();
+        final var logoutRedirectUrl = new LogoutRedirectUrl_();
+        final var logoutRedirectUrls = entityql.from(logoutRedirectUrl)
+                .where(w -> w.eq(logoutRedirectUrl.oauthClientId, id)).orderBy(o -> o.asc(logoutRedirectUrl.createdAt))
+                .fetch();
+        final var managementUsers = oauthClientManagementDao.selectAccessibleByClientId(id, hasViewAllUser,
+                operatorUserId);
+        return new OAuthClientDetailEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
+                oauthClient.getName(), scopes, grantTypes, redirectUris, logoutRedirectUrls, managementUsers);
     }
 
     /**

@@ -7,7 +7,8 @@ public final class ErrorMessageKey {
 
     /** 対象ユーザーは存在しません。 */
     public static final String NOTFOUND_USER = "exception.notfound.user";
-
+    /** 対象OAuthクライアントは存在しません。 */
+    public static final String NOTFOUND_CLIENT = "exception.notfound.client";
     /** 対象のユーザーは閲覧することはできません。 */
     public static final String FORBIDDEN_USER = "exception.forbidden.user";
 
@@ -17,13 +18,9 @@ public final class ErrorMessageKey {
     public static final String FORBIDDEN_EDIT_USER = "exception.forbidden.edit.user";
     /** ユーザー削除の権限がありません。 */
     public static final String FORBIDDEN_DELETE_USER = "exception.forbidden.delete.user";
-    /**
-     * OAuthクライアントを閲覧することはできません。
-     */
+    /** OAuthクライアントを閲覧することはできません。 */
     public static final String FORBIDDEN_CLIENT = "exception.forbidden.client";
-    /**
-     * OAuthクライアント登録の権限がありません。
-     */
+    /** OAuthクライアント登録の権限がありません。 */
     public static final String FORBIDDEN_ENTRY_CLIENT = "exception.forbidden.entry.client";
     /** 所属会社の編集ができません。 */
     public static final String NOT_MODIFY_BELONG_COMPANY = "exception.modify.company";

@@ -11,9 +11,12 @@ import com.google.common.annotations.VisibleForTesting;
 import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
+import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
+import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientDetailDto;
 import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientEntryDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
@@ -26,10 +29,14 @@ public class OAuthClientService {
     private final OAuthClientLogic oauthClientLogic;
     private final OAuthClientRepository oauthClientRepository;
 
+    private final OAuthClientManagementRepository oauthClientManagementRepository;
+
     public OAuthClientService(final OAuthClientLogic oauthClientLogic,
-            final OAuthClientRepository oauthClientRepository) {
+            final OAuthClientRepository oauthClientRepository,
+            final OAuthClientManagementRepository oauthClientManagementRepository) {
         this.oauthClientLogic = oauthClientLogic;
         this.oauthClientRepository = oauthClientRepository;
+        this.oauthClientManagementRepository = oauthClientManagementRepository;
     }
 
     /**
@@ -69,6 +76,34 @@ public class OAuthClientService {
         if (CollectionUtils.isEmpty(oauthClientList)) {
             throw new ForbiddenException(ErrorCode.EWA4XX016);
         }
+    }
+
+    /**
+     * OAuthクライアント取得
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアント
+     */
+    public OAuthClientDetailDto get(final String id, final EarthlyUserInfoDto userInfoDto) {
+
+        final var permissionEnumList = userInfoDto.permissionEnumList();
+        final var operationUserId = userInfoDto.id();
+        final boolean canAccessibleClient = oauthClientLogic.canAccessibleClient(id, permissionEnumList,
+                operationUserId);
+        if (!canAccessibleClient) {
+            throw new ForbiddenException(ErrorCode.EWA4XX016);
+        }
+
+        final var client = oauthClientRepository.findAccessibleById(id, permissionEnumList, operationUserId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX018));
+        final boolean canEditableClient = oauthClientLogic.canEditableClient(id, permissionEnumList, operationUserId);
+        final var redirectUrlPage = new PageImpl<>(client.redirectUrls());
+        final var logoutRedirectUrlPage = new PageImpl<>(client.logoutRedirectUrls());
+        final var userPage = new PageImpl<>(client.managementUserList());
+        return new OAuthClientDetailDto(client, redirectUrlPage, logoutRedirectUrlPage, userPage, canEditableClient);
     }
 
     /**

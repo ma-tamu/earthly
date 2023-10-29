@@ -41,11 +41,12 @@ public enum ErrorCode implements Code {
     EWA4XX014("EWA4XX014", PASSWORD_NEW_INSUFFICIENT_STRENGTH),
     /** 入力されたメールアドレスが正しくありません。 */
     EWA4XX015("EWA4XX015", NOT_FOUND_MAIL_USER),
-    /**
-     * OAuthクライアントを閲覧することはできません。
-     */
+    /** OAuthクライアントを閲覧することはできません。 */
     EWA4XX016("EWA4XX016", FORBIDDEN_CLIENT),
+    /** OAuthクライアント登録の権限がありません。 */
     EWA4XX017("EWA4XX017", FORBIDDEN_ENTRY_CLIENT),
+    /** 対象OAuthクライアントは存在しません。 */
+    EWA4XX018("EWA4XX018", NOTFOUND_CLIENT),
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     EWA5XX999("EWA5XX999", UNEXPECTED);

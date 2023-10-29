@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,6 +56,31 @@ public class OAuthClientController {
         final var oauthClients = oauthClientService.search(oauthClientSearchForm.name(), pageable, userInfoDto);
         final var modelAndView = new ModelAndView("clients/index");
         modelAndView.addObject(oauthClients);
+        return modelAndView;
+    }
+
+    /**
+     * OAuthクライアント詳細
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param model
+     *            model
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアント詳細
+     */
+    @GetMapping("{id}")
+    public ModelAndView detail(@PathVariable("id") final String id, final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var oauthClientDetailDto = oauthClientService.get(id, userInfoDto);
+        final var modelAndView = new ModelAndView("clients/detail");
+        modelAndView.addObject(oauthClientDetailDto.oauthClientDetailEntity());
+        modelAndView.addObject("redirectUrlPage", oauthClientDetailDto.redirectUrlPage());
+        modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
+        modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
+        modelAndView.addObject(oauthClientDetailDto.canEditableClient());
+        modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
 

@@ -9,6 +9,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,10 +33,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import jp.co.project.planets.earthly.common.enums.Scope;
+import jp.co.project.planets.earthly.schema.db.entity.GrantType;
+import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import jp.co.project.planets.earthly.webapp.test.util.OAuthClientGenerator;
@@ -270,6 +275,84 @@ class OAuthClientControllerIT {
                 ADD_OAUTH_CLIENT_USER.id());
     }
 
+    @Test
+    void view_all_oauth_clientを保持していない且つOAuthクライアントの管理者でない場合は404ページが返されること() throws Exception {
+        final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        // test & verify
+        mockMvc.perform(get("/clients/{id}", "001").with(user(NO_PERMISSION_USER)).with(csrf())) //
+                .andExpect(status().isNotFound()) //
+                .andExpect(view().name("errors/404")) //
+                .andReturn();
+    }
+
+    @Test
+    void view_all_oauth_clientを保持している且つOAuthクライアントの管理者でない場合はOAuthクライアント詳細画面が返されること() throws Exception {
+
+        final var userInfoDto = new EarthlyUserInfoDto("USER_ID_05", "LOGIN_ID_05",
+                "USER_NAME_05", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", false, false, false,
+                null, null, List.of(PermissionEnum.VIEW_ALL_OAUTH_CLIENT),
+                List.of(new SimpleGrantedAuthority(PermissionEnum.VIEW_ALL_OAUTH_CLIENT.name())));
+
+        final var mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        // test & verify
+        final var mvcResult = mockMvc.perform(get("/clients/{id}", "001").with(user(userInfoDto)).with(csrf())) //
+                .andExpect(status().isOk()) //
+                .andExpect(view().name("clients/detail")) //
+                .andReturn();
+
+        final var modelAndView = mvcResult.getModelAndView();
+        final var me = new jp.co.project.planets.earthly.schema.db.entity.Scope(Scope.ME.getId(), Scope.ME.getValue(),
+                null,
+                "NULL", null, "NULL", false);
+        final var scopes = List.of(me);
+        final var authorizationCode = new GrantType(
+                jp.co.project.planets.earthly.common.enums.GrantType.AUTHORIZATION_CODE.getId(),
+                jp.co.project.planets.earthly.common.enums.GrantType.AUTHORIZATION_CODE.name().toLowerCase(), null,
+                "NULL", null,
+                "NULL", false);
+        final var clientCredentials = new GrantType(
+                jp.co.project.planets.earthly.common.enums.GrantType.CLIENT_CREDENTIALS.getId(),
+                jp.co.project.planets.earthly.common.enums.GrantType.CLIENT_CREDENTIALS.name().toLowerCase(), null,
+                "NULL", null,
+                "NULL", false);
+        final var refreshToken = new GrantType(
+                jp.co.project.planets.earthly.common.enums.GrantType.REFRESH_TOKEN.getId(),
+                jp.co.project.planets.earthly.common.enums.GrantType.REFRESH_TOKEN.name().toLowerCase(), null, "NULL",
+                null,
+                "NULL",
+                false);
+        final var implicit = new GrantType(
+                jp.co.project.planets.earthly.common.enums.GrantType.IMPLICIT.getId(),
+                jp.co.project.planets.earthly.common.enums.GrantType.IMPLICIT.name().toLowerCase(), null, "NULL", null,
+                "NULL",
+                false);
+        final var password = new GrantType(
+                jp.co.project.planets.earthly.common.enums.GrantType.PASSWORD.getId(),
+                jp.co.project.planets.earthly.common.enums.GrantType.PASSWORD.name().toLowerCase(), null, "NULL", null,
+                "NULL",
+                false);
+
+        final var grantTypes = List.of(authorizationCode, clientCredentials, implicit, password, refreshToken);
+        final var redirectUrl01 = new OauthClientRedirectUrl("001", "001",
+                "http://127.0.0.1/dummy/login/oauth2/code/earthly", null, "NULL", null, "NULL", false);
+        final var redirectUrl02 = new OauthClientRedirectUrl("002", "001",
+                "http://127.0.0.1/dummy/swagger-ui/oauth2-redirect.html", null, "NULL", null, "NULL", false);
+        final var redirectUrls = List.of(redirectUrl01, redirectUrl02);
+        final var logoutRedirectUrl = new LogoutRedirectUrl("001", "001", "http://127.0.0.1/dummy/welcome", null,
+                "NULL",
+                null, "NULL", false);
+        final var logoutRedirectUrls = List.of(logoutRedirectUrl);
+        final var oauthClientDetailEntity = new OAuthClientDetailEntity("001", "client_1", "secret_1", "OAuthクライアント1",
+                scopes, grantTypes, redirectUrls, logoutRedirectUrls, Collections.emptyList());
+
+        ModelAndViewAssert.assertModelAttributeValue(modelAndView, "canEditableClient", false);
+        final var model = modelAndView.getModel();
+        final var oauthClientActual = model.get("OAuthClientDetailEntity");
+        assertThat(oauthClientActual).usingRecursiveComparison().ignoringFieldsOfTypes(LocalDateTime.class)
+                .ignoringFields("createdAt", "updatedAt").isEqualTo(oauthClientDetailEntity);
+
+    }
+
     @Autowired
     WebApplicationContext context;
 
@@ -277,9 +360,12 @@ class OAuthClientControllerIT {
     JdbcTemplate jdbcTemplate;
 
     static final EarthlyUserInfoDto ADD_OAUTH_CLIENT_USER = new EarthlyUserInfoDto("USER_ID_01", "LOGIN_ID_01",
-            "USER_NAME_01",
-            "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", false, false, false, null, null,
-            List.of(PermissionEnum.ADD_OAUTH_CLIENT),
+            "USER_NAME_01", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", false, false, false, null,
+            null, List.of(PermissionEnum.ADD_OAUTH_CLIENT),
             List.of(new SimpleGrantedAuthority(PermissionEnum.ADD_OAUTH_CLIENT.name())));
+
+    static final EarthlyUserInfoDto NO_PERMISSION_USER = new EarthlyUserInfoDto("USER_ID_04", "LOGIN_ID_04",
+            "USER_NAME_04", "Tc4NUOcdm2V34", false, false, false, null, null, Collections.emptyList(),
+            Collections.emptyList());
 
 }

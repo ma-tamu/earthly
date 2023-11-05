@@ -79,7 +79,7 @@ public class OAuthClientController {
         modelAndView.addObject("redirectUrlPage", oauthClientDetailDto.redirectUrlPage());
         modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
         modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
-        modelAndView.addObject(oauthClientDetailDto.canEditableClient());
+        modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }

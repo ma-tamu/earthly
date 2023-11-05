@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jp.co.project.planets.earthly.common.enums.Scope;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientGrantTypeRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientScopeRepository;
@@ -80,6 +81,8 @@ class OAuthClientLogicTest {
     OAuthClientRepository oauthClientRepository;
     @Mock
     OAuthClientScopeRepository oauthClientScopeRepository;
+    @Mock
+    OAuthClientGrantTypeRepository oauthClientGrantTypeRepository;
     @Mock
     OAuthClientManagementRepository oauthClientManagementRepository;
     @Mock

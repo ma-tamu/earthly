@@ -65,7 +65,7 @@ class OAuthClientRepositoryTest {
         final var actual = oauthClientRepository.findById("1");
 
         final var scopes = List.of(ME);
-        final var grantTypes = List.of(CLIENT_CREDENTIALS, PASSWORD, AUTHORIZATION_CODE, IMPLICIT, REFRESH_TOKEN);
+        final var grantTypes = List.of(AUTHORIZATION_CODE, CLIENT_CREDENTIALS, IMPLICIT, PASSWORD, REFRESH_TOKEN);
         final var redirectUrls = List.of("http://127.0.0.1/dummy/login/oauth2/code/earthly",
                 "http://127.0.0.1/dummy/swagger-ui/oauth2-redirect.html");
         final var logoutRedirectUrls = List.of("http://127.0.0.1/dummy/welcome");
@@ -92,7 +92,7 @@ class OAuthClientRepositoryTest {
         final var actual = oauthClientRepository.findByClientId("client_2");
 
         final var scopes = List.of(ME, OPENID);
-        final var grantTypes = List.of(CLIENT_CREDENTIALS, PASSWORD, AUTHORIZATION_CODE, IMPLICIT, REFRESH_TOKEN);
+        final var grantTypes = List.of(AUTHORIZATION_CODE, CLIENT_CREDENTIALS, IMPLICIT, PASSWORD, REFRESH_TOKEN);
         final var redirectUrls = List.of("http://127.0.0.1/dummy-oidc/login/oauth2/code/earthly",
                 "http://127.0.0.1/dummy-oidc/swagger-ui/oauth2-redirect.html");
         final var logoutRedirectUrls = List.of("http://127.0.0.1/dummy-oidc/welcome");

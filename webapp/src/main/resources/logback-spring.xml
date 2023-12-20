@@ -2,9 +2,9 @@
 <configuration>
 
     <!-- デフォルト設定読み込み -->
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <property name="format"
-              value="%d{yyyy/MM/dd'T'HH:mm:ss.SSSZ} %-5level [%thread] request:[%X{request}] param:[%X{parameter}]- %msg%n"/>
+              value="%d{yyyy/MM/dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] request:[%X{request}] param:[%X{parameter}]- %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

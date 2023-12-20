@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
+import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -75,11 +76,15 @@ public class OAuthClientController {
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var oauthClientDetailDto = oauthClientService.get(id, userInfoDto);
         final var modelAndView = new ModelAndView("clients/detail");
-        modelAndView.addObject(oauthClientDetailDto.oauthClientDetailEntity());
+        final var oauthClientDetailEntity = oauthClientDetailDto.oauthClientDetailEntity();
+        modelAndView.addObject(oauthClientDetailEntity);
         modelAndView.addObject("redirectUrlPage", oauthClientDetailDto.redirectUrlPage());
         modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
         modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
+        final var oauthClientEditForm = new OAuthClientEditForm(oauthClientDetailEntity.name(),
+                oauthClientDetailEntity.scopes());
+        modelAndView.addObject(oauthClientEditForm);
         modelAndView.addAllObjects(model.asMap());
         return modelAndView;
     }
@@ -162,5 +167,21 @@ public class OAuthClientController {
 
         final var id = oauthClientService.create(oauthClientEntryForm.toDto(), userInfoDto);
         return new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
+    }
+
+    @PostMapping("{id}/edit")
+    public ModelAndView edit(@PathVariable("id") final String id,
+            @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
+        if (bindingResult.hasErrors()) {
+            model.asMap().forEach(redirectAttributes::addFlashAttribute);
+            return modelAndView;
+        }
+
+        oauthClientService.validateEditPermission(id, oauthClientEditForm.toDto(), userInfoDto);
+        return modelAndView;
     }
 }

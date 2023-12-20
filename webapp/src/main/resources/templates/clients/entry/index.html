@@ -5,9 +5,6 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
-  <link rel="stylesheet" th:href="@{/css/select2.min.css}" type="text/css">
-  <script th:src="@{/js/select2.full.min.js}"></script>
-  <script th:src="@{/js/select2.min.js}"></script>
 </head>
 <body>
 <th:block th:replace="parts/template::header"></th:block>
@@ -56,11 +53,11 @@
                     name="scope" th:classappend="${#fields.hasErrors('scope')}?'is-invalid'"
                     th:readonly="${readOnly}">
               <th:block th:if="${#lists.isEmpty(OAuthClientEntryForm.scope())}">
-                <option th:each="scope : ${T(jp.co.project.planets.earthly.common.enums.Scope).values()}"
+                <option th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
                         th:text="${scope.name()}" th:value="${scope.id}"></option>
               </th:block>
               <th:block th:unless="${#lists.isEmpty(OAuthClientEntryForm.scope())}">
-                <option th:each="scope : ${T(jp.co.project.planets.earthly.common.enums.Scope).values()}"
+                <option th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
                         th:selected="${#lists.contains(OAuthClientEntryForm.scope(),scope.id)}" th:text="${scope.name()}"
                         th:value="${scope.id}"></option>
               </th:block>

@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import jp.co.project.planets.earthly.common.enums.GrantType;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientGrantType;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
+import jp.co.project.planets.earthly.schema.emuns.GrantType;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientGrantTypeRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;

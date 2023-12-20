@@ -32,7 +32,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import jp.co.project.planets.earthly.common.enums.Scope;
 import jp.co.project.planets.earthly.schema.db.entity.GrantType;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
@@ -40,6 +39,7 @@ import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.emuns.Scope;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -301,34 +301,28 @@ class OAuthClientControllerIT {
                 .andReturn();
 
         final var modelAndView = mvcResult.getModelAndView();
-        final var me = new jp.co.project.planets.earthly.schema.db.entity.Scope(Scope.ME.getId(), Scope.ME.getValue(),
-                null,
-                "NULL", null, "NULL", false);
-        final var scopes = List.of(me);
+        final var scopes = List.of(Scope.ME.getId());
         final var authorizationCode = new GrantType(
-                jp.co.project.planets.earthly.common.enums.GrantType.AUTHORIZATION_CODE.getId(),
-                jp.co.project.planets.earthly.common.enums.GrantType.AUTHORIZATION_CODE.name().toLowerCase(), null,
-                "NULL", null,
-                "NULL", false);
+                jp.co.project.planets.earthly.schema.emuns.GrantType.AUTHORIZATION_CODE.getId(),
+                jp.co.project.planets.earthly.schema.emuns.GrantType.AUTHORIZATION_CODE.name().toLowerCase(), null,
+                "NULL", null, "NULL", false);
         final var clientCredentials = new GrantType(
-                jp.co.project.planets.earthly.common.enums.GrantType.CLIENT_CREDENTIALS.getId(),
-                jp.co.project.planets.earthly.common.enums.GrantType.CLIENT_CREDENTIALS.name().toLowerCase(), null,
-                "NULL", null,
-                "NULL", false);
+                jp.co.project.planets.earthly.schema.emuns.GrantType.CLIENT_CREDENTIALS.getId(),
+                jp.co.project.planets.earthly.schema.emuns.GrantType.CLIENT_CREDENTIALS.name().toLowerCase(), null,
+                "NULL", null, "NULL", false);
         final var refreshToken = new GrantType(
-                jp.co.project.planets.earthly.common.enums.GrantType.REFRESH_TOKEN.getId(),
-                jp.co.project.planets.earthly.common.enums.GrantType.REFRESH_TOKEN.name().toLowerCase(), null, "NULL",
+                jp.co.project.planets.earthly.schema.emuns.GrantType.REFRESH_TOKEN.getId(),
+                jp.co.project.planets.earthly.schema.emuns.GrantType.REFRESH_TOKEN.name().toLowerCase(), null, "NULL",
                 null,
-                "NULL",
-                false);
+                "NULL", false);
         final var implicit = new GrantType(
-                jp.co.project.planets.earthly.common.enums.GrantType.IMPLICIT.getId(),
-                jp.co.project.planets.earthly.common.enums.GrantType.IMPLICIT.name().toLowerCase(), null, "NULL", null,
+                jp.co.project.planets.earthly.schema.emuns.GrantType.IMPLICIT.getId(),
+                jp.co.project.planets.earthly.schema.emuns.GrantType.IMPLICIT.name().toLowerCase(), null, "NULL", null,
                 "NULL",
                 false);
         final var password = new GrantType(
-                jp.co.project.planets.earthly.common.enums.GrantType.PASSWORD.getId(),
-                jp.co.project.planets.earthly.common.enums.GrantType.PASSWORD.name().toLowerCase(), null, "NULL", null,
+                jp.co.project.planets.earthly.schema.emuns.GrantType.PASSWORD.getId(),
+                jp.co.project.planets.earthly.schema.emuns.GrantType.PASSWORD.name().toLowerCase(), null, "NULL", null,
                 "NULL",
                 false);
 

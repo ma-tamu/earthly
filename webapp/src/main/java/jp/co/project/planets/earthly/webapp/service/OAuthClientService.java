@@ -17,6 +17,7 @@ import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
 import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientDetailDto;
+import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientEditDto;
 import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientEntryDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
@@ -148,5 +149,20 @@ public class OAuthClientService {
             final EarthlyUserInfoDto userInfoDto) {
         validateEntryPermission(userInfoDto);
         return oauthClientLogic.create(oauthClientEntryDto.name(), oauthClientEntryDto.scopes(), userInfoDto.id());
+    }
+
+    public void validateEditPermission(final String id, final OAuthClientEditDto oauthClientEditDto,
+            final EarthlyUserInfoDto userInfoDto) {
+
+        final var permissionEnumList = userInfoDto.permissionEnumList();
+        if (!permissionEnumList.contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
+            throw new ForbiddenException(ErrorCode.EWA4XX019);
+        }
+
+        final boolean canEditableClient = oauthClientLogic.canEditableClient(id, permissionEnumList,
+                userInfoDto.id());
+        if (!canEditableClient) {
+            throw new ForbiddenException(ErrorCode.EWA4XX019);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package jp.co.project.planets.earthly.common.enums;
+package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 

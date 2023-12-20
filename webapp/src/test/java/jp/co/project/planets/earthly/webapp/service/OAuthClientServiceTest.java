@@ -23,10 +23,10 @@ import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.db.entity.GrantType;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
-import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.emuns.Scope;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
@@ -121,10 +121,8 @@ class OAuthClientServiceTest {
 
     @NotNull
     private static OAuthClientDetailEntity getOAuthClientDetailEntity(final OAuthClientConstant.OAuthClient001 client) {
-        final var openid = jp.co.project.planets.earthly.common.enums.Scope.OPENID;
-        final var openId = new Scope(openid.getId(), openid.name(), null, null, null, null, false);
-        final var scopes = List.of(openId);
-        final var authorizationCodeEnum = jp.co.project.planets.earthly.common.enums.GrantType.AUTHORIZATION_CODE;
+        final var scopes = List.of(Scope.OPENID.getId());
+        final var authorizationCodeEnum = jp.co.project.planets.earthly.schema.emuns.GrantType.AUTHORIZATION_CODE;
         final var authorizationCode = new GrantType(authorizationCodeEnum.getId(), authorizationCodeEnum.getValue(),
                 null, null, null, null, false);
         final var grantTypes = List.of(authorizationCode);

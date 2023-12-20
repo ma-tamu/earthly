@@ -19,6 +19,7 @@ import jp.co.project.planets.earthly.schema.db.dao.ScopeDao;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl_;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl_;
+import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
@@ -131,6 +132,7 @@ public class OAuthClientRepository {
         final var id = oauthClient.getId();
         final var grantTypes = grantTypeDao.selectByClientId(id);
         final var scopes = scopeDao.selectByClientId(id);
+        final var scopeIdList = scopes.stream().map(Scope::getId).toList();
         final var oauthClientRedirectUrl = new OauthClientRedirectUrl_();
         final var redirectUris = entityql.from(oauthClientRedirectUrl)
                 .where(w -> w.eq(oauthClientRedirectUrl.oauthClientId, id))
@@ -142,7 +144,7 @@ public class OAuthClientRepository {
         final var managementUsers = oauthClientManagementDao.selectAccessibleByClientId(id, hasViewAllUser,
                 operatorUserId);
         return new OAuthClientDetailEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
-                oauthClient.getName(), scopes, grantTypes, redirectUris, logoutRedirectUrls, managementUsers);
+                oauthClient.getName(), scopeIdList, grantTypes, redirectUris, logoutRedirectUrls, managementUsers);
     }
 
     /**

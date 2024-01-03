@@ -23,6 +23,7 @@ import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
+import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import jp.co.project.planets.earthly.webapp.service.OAuthClientService;
 
@@ -169,6 +170,23 @@ public class OAuthClientController {
         return new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
     }
 
+    /**
+     * OAuthクライアント編集検証
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientEditForm
+     *            OAuthクライアント編集FROM
+     * @param bindingResult
+     *            binding result
+     * @param redirectAttributes
+     *            redirect attributes
+     * @param model
+     *            model
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアント編集
+     */
     @PostMapping("{id}/edit")
     public ModelAndView edit(@PathVariable("id") final String id,
             @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
@@ -176,12 +194,44 @@ public class OAuthClientController {
             @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
+        redirectAttributes.addFlashAttribute("editMode", true);
+        model.asMap().forEach(redirectAttributes::addFlashAttribute);
+
         if (bindingResult.hasErrors()) {
-            model.asMap().forEach(redirectAttributes::addFlashAttribute);
             return modelAndView;
         }
 
-        oauthClientService.validateEditPermission(id, oauthClientEditForm.toDto(), userInfoDto);
+        try {
+            oauthClientService.validateEditPermission(id, oauthClientEditForm.toDto(), userInfoDto);
+            redirectAttributes.addFlashAttribute(READ_ONLY, true);
+        } catch (final ForbiddenException e) {
+            model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
+            model.addAttribute(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
+        return modelAndView;
+    }
+
+    @PostMapping("{id}/update")
+    public ModelAndView update(@PathVariable("id") final String id,
+            @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
+        model.asMap().forEach(redirectAttributes::addFlashAttribute);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("editMode", true);
+            return modelAndView;
+        }
+
+        try {
+            final var message = oauthClientService.update(id, oauthClientEditForm.toDto(), userInfoDto);
+            redirectAttributes.addFlashAttribute(SUCCESS, message);
+        } catch (final ForbiddenException e) {
+            model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
+            model.addAttribute(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
         return modelAndView;
     }
 }

@@ -129,7 +129,7 @@
               <div class="col-lg-9 col-md-8">
                 <select class="form-select" id="scope" multiple="multiple" name="scope"
                         th:classappend="${#fields.hasErrors('scope')}?'is-invalid'"
-                        th:readonly="${readOnly}" th:data-before="${#strings.listJoin(OAuthClientEditForm.scope, ',')}">
+                        th:readonly="${readOnly}" th:data-before="${#strings.listJoin(OAuthClientDetailEntity.scopes, ',')}">
                   <option th:each="scopeEnum : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
                           th:text="${scopeEnum.name()}" th:value="${scopeEnum.id}"
                           th:selected="${#lists.contains(OAuthClientEditForm.scope, scopeEnum.id)}">
@@ -417,7 +417,11 @@
         $('div.card.edit').show();
         $('#scope').select2();
     });
-
+    $('button.update').on('click', function () {
+        const cardEdit = $('div.card.edit');
+        cardEdit.find('input').prop('disabled', false);
+        $('#scope').prop("disabled", false);
+    });
     function cancel() {
         $('.confirm button').disabled = false;
         $('.update').disabled = true;
@@ -435,8 +439,11 @@
                 e.disabled = false;
             }
         });
+        let url = $('.edit > form').attr('action').replace('update', 'edit');
+        $('.edit > form').attr('action', url);
         $('#scope').select2().val(null).trigger('change');
         $('#scope').select2().val($('#scope').data('before').split(',')).trigger('change');
+        $('#scope').prop("disabled", false);
         $('div.card.detail').show();
         $('div.card.edit').hide();
     }

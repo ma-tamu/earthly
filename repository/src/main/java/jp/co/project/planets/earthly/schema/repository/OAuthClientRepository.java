@@ -19,6 +19,7 @@ import jp.co.project.planets.earthly.schema.db.dao.ScopeDao;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl_;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl_;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClient_;
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
@@ -51,6 +52,11 @@ public class OAuthClientRepository {
         this.logoutRedirectUrlDao = logoutRedirectUrlDao;
         this.oauthClientManagementDao = oauthClientManagementDao;
         this.entityql = entityql;
+    }
+
+    public OauthClient findByPrimaryKey(final String id) {
+        final var oauthClient_ = new OauthClient_();
+        return entityql.from(oauthClient_).where(w -> w.eq(oauthClient_.id, id)).forUpdate().fetchOne();
     }
 
     /**
@@ -202,5 +208,17 @@ public class OAuthClientRepository {
         oauthClient.setCreatedAt(localDateTime);
         oauthClient.setUpdatedAt(localDateTime);
         return oauthClientDao.insert(oauthClient);
+    }
+
+    /**
+     * update oauthClient
+     * 
+     * @param oauthClient
+     *            oauthClient
+     * @return update count
+     */
+    public int update(final OauthClient oauthClient) {
+        oauthClient.setUpdatedAt(LocalDateTime.now());
+        return oauthClientDao.update(oauthClient);
     }
 }

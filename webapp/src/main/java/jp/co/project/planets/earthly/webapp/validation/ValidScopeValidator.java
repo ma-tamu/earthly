@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import jp.co.project.planets.earthly.common.enums.Scope;
+import jp.co.project.planets.earthly.schema.emuns.Scope;
 import jp.co.project.planets.earthly.webapp.annotation.validator.ValidScope;
 
 /**

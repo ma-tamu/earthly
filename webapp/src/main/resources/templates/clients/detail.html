@@ -72,11 +72,9 @@
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.scope}">スコープ</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:each="scope:${OAuthClientDetailEntity.scopes}">
-                <th:block th:if="${scopeStat.first}" th:text="${scope.name}"></th:block>
-                <th:block th:unless="${scopeStat.first}">
-                  &nbsp;<th:block th:text="${scope.name}"></th:block>
-                </th:block>
+              <th:block th:each="scope:${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}">
+                <th:block th:if="${#lists.contains(OAuthClientDetailEntity.scopes(), scope.id)}"
+                          th:text="${#strings.append(scope.name, ' ')}"></th:block>
               </th:block>
             </div>
           </div>
@@ -89,11 +87,85 @@
           <div class="row">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.secret}">シークレット</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${OAuthClientDetailEntity.clientId}">シークレット</th:block>
+              <th:block th:text="${OAuthClientDetailEntity.secret}">シークレット</th:block>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!--/* 編集 */-->
+    <div class="card edit" th:styleappend="${#bools.isFalse(editMode)} ? 'display: none'">
+      <form method="post" th:with="action=${readOnly}? 'update' : 'edit'"
+            th:action="@{/clients/__${OAuthClientDetailEntity.id}__/__${action}__}"
+            th:object="${OAuthClientEditForm}">
+        <div class="card-body">
+          <div class="card-title" th:text="${OAuthClientDetailEntity.name}">OAuthクライアント名</div>
+          <div class="profile-overview">
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.name}">クライアント名</div>
+              <div class="col-lg-9 col-md-8">
+                <input type="text" class="form-control" th:data-before="${OAuthClientDetailEntity.name}"
+                       th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:disabled="${readOnly}"
+                       th:field="*{name}">
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                  クライアント名は必須です。
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.grantType}">付与タイプ</div>
+              <div class="col-lg-9 col-md-8">
+                <th:block th:each="grantType:${OAuthClientDetailEntity.grantTypes}">
+                  <th:block th:if="${grantTypeStat.first}" th:text="${grantType.type}"></th:block>
+                  <th:block th:unless="${grantTypeStat.first}">
+                    &nbsp;<th:block th:text="${grantType.type}"></th:block>
+                  </th:block>
+                </th:block>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.scope}">スコープ</div>
+              <div class="col-lg-9 col-md-8">
+                <select class="form-select" id="scope" multiple="multiple" name="scope"
+                        th:classappend="${#fields.hasErrors('scope')}?'is-invalid'"
+                        th:readonly="${readOnly}" th:data-before="${#strings.listJoin(OAuthClientDetailEntity.scopes, ',')}">
+                  <option th:each="scopeEnum : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
+                          th:text="${scopeEnum.name()}" th:value="${scopeEnum.id}"
+                          th:selected="${#lists.contains(OAuthClientEditForm.scope, scopeEnum.id)}">
+                  </option>
+                </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('scope')}" th:errors="*{scope}">
+                  スコープは必須です。
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.id}">クライアントID</div>
+              <div class="col-lg-9 col-md-8">
+                <th:block th:text="${OAuthClientDetailEntity.clientId}">client ID</th:block>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.secret}">シークレット</div>
+              <div class="col-lg-9 col-md-8">
+                <th:block th:text="${OAuthClientDetailEntity.secret}">シークレット</th:block>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 text-end">
+                <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
+                <button type="submit" class="btn btn-primary confirm" th:disabled="${readOnly}"
+                        th:styleappend="${readOnly}?'display:none'">確認
+                </button>
+                <button type="submit" class="btn btn-primary update" th:disabled="${#bools.isFalse(readOnly)}"
+                        th:styleappend="${#bools.isFalse(readOnly)}?'display:none'">更新
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
     <hr>
     <div class="card">
@@ -339,6 +411,51 @@
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script type="text/javascript" th:inline="javascript">
+
+    $('button.edit').on('click', function () {
+        $('div.card.detail').hide();
+        $('div.card.edit').show();
+        $('#scope').select2();
+    });
+    $('button.update').on('click', function () {
+        const cardEdit = $('div.card.edit');
+        cardEdit.find('input').prop('disabled', false);
+        $('#scope').prop("disabled", false);
+    });
+    function cancel() {
+        $('.confirm button').disabled = false;
+        $('.update').disabled = true;
+
+        $('.edit > form').find('input').each((i, e) => {
+            let v = e.dataset.before;
+            if (v === undefined) {
+                return true;
+            }
+            if (e.type === 'checkbox') {
+                e.checked = JSON.parse(v);
+                e.disabled = false;
+            } else {
+                e.value = v;
+                e.disabled = false;
+            }
+        });
+        let url = $('.edit > form').attr('action').replace('update', 'edit');
+        $('.edit > form').attr('action', url);
+        $('#scope').select2().val(null).trigger('change');
+        $('#scope').select2().val($('#scope').data('before').split(',')).trigger('change');
+        $('#scope').prop("disabled", false);
+        $('div.card.detail').show();
+        $('div.card.edit').hide();
+    }
+
+
+    $('#scope').select2();
+    [# th:if= "${readOnly}"]
+    $('#scope').prop("disabled", true);
+    [/]
+    function doSubmit() {
+        $('#scope').prop("disabled", false);
+    }
 </script>
 </body>
 </html>

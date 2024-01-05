@@ -4,6 +4,7 @@ import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 
 import java.util.Collections;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
+import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
@@ -83,6 +87,9 @@ public class OAuthClientController {
         modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
         modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
+        modelAndView.addObject("redirectUriPage", new PageImpl<OauthClientRedirectUrl>(Collections.emptyList()));
+        modelAndView.addObject("logoutRedirectUriPage", new PageImpl<LogoutRedirectUrl>(Collections.emptyList()));
+        modelAndView.addObject("managementUserPage", new PageImpl<User>(Collections.emptyList()));
         final var oauthClientEditForm = new OAuthClientEditForm(oauthClientDetailEntity.name(),
                 oauthClientDetailEntity.scopes());
         modelAndView.addObject(oauthClientEditForm);

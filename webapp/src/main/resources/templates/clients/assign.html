@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="redirectUriModal(id)" class="modal" id="addRedirectUrlModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        リダイレクトURI検索
+      </div>
+      <div class="modal-body">
+        <form method="get" name="redirectUriSearch" onsubmit="return false;" th:action="@{/clients/__${id}__/redirectUris}">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+              <div class="row m-1">
+                <div class="col-12">
+                  <label for="redirectUri">リダイレクトURI</label>
+                  <input  type="text" class="form-control" id="redirectUri" name="redirectUri">
+                </div>
+              </div>
+              <div class="row text-center m-1">
+                <div class="col-12">
+                  <button class="btn btn-primary rounded-pill on-search" type="button">
+                    <i class="ri-search-2-line"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="post" name="assignRedirectUri" th:action="@{/clients/__${id}__/redirectUris/assigns}">
+          <div class="card role-list">
+            <div class="card-body" th:fragment="redirectUriSearchResult" th:if="${!redirectUriPage.isEmpty()}">
+              <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+              <table class="table table-striped table-borderless">
+                <thead>
+                <tr>
+                  <th th:text="#{page.label.client.redirect.url}">リダイレクトURI</th>
+                  <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="redirectUri:${redirectUriPage.content}">
+                  <td th:text="${redirectUri.redirectUri}">
+                    リダイレクトURI
+                  </td>
+                  <td class="text-end">
+                    <input class="form-check-input" name="redirectUri" th:value="${redirectUri.id}" type="checkbox">
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary cancel" data-bs-dismiss="modal" type="button">キャンセル</button>
+        <button class="btn btn-primary redirect-uri assign" type="button">割り当て</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="logoutRedirectUriModal(id)" class="modal" id="addLogoutRedirectUrlModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        ログアウトリダイレクトURI検索
+      </div>
+      <div class="modal-body">
+        <form method="get" name="logoutRedirectSearch" onsubmit="return false;" th:action="@{/clients/__${id}__/logout/redirectUris}">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+              <div class="row m-1">
+                <div class="col-12">
+                  <label for="logoutRedirectUri">ログアウトリダイレクトURI</label>
+                  <input  type="text" class="form-control" id="logoutRedirectUri" name="logoutRedirectUri">
+                </div>
+              </div>
+              <div class="row text-center m-1">
+                <div class="col-12">
+                  <button class="btn btn-primary rounded-pill on-search" type="button">
+                    <i class="ri-search-2-line"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="post" name="assignLogoutRedirectUri" th:action="@{/clients/__${id}__/logout/redirectUris/assigns}">
+          <div class="card role-list">
+            <div class="card-body" th:fragment="logoutRedirectUriSearchResult" th:if="${!logoutRedirectUriPage.isEmpty()}">
+              <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+              <table class="table table-striped table-borderless">
+                <thead>
+                <tr>
+                  <th th:text="#{page.label.client.list.logout.url}">リダイレクトURI</th>
+                  <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="logoutRedirectUri:${logoutRedirectUriPage.content}">
+                  <td th:text="${logoutRedirectUri.redirectUri}">
+                    リダイレクトURI
+                  </td>
+                  <td class="text-end">
+                    <input class="form-check-input" name="redirectUri" th:value="${logoutRedirectUri.id}" type="checkbox">
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary cancel" data-bs-dismiss="modal" type="button">キャンセル</button>
+        <button class="btn btn-primary logout-redirect-uri assign" type="button">割り当て</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="managementUserModal(id)" class="modal" id="addManagementUserModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" th:text="#{page.modal.title.client.management.user}">
+        管理ユーザー検索
+      </div>
+      <div class="modal-body">
+        <form method="get" name="managementUserSearch" onsubmit="return false;" th:action="@{/clients/__${id}__/managementUsers}">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+              <div class="row m-1">
+                <div class="col-6">
+                  <label for="userId" th:text="#{page.label.user.loginId}">ログインID</label>
+                  <input  type="text" class="form-control" id="userId" name="userId">
+                </div>
+                <div class="col-6">
+                  <label for="userName" th:text="#{page.label.user.name}">ユーザー名</label>
+                  <input  type="text" class="form-control" id="userName" name="userName">
+                </div>
+              </div>
+              <div class="row m-1">
+                <div class="col-6">
+                  <label for="company" th:text="#{page.label.user.company}">所属会社</label>
+                  <input  type="text" class="form-control" id="company" name="company">
+                </div>
+              </div>
+              <div class="row text-center m-1">
+                <div class="col-12">
+                  <button class="btn btn-primary rounded-pill on-search" type="button">
+                    <i class="ri-search-2-line"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="post" name="assignManagementUser" th:action="@{/clients/__${id}__/managementUsers/assigns}">
+          <div class="card role-list">
+            <div class="card-body" th:fragment="managementUserSearchResult" th:if="${!managementUserPage.isEmpty()}">
+              <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+              <table class="table table-striped table-borderless">
+                <thead>
+                <tr>
+                  <th th:text="#{page.label.client.list.logout.url}">リダイレクトURI</th>
+                  <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="managementUser:${managementUserPage.content}">
+                  <td>
+                    <a th:href="@{/users/__${managementUser.userId}__}" th:text="${managementUser.userName}">ユーザー名</a>
+                  </td>
+                  <td class="text-end">
+                    <input class="form-check-input" name="userId" th:value="${managementUser.id}" type="checkbox">
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary cancel" data-bs-dismiss="modal" type="button">キャンセル</button>
+        <button class="btn btn-primary management-user assign" type="button">割り当て</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</html>

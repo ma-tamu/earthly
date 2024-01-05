@@ -403,6 +403,10 @@
     </div>
 
   </section>
+  <div th:replace="clients/modal::delete(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::redirectUriModal(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::logoutRedirectUriModal(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::managementUserModal(${OAuthClientDetailEntity.id})"></div>
   <th:block th:if="${errorCode}">
     <div th:replace="parts/alert::danger"></div>
   </th:block>

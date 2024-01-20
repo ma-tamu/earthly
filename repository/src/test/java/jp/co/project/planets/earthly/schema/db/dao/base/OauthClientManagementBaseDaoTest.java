@@ -14,38 +14,26 @@ import org.seasar.doma.jdbc.SqlFileRepository;
 import org.seasar.doma.jdbc.dialect.Dialect;
 
 /**
- *
+ * 
  */
 public class OauthClientManagementBaseDaoTest {
 
-    /**
-     *
-     */
+    /** */
     protected SqlFileRepository repository;
 
-    /**
-     *
-     */
+    /** */
     protected Dialect dialect;
 
-    /**
-     *
-     */
+    /** */
     protected Driver driver;
 
-    /**
-     *
-     */
+    /** */
     protected String url;
 
-    /**
-     *
-     */
+    /** */
     protected String user;
 
-    /**
-     *
-     */
+    /** */
     protected String password;
 
     @BeforeEach

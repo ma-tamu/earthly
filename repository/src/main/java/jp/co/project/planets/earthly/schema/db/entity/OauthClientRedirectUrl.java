@@ -18,28 +18,20 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * OAuthクライアントid
-     */
+    /** OAuthクライアントid */
     @Column(name = "oauth_client_id")
     String oauthClientId;
 
-    /**
-     * リダイレクトURL
-     */
+    /** リダイレクトURL */
     @Column(name = "redirect_url")
     String redirectUrl;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -64,7 +56,7 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param oauthClientId OAuthクライアントid
      * @Param redirectUrl リダイレクトURL

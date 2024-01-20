@@ -16,22 +16,16 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * OAuthクライアントid
-     */
+    /** OAuthクライアントid */
     @Column(name = "oauth_client_id")
     String oauthClientId;
 
-    /**
-     * 認可タイプid
-     */
+    /** 認可タイプid */
     @Column(name = "grant_type_id")
     String grantTypeId;
 
@@ -40,7 +34,7 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param oauthClientId OAuthクライアントid
      * @Param grantTypeId 認可タイプid

@@ -18,28 +18,20 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * id
-     */
+    /** id */
     @Column(name = "user_id")
     String userId;
 
-    /**
-     * id
-     */
+    /** id */
     @Column(name = "role_id")
     String roleId;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -52,7 +44,7 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param userId id
      * @Param roleId id

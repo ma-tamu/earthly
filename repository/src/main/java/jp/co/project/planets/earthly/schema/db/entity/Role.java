@@ -18,28 +18,20 @@ public class Role extends AbstractRole implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * ロール名
-     */
+    /** ロール名 */
     @Column(name = "name")
     String name;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    /**
-     * 作成者
-     */
+    /** 作成者 */
     @Column(name = "created_by")
     String createdBy;
 
@@ -60,7 +52,7 @@ public class Role extends AbstractRole implements java.io.Serializable {
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param name ロール名
      * @Param createdAt 作成日

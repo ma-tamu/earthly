@@ -18,28 +18,20 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     *
-     */
+    /**  */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "registered_client_id")
     String registeredClientId;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "principal_name")
     String principalName;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "authorization_grant_type")
     String authorizationGrantType;
 
@@ -51,15 +43,11 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     @Column(name = "state")
     String state;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "authorization_code_value")
     String authorizationCodeValue;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "authorization_code_issued_at")
     LocalDateTime authorizationCodeIssuedAt;
 
@@ -132,7 +120,7 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
 
     /**
      * new instance
-     *
+     * 
      * @Param id
      * @Param registeredClientId
      * @Param principalName

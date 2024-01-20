@@ -6,7 +6,6 @@ import java.util.List;
 import jp.co.project.planets.earthly.schema.db.entity.GrantType;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
-import jp.co.project.planets.earthly.schema.db.entity.User;
 
 /**
  * OAuthクライアント詳細
@@ -32,5 +31,6 @@ import jp.co.project.planets.earthly.schema.db.entity.User;
  */
 public record OAuthClientDetailEntity(String id, String clientId, String secret, String name, List<String> scopes,
         List<GrantType> grantTypes, List<OauthClientRedirectUrl> redirectUrls,
-        List<LogoutRedirectUrl> logoutRedirectUrls, List<User> managementUserList) implements Serializable {
+        List<LogoutRedirectUrl> logoutRedirectUrls, List<OAuthClientManagementUserEntity> managementUserList)
+        implements Serializable {
 }

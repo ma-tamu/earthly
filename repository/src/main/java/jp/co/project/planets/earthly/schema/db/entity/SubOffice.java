@@ -18,28 +18,20 @@ public class SubOffice extends AbstractSubOffice implements java.io.Serializable
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * 名前
-     */
+    /** 名前 */
     @Column(name = "name")
     String name;
 
-    /**
-     * オフィス
-     */
+    /** オフィス */
     @Column(name = "office_id")
     String officeId;
 
-    /**
-     * 部門コード
-     */
+    /** 部門コード */
     @Column(name = "department_code")
     String departmentCode;
 
@@ -72,7 +64,7 @@ public class SubOffice extends AbstractSubOffice implements java.io.Serializable
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param name 名前
      * @Param officeId オフィス

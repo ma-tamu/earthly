@@ -1,6 +1,8 @@
 select
 /*%expand*/*
-from language
-where id = /* id */'a'
-
-  AND is_deleted = 0
+from
+language
+where
+    id = /* id */'a'
+    
+      AND is_deleted = 0

@@ -18,28 +18,20 @@ public class Company extends AbstractCompany implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * 名前
-     */
+    /** 名前 */
     @Column(name = "name")
     String name;
 
-    /**
-     * 所属国
-     */
+    /** 所属国 */
     @Column(name = "country_id")
     String countryId;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -64,7 +56,7 @@ public class Company extends AbstractCompany implements java.io.Serializable {
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param name 名前
      * @Param countryId 所属国

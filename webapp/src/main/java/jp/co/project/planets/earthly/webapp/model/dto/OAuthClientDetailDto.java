@@ -4,8 +4,8 @@ import org.springframework.data.domain.PageImpl;
 
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
-import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 
 /**
  * OAuthクライアント詳細DTO
@@ -23,5 +23,5 @@ import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity
  */
 public record OAuthClientDetailDto(OAuthClientDetailEntity oauthClientDetailEntity,
         PageImpl<OauthClientRedirectUrl> redirectUrlPage, PageImpl<LogoutRedirectUrl> logoutRedirectUrlPage,
-        PageImpl<User> managementUserPage, boolean canEditableClient) {
+        PageImpl<OAuthClientManagementUserEntity> managementUserPage, boolean canEditableClient) {
 }

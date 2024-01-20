@@ -18,22 +18,16 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * ユーザーID
-     */
+    /** ユーザーID */
     @Column(name = "user_id")
     String userId;
 
-    /**
-     * トークン
-     */
+    /** トークン */
     @Column(name = "token")
     String token;
 
@@ -46,7 +40,7 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param userId ユーザーID
      * @Param token トークン

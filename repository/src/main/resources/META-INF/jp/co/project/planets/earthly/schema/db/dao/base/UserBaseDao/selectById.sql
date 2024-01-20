@@ -1,6 +1,8 @@
 select
 /*%expand*/*
-from user
-where id = /* id */'a'
-
-  AND is_deleted = 0
+from
+user
+where
+    id = /* id */'a'
+    
+      AND is_deleted = 0

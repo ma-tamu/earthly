@@ -19,15 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 
 import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
-import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.db.entity.GrantType;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
-import jp.co.project.planets.earthly.schema.db.entity.User;
-import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.emuns.Scope;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -132,9 +130,8 @@ class OAuthClientServiceTest {
         final var logoutRedirectUrl = new LogoutRedirectUrl("dummy", client.getId(), "http://127.0.0.1/dummy/logout",
                 null, null, null, null, false);
         final var logoutRedirectUrls = List.of(logoutRedirectUrl);
-        final var managementUser = new User("NULL", "admin", "admin", GenderEnum.MALE.getValue(), "ja",
-                Timezone.UTC.getId(), "no-replay@example.com", "PASSWORD", false, false, "SECRET", "COMPANY_ID_01",
-                null, null, null, null, false);
+        final var managementUser = new OAuthClientManagementUserEntity("CLIENT_MANAGEMENT_USER_ID_01", "CLIENT_NAME_01",
+                "NULL", "admin", "COMPANY_ID_01", "COMPANY_NAME_01");
         final var managementUsers = List.of(managementUser);
         return new OAuthClientDetailEntity(client.getId(), client.getClientId(), client.getSecret(),
                 client.getName(), scopes, grantTypes, redirectUrls, logoutRedirectUrls, managementUsers);

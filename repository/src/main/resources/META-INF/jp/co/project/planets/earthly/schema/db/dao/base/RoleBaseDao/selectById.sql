@@ -1,6 +1,8 @@
 select
 /*%expand*/*
-from role
-where id = /* id */'a'
-
-  AND is_deleted = 0
+from
+role
+where
+    id = /* id */'a'
+    
+      AND is_deleted = 0

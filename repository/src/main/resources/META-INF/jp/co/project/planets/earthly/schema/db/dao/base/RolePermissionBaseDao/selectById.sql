@@ -1,5 +1,7 @@
 select
 /*%expand*/*
-from role_permission
-where id = /* id */'a'
+from
+role_permission
+where
+    id = /* id */'a'
     

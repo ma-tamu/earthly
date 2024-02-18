@@ -173,7 +173,7 @@
         <div class="card-title">
           <div class="row">
             <div class="col-8">
-              <th:block th:text="#{page.label.client.list.redirect.url}">リダイレクトURLリスト</th:block>
+              <th:block th:text="#{page.label.client.list.redirect.uri}">リダイレクトURIリスト</th:block>
             </div>
             <div class="col-4 text-end">
               <button class="btn btn-info rounded-pill m-1 add-redirect-url" data-bs-target="#addRedirectUrlModal"
@@ -191,7 +191,7 @@
             <div class="row">
               <div class="col-sm-4">
                 <input type="text" class="form-control" name="redirectUrl" placeholder="リダイレクトURL"
-                       th:placeholder="#{page.placeholder.client.redirect.url}">
+                       th:placeholder="#{page.placeholder.client.redirect.uri}">
               </div>
               <div class="col-sm-2">
                 <button class="btn btn-primary assigned-role" type="button">検索</button>
@@ -208,7 +208,7 @@
               <table class="table table-striped table-borderless assign-role-list" th:fragment="addRedirectUrlList">
                 <thead>
                 <tr>
-                  <th th:text="#{page.label.client.redirect.url}">リダイレクトURL</th>
+                  <th th:text="#{page.label.client.redirect.uri}">リダイレクトURL</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -250,7 +250,7 @@
         <div class="card-title">
           <div class="row">
             <div class="col-8">
-              <th:block th:text="#{page.label.client.list.logout.url}">ログアウトリダイレクトURLリスト</th:block>
+              <th:block th:text="#{page.label.client.list.logout.uri}">ログアウトリダイレクトURIリスト</th:block>
             </div>
             <div class="col-4 text-end">
               <button class="btn btn-info rounded-pill m-1 add-logout-redirect-url"
@@ -267,8 +267,8 @@
                 th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logouts/redirectUrls}">
             <div class="row">
               <div class="col-sm-4">
-                <input type="text" class="form-control" name="redirectUrl" placeholder="リダイレクトURL"
-                       th:placeholder="#{page.placeholder.client.redirect.url}">
+                <input type="text" class="form-control" name="redirectUrl" placeholder="ログアウトリダイレクトURI"
+                       th:placeholder="#{page.placeholder.client.redirect.uri}">
               </div>
               <div class="col-sm-2">
                 <button class="btn btn-primary assigned-role" type="button">検索</button>
@@ -286,7 +286,7 @@
                      th:fragment="addLogoutRedirectUrlList">
                 <thead>
                 <tr>
-                  <th th:text="#{page.label.client.redirect.url}">リダイレクトURL</th>
+                  <th th:text="#{page.label.client.redirect.uri}">ログアウトリダイレクトURI</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -362,16 +362,17 @@
           <div id="managementUserContent">
             <th:block th:fragment="managementUserlPage">
               <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
-              <table class="table table-striped table-borderless assign-role-list" th:fragment="addManagementUserList">
+              <table class="table table-striped table-borderless add-management-user-list" th:fragment="addManagementUserList">
                 <thead>
                 <tr>
                   <th th:text="#{page.label.user.name}">ユーザー名</th>
+                  <th th:text="#{page.label.user.company}">所属会社</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="user : ${managementUserPage.content}">
                   <td>
-                    <a th:href="@{/users/__${user.id}__}" th:text="${user.name}"></a>
+                    <a th:href="@{/users/__${user.userId}__}" th:text="${user.userName}"></a>
                   </td>
                   <td class="text-end">
                     <input type="checkbox" class="form-check-input" name="users" style="display: none"
@@ -403,6 +404,10 @@
     </div>
 
   </section>
+  <div th:replace="clients/modal::delete(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::redirectUriModal(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::logoutRedirectUriModal(${OAuthClientDetailEntity.id})"></div>
+  <div th:replace="clients/assign::managementUserModal(${OAuthClientDetailEntity.id})"></div>
   <th:block th:if="${errorCode}">
     <div th:replace="parts/alert::danger"></div>
   </th:block>

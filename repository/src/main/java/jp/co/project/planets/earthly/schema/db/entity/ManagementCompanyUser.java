@@ -18,27 +18,19 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 会社ID
-     */
+    /** 会社ID */
     @Column(name = "company_id")
     String companyId;
 
-    /**
-     * ユーザーID
-     */
+    /** ユーザーID */
     @Column(name = "user_id")
     String userId;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
-    /**
-     * 作成者
-     */
+    /** 作成者 */
     @Column(name = "created_by")
     String createdBy;
 
@@ -64,7 +56,7 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
 
     /**
      * new instance
-     *
+     * 
      * @Param companyId 会社ID
      * @Param userId ユーザーID
      * @Param createdAt 作成日

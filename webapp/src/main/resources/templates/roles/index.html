@@ -1,10 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
 </head>
 <body>
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main class="main" id="main">
+  <div class="pagetitle">
+    <div class="row">
+      <div class="col-9">
+        <h1 th:text="#{page.title.role.list}">ロールリスト</h1>
+      </div>
+      <div class="col-3">
+        <div class="text-end">
+          <div class="btn-group">
+            <a class="btn btn-primary rounded-pill m-1" data-bs-placement="top"
+               data-bs-toggle="tooltip"
+               th:href="@{/roles/entry}" th:title="#{page.tooltip.entry}">
+              <i class="ri-user-add-line"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" th:text="#{page.title.role.list}">
+          ロールリスト
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <form method="get" th:action="@{/roles}">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">検索条件</div>
+        <div class="row m-1">
+          <div class="col-12">
+            <label for="name" th:text="#{page.label.role.name}">ロール名</label>
+            <input class="form-control" id="name" name="name" type="text">
+          </div>
+        </div>
+        <div class="row text-center m-1">
+          <div class="col-12">
+            <button class="btn btn-primary rounded-pill" type="submit">
+              <i class="ri-search-2-line"></i>
+              <th:block th:text="#{page.button.search}">検索</th:block>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="card">
+      <div class="card-body">
+        <th:block th:if="${!#lists.isEmpty(pageImpl.content)}">
+          <th:block th:replace="parts/pagination::pagination(${pageImpl})"/>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th th:text="#{page.label.role.name}">ロール名</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="role : ${pageImpl.content}">
+              <td>
+                <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">SampleID01</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <th:block th:include="parts/pagination::pagination(${pageImpl})"/>
+        </th:block>
+        <th:block th:if="${#lists.isEmpty(pageImpl.content)}">
+          <div class="row-cols-auto text-center">
+            <img alt="empty" height="100" th:src="@{/img/inbox.png}" width="100">
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </form>
 
+</main>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
 </body>
 </html>

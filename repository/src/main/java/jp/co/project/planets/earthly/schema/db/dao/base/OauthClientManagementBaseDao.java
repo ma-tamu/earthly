@@ -10,7 +10,6 @@ import org.seasar.doma.boot.ConfigAutowireable;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
 
 /**
- *
  */
 @Dao
 @ConfigAutowireable

@@ -18,28 +18,20 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * id
-     */
+    /** id */
     @Column(name = "role_id")
     String roleId;
 
-    /**
-     * id
-     */
+    /** id */
     @Column(name = "permission_id")
     String permissionId;
 
-    /**
-     * 作成日
-     */
+    /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
@@ -52,7 +44,7 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param roleId id
      * @Param permissionId id

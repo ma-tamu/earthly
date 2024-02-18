@@ -80,9 +80,31 @@ public class OAuthClientDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectAccessibleById(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectAccessibleById.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
     public void testSelectByAccessible(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
                 "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectByAccessible.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByAccessibleName(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientDao/selectByAccessibleName.sql",
+                dialect);
         execute(sqlFile);
     }
 

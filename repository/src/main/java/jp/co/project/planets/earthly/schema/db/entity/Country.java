@@ -18,28 +18,20 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * 名前
-     */
+    /** 名前 */
     @Column(name = "name")
     String name;
 
-    /**
-     * リージョン
-     */
+    /** リージョン */
     @Column(name = "region_id")
     String regionId;
 
-    /**
-     * 言語
-     */
+    /** 言語 */
     @Column(name = "language_id")
     String languageId;
 
@@ -68,7 +60,7 @@ public class Country extends AbstractCountry implements java.io.Serializable {
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param name 名前
      * @Param regionId リージョン

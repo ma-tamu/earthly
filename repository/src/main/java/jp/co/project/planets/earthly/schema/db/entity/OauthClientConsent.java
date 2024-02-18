@@ -16,28 +16,20 @@ public class OauthClientConsent extends AbstractOauthClientConsent implements ja
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     *
-     */
+    /**  */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "registered_client_id")
     String registeredClientId;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "principal_name")
     String principalName;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "authorities")
     String authorities;
 
@@ -46,7 +38,7 @@ public class OauthClientConsent extends AbstractOauthClientConsent implements ja
 
     /**
      * new instance
-     *
+     * 
      * @Param id
      * @Param registeredClientId
      * @Param principalName

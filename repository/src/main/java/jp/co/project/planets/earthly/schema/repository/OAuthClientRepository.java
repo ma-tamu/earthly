@@ -25,6 +25,7 @@ import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 
 /**
  * oauth client repository
@@ -147,7 +148,8 @@ public class OAuthClientRepository {
         final var logoutRedirectUrls = entityql.from(logoutRedirectUrl)
                 .where(w -> w.eq(logoutRedirectUrl.oauthClientId, id)).orderBy(o -> o.asc(logoutRedirectUrl.createdAt))
                 .fetch();
-        final var managementUsers = oauthClientManagementDao.selectAccessibleByClientId(id, hasViewAllUser,
+        final var managementUsers = oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id,
+                hasViewAllUser,
                 operatorUserId);
         return new OAuthClientDetailEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
                 oauthClient.getName(), scopeIdList, grantTypes, redirectUris, logoutRedirectUrls, managementUsers);
@@ -194,6 +196,22 @@ public class OAuthClientRepository {
             final String operationUserId) {
         final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         return oauthClientDao.selectByAccessibleName(name, hasViewAllOAuthClient, operationUserId);
+    }
+
+    /**
+     * 閲覧できるOAuthクライアント管理者リストを取得
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param hasViewAllUser
+     *            view_all_userを保持しているか
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @return oauth client management user list
+     */
+    public List<OAuthClientManagementUserEntity> findAccessiblyManagementUserByClientId(final String id,
+            final boolean hasViewAllUser, final String operatorUserId) {
+        return oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id, hasViewAllUser, operatorUserId);
     }
 
     /**

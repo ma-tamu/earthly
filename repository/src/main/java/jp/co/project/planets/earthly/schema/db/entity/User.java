@@ -18,22 +18,16 @@ public class User extends AbstractUser implements java.io.Serializable {
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * id
-     */
+    /** id */
     @Id
     @Column(name = "id")
     String id;
 
-    /**
-     * ログインID
-     */
+    /** ログインID */
     @Column(name = "login_id")
     String loginId;
 
-    /**
-     * ユーザー名
-     */
+    /** ユーザー名 */
     @Column(name = "name")
     String name;
 
@@ -61,9 +55,7 @@ public class User extends AbstractUser implements java.io.Serializable {
     @Column(name = "lockout")
     Boolean lockout;
 
-    /**
-     *
-     */
+    /**  */
     @Column(name = "two_factor_authentication")
     Boolean twoFactorAuthentication;
 
@@ -100,7 +92,7 @@ public class User extends AbstractUser implements java.io.Serializable {
 
     /**
      * new instance
-     *
+     * 
      * @Param id id
      * @Param loginId ログインID
      * @Param name ユーザー名

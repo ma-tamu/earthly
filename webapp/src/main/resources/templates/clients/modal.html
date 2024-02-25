@@ -19,5 +19,22 @@
     </div>
   </div>
 </div>
+<div th:fragment="cancel" class="modal" id="cancelModal" tabindex="-1" aria-hidden="true" style="display: none">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="ri-alert-line"></i></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" th:text="#{page.modal.entry.cancel}">
+        登録をキャンセルしますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.back}">Cancel</button>
+        <a type="button" class="btn btn-primary" th:href="@{/clients}" th:text="#{page.button.ok}">OK</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 </html>

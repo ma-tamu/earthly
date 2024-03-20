@@ -24,6 +24,7 @@ import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
+import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -236,5 +237,27 @@ public class OAuthClientController {
             model.addAttribute(MESSAGE_ARGS, e.getMessageKeyArgs());
         }
         return modelAndView;
+    }
+
+    /**
+     * OAuthクライアントリダイレクトURL検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientRedirectUrlSearchForm
+     *            OAuthクライアントリダイレクトURL検索FORM
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
+    @PostMapping("{id}/redirectUrls")
+    public ModelAndView searchRedirectUrl(@PathVariable("id") final String id,
+            final OAuthClientRedirectUrlSearchForm oauthClientRedirectUrlSearchForm,
+            @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        //        oauthClientService
+        return new ModelAndView("");
     }
 }

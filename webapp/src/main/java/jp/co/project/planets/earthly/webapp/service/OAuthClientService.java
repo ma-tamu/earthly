@@ -1,5 +1,6 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,10 +16,12 @@ import com.google.common.annotations.VisibleForTesting;
 
 import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
+import jp.co.project.planets.earthly.schema.repository.OAuthClientRedirectUrlRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientScopeRepository;
 import jp.co.project.planets.earthly.schema.repository.ScopeRepository;
@@ -41,6 +44,7 @@ public class OAuthClientService {
     private final OAuthClientRepository oauthClientRepository;
     private final ScopeRepository scopeRepository;
     private final OAuthClientScopeRepository oauthClientScopeRepository;
+    private final OAuthClientRedirectUrlRepository oauthClientRedirectUrlRepository;
     private final OAuthClientManagementRepository oauthClientManagementRepository;
 
     private final MessageSource messageSource;
@@ -48,11 +52,13 @@ public class OAuthClientService {
     public OAuthClientService(final OAuthClientLogic oauthClientLogic,
             final OAuthClientRepository oauthClientRepository, final ScopeRepository scopeRepository,
             final OAuthClientScopeRepository oauthClientScopeRepository,
+            final OAuthClientRedirectUrlRepository oauthClientRedirectUrlRepository,
             final OAuthClientManagementRepository oauthClientManagementRepository, final MessageSource messageSource) {
         this.oauthClientLogic = oauthClientLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.scopeRepository = scopeRepository;
         this.oauthClientScopeRepository = oauthClientScopeRepository;
+        this.oauthClientRedirectUrlRepository = oauthClientRedirectUrlRepository;
         this.oauthClientManagementRepository = oauthClientManagementRepository;
         this.messageSource = messageSource;
     }
@@ -258,5 +264,12 @@ public class OAuthClientService {
         // 更新対象のスコープが1件でも存在する場合に、差分ありとする。
         final var updateScopeCount = scopes.stream().filter(it -> !scopeIdList.contains(it)).count();
         return updateScopeCount == 0;
+    }
+
+    @Transactional
+    public PageImpl<OauthClientRedirectUrl> searchRedirectUrl(final String id, final String redirectUtl,
+            final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+
+        return new PageImpl<>(Collections.emptyList());
     }
 }

@@ -19,6 +19,8 @@ public final class ModelKey {
 
     public static final String ROLE_PAGE = "rolePage";
 
+    public static final String REDIRECT_URL_PAGE = "redirectUrlPage";
+
     private ModelKey() {
     }
 }

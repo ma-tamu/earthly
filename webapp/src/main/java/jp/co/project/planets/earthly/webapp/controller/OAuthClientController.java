@@ -82,7 +82,7 @@ public class OAuthClientController {
         final var modelAndView = new ModelAndView("clients/detail");
         final var oauthClientDetailEntity = oauthClientDetailDto.oauthClientDetailEntity();
         modelAndView.addObject(oauthClientDetailEntity);
-        modelAndView.addObject("redirectUrlPage", oauthClientDetailDto.redirectUrlPage());
+        modelAndView.addObject(REDIRECT_URL_PAGE, oauthClientDetailDto.redirectUrlPage());
         modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
         modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
@@ -252,12 +252,14 @@ public class OAuthClientController {
      *            ユーザー情報
      * @return 検索結果
      */
-    @PostMapping("{id}/redirectUrls")
+    @GetMapping("{id}/redirectUrls")
     public ModelAndView searchRedirectUrl(@PathVariable("id") final String id,
             final OAuthClientRedirectUrlSearchForm oauthClientRedirectUrlSearchForm,
             @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
-        //        oauthClientService
-        return new ModelAndView("");
+        final var oauthClientRedirectUrlPage = oauthClientService.searchRedirectUrl(id,
+                oauthClientRedirectUrlSearchForm.redirectUrl(), pageable, userInfoDto);
+        return new ModelAndView("clients/detail::redirectUrlPage") //
+                .addObject(REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
     }
 }

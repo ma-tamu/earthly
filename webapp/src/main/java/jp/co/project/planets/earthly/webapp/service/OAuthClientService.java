@@ -1,6 +1,5 @@
 package jp.co.project.planets.earthly.webapp.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -266,10 +265,26 @@ public class OAuthClientService {
         return updateScopeCount == 0;
     }
 
+    /**
+     * OAuthクライアントリダイレクトURL検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param redirectUtl
+     *            リダイレクトURL
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアントリダイレクトURLページ
+     */
     @Transactional
     public PageImpl<OauthClientRedirectUrl> searchRedirectUrl(final String id, final String redirectUtl,
             final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
-
-        return new PageImpl<>(Collections.emptyList());
+        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var byClientRedirectUrl = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id, redirectUtl,
+                hasViewAllOAuthClient, userInfoDto.id(), pageable);
+        return new PageImpl<>(byClientRedirectUrl);
     }
 }

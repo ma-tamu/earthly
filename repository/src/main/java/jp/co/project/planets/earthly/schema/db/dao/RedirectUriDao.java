@@ -5,6 +5,7 @@ import java.util.List;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
 import org.seasar.doma.boot.ConfigAutowireable;
+import org.seasar.doma.jdbc.SelectOptions;
 
 import jp.co.project.planets.earthly.schema.db.dao.base.OauthClientRedirectUrlBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
@@ -19,5 +20,6 @@ public interface RedirectUriDao extends OauthClientRedirectUrlBaseDao {
     List<String> selectByClientId(String clientId);
 
     @Select
-    List<OauthClientRedirectUrl> selectByClientRedirectUrl(String clientId, String redirectUrl);
+    List<OauthClientRedirectUrl> selectByClientRedirectUrl(String clientId, String redirectUrl,
+            boolean hasViewAllOAuthClient, String operatorUserId, SelectOptions options);
 }

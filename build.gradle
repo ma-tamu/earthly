@@ -7,13 +7,13 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:3.2.4"
         classpath "io.spring.gradle:dependency-management-plugin:1.1.4"
-        classpath 'com.mysql:mysql-connector-j:8.2.0'
-        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14"
+        classpath 'com.mysql:mysql-connector-j:8.3.0'
+        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.9"
         classpath "de.aaschmid:gradle-cpd-plugin:3.3"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.0.0.4638"
         classpath "com.github.ben-manes:gradle-versions-plugin:0.42.0"
-        classpath "org.flywaydb:flyway-gradle-plugin:9.22.3"
-        classpath "org.flywaydb:flyway-mysql:9.22.3"
+        classpath "org.flywaydb:flyway-gradle-plugin:10.11.0"
+        classpath "org.flywaydb:flyway-mysql:10.11.0"
         classpath "org.domaframework.doma:codegen:2.0.0"
         classpath "org.domaframework.doma:compile:2.0.0"
     }

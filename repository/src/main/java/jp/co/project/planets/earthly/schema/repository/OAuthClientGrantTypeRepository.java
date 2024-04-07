@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.repository;
 
 import org.springframework.stereotype.Repository;
 
-import jp.co.project.planets.earthly.schema.db.dao.OauthClientGrantTypeDao;
+import jp.co.project.planets.earthly.schema.db.dao.OAuthClientGrantTypeDao;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientGrantType;
 
 /**
@@ -11,9 +11,9 @@ import jp.co.project.planets.earthly.schema.db.entity.OauthClientGrantType;
 @Repository
 public class OAuthClientGrantTypeRepository {
 
-    private final OauthClientGrantTypeDao oauthClientGrantTypeDao;
+    private final OAuthClientGrantTypeDao oauthClientGrantTypeDao;
 
-    public OAuthClientGrantTypeRepository(final OauthClientGrantTypeDao oauthClientGrantTypeDao) {
+    public OAuthClientGrantTypeRepository(final OAuthClientGrantTypeDao oauthClientGrantTypeDao) {
         this.oauthClientGrantTypeDao = oauthClientGrantTypeDao;
     }
 

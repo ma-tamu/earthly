@@ -20,6 +20,7 @@ public final class ModelKey {
     public static final String ROLE_PAGE = "rolePage";
 
     public static final String REDIRECT_URL_PAGE = "redirectUrlPage";
+    public static final String LOGOUT_REDIRECT_URL_PAGE = "logoutRedirectUrlPage";
 
     private ModelKey() {
     }

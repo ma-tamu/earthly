@@ -14,11 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.annotations.VisibleForTesting;
 
 import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
+import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.repository.LogoutRedirectRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRedirectUrlRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
@@ -47,12 +49,14 @@ public class OAuthClientService {
     private final OAuthClientManagementRepository oauthClientManagementRepository;
 
     private final MessageSource messageSource;
+    private final LogoutRedirectRepository logoutRedirectRepository;
 
     public OAuthClientService(final OAuthClientLogic oauthClientLogic,
-            final OAuthClientRepository oauthClientRepository, final ScopeRepository scopeRepository,
-            final OAuthClientScopeRepository oauthClientScopeRepository,
-            final OAuthClientRedirectUrlRepository oauthClientRedirectUrlRepository,
-            final OAuthClientManagementRepository oauthClientManagementRepository, final MessageSource messageSource) {
+        final OAuthClientRepository oauthClientRepository, final ScopeRepository scopeRepository,
+        final OAuthClientScopeRepository oauthClientScopeRepository,
+        final OAuthClientRedirectUrlRepository oauthClientRedirectUrlRepository,
+        final OAuthClientManagementRepository oauthClientManagementRepository, final MessageSource messageSource,
+        final LogoutRedirectRepository logoutRedirectRepository) {
         this.oauthClientLogic = oauthClientLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.scopeRepository = scopeRepository;
@@ -60,6 +64,7 @@ public class OAuthClientService {
         this.oauthClientRedirectUrlRepository = oauthClientRedirectUrlRepository;
         this.oauthClientManagementRepository = oauthClientManagementRepository;
         this.messageSource = messageSource;
+        this.logoutRedirectRepository = logoutRedirectRepository;
     }
 
     /**
@@ -75,7 +80,7 @@ public class OAuthClientService {
      */
     @Transactional
     public PageImpl<OauthClient> search(final String name, final Pageable pageable,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
 
         validateAccessibleClient(userInfoDto);
 
@@ -153,7 +158,7 @@ public class OAuthClientService {
      *            ユーザー情報
      */
     public void validateEntryOperation(final OAuthClientEntryDto oauthClientEntryDto,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
         validateEntryPermission(userInfoDto);
     }
 
@@ -168,13 +173,13 @@ public class OAuthClientService {
      */
     @Transactional
     public String create(final OAuthClientEntryDto oauthClientEntryDto,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
         validateEntryPermission(userInfoDto);
         return oauthClientLogic.create(oauthClientEntryDto.name(), oauthClientEntryDto.scopes(), userInfoDto.id());
     }
 
     public void validateEditPermission(final String id, final OAuthClientEditDto oauthClientEditDto,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
 
         final var permissionEnumList = userInfoDto.permissionEnumList();
         if (!permissionEnumList.contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
@@ -201,7 +206,7 @@ public class OAuthClientService {
      */
     @Transactional
     public String update(final String id, final OAuthClientEditDto oauthClientEditDto,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
 
         validateEditPermission(id, oauthClientEditDto, userInfoDto);
 
@@ -280,11 +285,34 @@ public class OAuthClientService {
      */
     @Transactional
     public PageImpl<OauthClientRedirectUrl> searchRedirectUrl(final String id, final String redirectUtl,
-            final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
         final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var byClientRedirectUrl = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id, redirectUtl,
                 hasViewAllOAuthClient, userInfoDto.id(), pageable);
         return new PageImpl<>(byClientRedirectUrl);
+    }
+
+    /**
+     * OAuthクライアントリダイレクトURL検索
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param logoutRedirectUtl
+     *            ログアウトリダイレクトURL
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアントログアウトリダイレクトURLページ
+     */
+    @Transactional
+    public PageImpl<LogoutRedirectUrl> searchLogoutRedirectUrl(final String id, final String logoutRedirectUtl,
+        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var logoutRedirectUrlList = logoutRedirectRepository.findByClientRedirectUrl(id, logoutRedirectUtl,
+                hasViewAllOAuthClient, userInfoDto.id(), pageable);
+        return new PageImpl<>(logoutRedirectUrlList);
     }
 }

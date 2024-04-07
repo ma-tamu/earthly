@@ -14,6 +14,8 @@ public final class ViewName {
 
     public static final String REDIRECT_CLIENT_ENTRY = "redirect:/clients/entry";
     public static final String REDIRECT_CLIENT_DETAIL = "redirect:/clients/%s";
+    public static final String CLIENT_DETAIL_REDIRECT_URL_PAGE = "clients/detail::redirectUrlPage";
+    public static final String CLIENT_DETAIL_LOGOUT_REDIRECT_URL_PAGE = "clients/detail::logoutRedirectUrlPage";
 
     private ViewName() {
     }

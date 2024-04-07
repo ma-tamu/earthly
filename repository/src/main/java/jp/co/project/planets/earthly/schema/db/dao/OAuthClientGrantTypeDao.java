@@ -10,5 +10,5 @@ import jp.co.project.planets.earthly.schema.db.dao.base.OauthClientGrantTypeBase
  */
 @Dao
 @ConfigAutowireable
-public interface OauthClientGrantTypeDao extends OauthClientGrantTypeBaseDao {
+public interface OAuthClientGrantTypeDao extends OauthClientGrantTypeBaseDao {
 }

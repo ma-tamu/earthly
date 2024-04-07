@@ -262,16 +262,16 @@
               </button>
             </div>
           </div>
-          <form method="get" name="searchAssignedRole"
+          <form method="get" name="searchAssignedLogoutRedirectUrl"
                 onsubmit="return false;"
                 th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logouts/redirectUrls}">
             <div class="row">
               <div class="col-sm-4">
-                <input type="text" class="form-control" name="redirectUrl" placeholder="ログアウトリダイレクトURI"
+                <input type="text" class="form-control" name="logoutRedirectUrl" placeholder="ログアウトリダイレクトURI"
                        th:placeholder="#{page.placeholder.client.redirect.uri}">
               </div>
               <div class="col-sm-2">
-                <button class="btn btn-primary assigned-role" type="button">検索</button>
+                <button class="btn btn-primary assigned-logout-redirect-url" type="button">検索</button>
               </div>
             </div>
           </form>
@@ -462,18 +462,26 @@
     }
 
     $('.assigned-redirect-url').on('click', function () {
-        const form = $('form[name=searchAssignedRedirectUrl]');
+        postSearch('searchAssignedRedirectUrl', 'redirectUrlContent');
+    });
+
+    $('.assigned-logout-redirect-url').on('click', function () {
+        postSearch('searchAssignedLogoutRedirectUrl', 'logoutRedirectUrlContent');
+    });
+
+    function postSearch(formName, contentId) {
+        const form = $('form[name=' + formName + ']');
         const body = form.serialize();
         const url = form.attr('action');
         const deferred = doGet(url, body);
         deferred.done(function (data, response) {
-            $('#redirectUrlContent').html(data);
+            $('#' + contentId).html(data);
         });
         deferred.fail(function (data, response) {
             console.error(data);
             window.location.href = "/earthly/error";
         });
-    });
+    }
 </script>
 </body>
 </html>

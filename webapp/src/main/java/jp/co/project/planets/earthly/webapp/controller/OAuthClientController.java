@@ -1,6 +1,7 @@
 package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
+import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
 
 import java.util.Collections;
 
@@ -24,6 +25,7 @@ import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
+import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientLogoutRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -56,7 +58,7 @@ public class OAuthClientController {
      */
     @GetMapping
     public ModelAndView search(@ModelAttribute final OAuthClientSearchForm oauthClientSearchForm,
-            @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var oauthClients = oauthClientService.search(oauthClientSearchForm.name(), pageable, userInfoDto);
         final var modelAndView = new ModelAndView("clients/index");
@@ -77,13 +79,13 @@ public class OAuthClientController {
      */
     @GetMapping("{id}")
     public ModelAndView detail(@PathVariable("id") final String id, final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var oauthClientDetailDto = oauthClientService.get(id, userInfoDto);
         final var modelAndView = new ModelAndView("clients/detail");
         final var oauthClientDetailEntity = oauthClientDetailDto.oauthClientDetailEntity();
         modelAndView.addObject(oauthClientDetailEntity);
         modelAndView.addObject(REDIRECT_URL_PAGE, oauthClientDetailDto.redirectUrlPage());
-        modelAndView.addObject("logoutRedirectUrlPage", oauthClientDetailDto.logoutRedirectUrlPage());
+        modelAndView.addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientDetailDto.logoutRedirectUrlPage());
         modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
         modelAndView.addObject("unassignedManagementUserPage", new PageImpl<User>(Collections.emptyList()));
@@ -131,8 +133,8 @@ public class OAuthClientController {
      */
     @PostMapping("entry")
     public ModelAndView entryConfirm(@ModelAttribute @Validated final OAuthClientEntryForm oauthClientEntryForm,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_ENTRY);
         model.asMap().forEach(redirectAttributes::addFlashAttribute);
@@ -162,8 +164,8 @@ public class OAuthClientController {
      */
     @PostMapping("create")
     public ModelAndView create(@ModelAttribute @Validated final OAuthClientEntryForm oauthClientEntryForm,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         if (bindingResult.hasErrors()) {
             final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_ENTRY);
             model.asMap().forEach(redirectAttributes::addFlashAttribute);
@@ -193,9 +195,9 @@ public class OAuthClientController {
      */
     @PostMapping("{id}/edit")
     public ModelAndView edit(@PathVariable("id") final String id,
-            @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
+        final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
         redirectAttributes.addFlashAttribute("editMode", true);
@@ -217,9 +219,9 @@ public class OAuthClientController {
 
     @PostMapping("{id}/update")
     public ModelAndView update(@PathVariable("id") final String id,
-            @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
-            @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        @ModelAttribute @Validated final OAuthClientEditForm oauthClientEditForm,
+        final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var modelAndView = new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
         model.asMap().forEach(redirectAttributes::addFlashAttribute);
@@ -254,12 +256,35 @@ public class OAuthClientController {
      */
     @GetMapping("{id}/redirectUrls")
     public ModelAndView searchRedirectUrl(@PathVariable("id") final String id,
-            final OAuthClientRedirectUrlSearchForm oauthClientRedirectUrlSearchForm,
-            @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final OAuthClientRedirectUrlSearchForm oauthClientRedirectUrlSearchForm,
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var oauthClientRedirectUrlPage = oauthClientService.searchRedirectUrl(id,
                 oauthClientRedirectUrlSearchForm.redirectUrl(), pageable, userInfoDto);
-        return new ModelAndView("clients/detail::redirectUrlPage") //
+        return new ModelAndView(CLIENT_DETAIL_REDIRECT_URL_PAGE)
                 .addObject(REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
+    }
+
+    /**
+     * OAuthクライアントログアウトリダイレクトURL検索
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientLogoutRedirectUrlSearchForm
+     *            OAuthクライアントログアウトリダイレクトURL検索FORM
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
+    @GetMapping("{id}/logouts/redirectUrls")
+    public ModelAndView searchLogoutRedirectUrl(@PathVariable("id") final String id,
+        final OAuthClientLogoutRedirectUrlSearchForm oauthClientLogoutRedirectUrlSearchForm,
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var oauthClientRedirectUrlPage = oauthClientService.searchLogoutRedirectUrl(id,
+                oauthClientLogoutRedirectUrlSearchForm.logoutRedirectUrl(), pageable, userInfoDto);
+        return new ModelAndView(CLIENT_DETAIL_LOGOUT_REDIRECT_URL_PAGE)
+                .addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
     }
 }

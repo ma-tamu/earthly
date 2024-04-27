@@ -20,6 +20,7 @@ import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 import jp.co.project.planets.earthly.schema.repository.LogoutRedirectRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientManagementRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRedirectUrlRepository;
@@ -314,5 +315,29 @@ public class OAuthClientService {
         final var logoutRedirectUrlList = logoutRedirectRepository.findByClientRedirectUrl(id, logoutRedirectUtl,
                 hasViewAllOAuthClient, userInfoDto.id(), pageable);
         return new PageImpl<>(logoutRedirectUrlList);
+    }
+
+    /**
+     * OAuthクライアント管理者検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param userName
+     *            ユーザー名
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアント管理者リスト
+     */
+    public PageImpl<OAuthClientManagementUserEntity> searchManagementUser(final String id, final String userName,
+        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var hasViewAllUser = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_USER);
+        final var oauthClientManagementUserList = oauthClientManagementRepository.findByAccessibleClientIdAndUserId(id,
+                userName, hasViewAllOAuthClient, hasViewAllUser, userInfoDto.id(), pageable);
+        return new PageImpl<>(oauthClientManagementUserList);
     }
 }

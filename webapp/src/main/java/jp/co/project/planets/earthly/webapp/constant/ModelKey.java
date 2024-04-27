@@ -21,6 +21,7 @@ public final class ModelKey {
 
     public static final String REDIRECT_URL_PAGE = "redirectUrlPage";
     public static final String LOGOUT_REDIRECT_URL_PAGE = "logoutRedirectUrlPage";
+    public static final String MANAGEMENT_USER_PAGE = "managementUserPage";
 
     private ModelKey() {
     }

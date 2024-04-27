@@ -26,6 +26,7 @@ import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientLogoutRedirectUrlSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientManagementUserSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -86,7 +87,7 @@ public class OAuthClientController {
         modelAndView.addObject(oauthClientDetailEntity);
         modelAndView.addObject(REDIRECT_URL_PAGE, oauthClientDetailDto.redirectUrlPage());
         modelAndView.addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientDetailDto.logoutRedirectUrlPage());
-        modelAndView.addObject("managementUserPage", oauthClientDetailDto.managementUserPage());
+        modelAndView.addObject(MANAGEMENT_USER_PAGE, oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
         modelAndView.addObject("unassignedManagementUserPage", new PageImpl<User>(Collections.emptyList()));
         final var oauthClientEditForm = new OAuthClientEditForm(oauthClientDetailEntity.name(),
@@ -286,5 +287,15 @@ public class OAuthClientController {
                 oauthClientLogoutRedirectUrlSearchForm.logoutRedirectUrl(), pageable, userInfoDto);
         return new ModelAndView(CLIENT_DETAIL_LOGOUT_REDIRECT_URL_PAGE)
                 .addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
+    }
+
+    @GetMapping("{id}/users")
+    public ModelAndView searchManagementUser(@PathVariable("id") final String id,
+        final OAuthClientManagementUserSearchForm oauthClientManagementUserSearchForm,
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var oauthClientManagementList = oauthClientService.searchManagementUser(id,
+                oauthClientManagementUserSearchForm.userName(), pageable, userInfoDto);
+        return new ModelAndView(CLIENT_DETAIL_MANAGEMENT_USER_PAGE).addObject(MANAGEMENT_USER_PAGE,
+                oauthClientManagementList);
     }
 }

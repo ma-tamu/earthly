@@ -289,6 +289,19 @@ public class OAuthClientController {
                 .addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
     }
 
+    /**
+     * OAuthクライアント管理者リスト検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientManagementUserSearchForm
+     *            OAuthクライアント管理者検索FROM
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
     @GetMapping("{id}/users")
     public ModelAndView searchManagementUser(@PathVariable("id") final String id,
         final OAuthClientManagementUserSearchForm oauthClientManagementUserSearchForm,

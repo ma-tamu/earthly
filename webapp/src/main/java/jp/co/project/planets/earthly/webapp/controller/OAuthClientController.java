@@ -8,6 +8,7 @@ import java.util.Collections;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +28,7 @@ import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEd
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientLogoutRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientManagementUserSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientRedirectUrlEntryForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientRedirectUrlSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.client.OAuthClientSearchForm;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
@@ -90,6 +92,7 @@ public class OAuthClientController {
         modelAndView.addObject(MANAGEMENT_USER_PAGE, oauthClientDetailDto.managementUserPage());
         modelAndView.addObject("canEditableClient", oauthClientDetailDto.canEditableClient());
         modelAndView.addObject("unassignedManagementUserPage", new PageImpl<User>(Collections.emptyList()));
+        modelAndView.addObject(new OAuthClientRedirectUrlEntryForm(null));
         final var oauthClientEditForm = new OAuthClientEditForm(oauthClientDetailEntity.name(),
                 oauthClientDetailEntity.scopes());
         modelAndView.addObject(oauthClientEditForm);
@@ -209,7 +212,7 @@ public class OAuthClientController {
         }
 
         try {
-            oauthClientService.validateEditPermission(id, oauthClientEditForm.toDto(), userInfoDto);
+            oauthClientService.validateEditPermission(id, userInfoDto);
             redirectAttributes.addFlashAttribute(READ_ONLY, true);
         } catch (final ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -264,6 +267,68 @@ public class OAuthClientController {
                 oauthClientRedirectUrlSearchForm.redirectUrl(), pageable, userInfoDto);
         return new ModelAndView(CLIENT_DETAIL_REDIRECT_URL_PAGE)
                 .addObject(REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
+    }
+
+    /**
+     * OAuthクライアントリダイレクトURL登録確認
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientRedirectUrlEntryForm
+     *            OAuthクライアントリダイレクト登録FORM
+     * @param bindingResult
+     *            binding result
+     * @param model
+     *            model
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 確認結果
+     */
+    @PostMapping("{id}/redirectUrls/confirm")
+    public ModelAndView confirmRedirectUrl(@PathVariable("id") final String id,
+        @ModelAttribute @Validated final OAuthClientRedirectUrlEntryForm oauthClientRedirectUrlEntryForm,
+        final BindingResult bindingResult, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        final var modelAndView = new ModelAndView(CLIENT_DETAIL_REDIRECT_ENTRY_CONTENT).addAllObjects(model.asMap());
+        if (bindingResult.hasErrors()) {
+            return modelAndView;
+        }
+        oauthClientService.validateEditPermission(id, userInfoDto);
+
+        return modelAndView.addObject(READ_ONLY, true);
+    }
+
+    /**
+     * OAuthクライアントリダイレクトURL登録
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientRedirectUrlEntryForm
+     *            OAuthクライアントリダイレクト登録FORM
+     * @param bindingResult
+     *            binding result
+     * @param redirectAttributes
+     *            redirect attributes
+     * @param model
+     *            model
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 確認結果
+     */
+    @PostMapping("{id}/redirectUrls/add")
+    public ModelAndView addRedirectUrl(@PathVariable("id") final String id,
+        @ModelAttribute @Validated final OAuthClientRedirectUrlEntryForm oauthClientRedirectUrlEntryForm,
+        final BindingResult bindingResult, final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(CLIENT_DETAIL_REDIRECT_ENTRY_CONTENT).addAllObjects(model.asMap());
+        }
+        oauthClientService.addRedirectUrl(id, oauthClientRedirectUrlEntryForm.redirectUrl(), userInfoDto);
+
+        model.asMap().forEach(redirectAttributes::addFlashAttribute);
+        return new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id), HttpStatus.FOUND);
     }
 
     /**

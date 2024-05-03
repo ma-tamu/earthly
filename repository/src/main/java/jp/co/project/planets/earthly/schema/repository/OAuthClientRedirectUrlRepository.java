@@ -34,9 +34,19 @@ public class OAuthClientRedirectUrlRepository {
      * @return OAuthクライアントリダイレクトURL
      */
     public List<OauthClientRedirectUrl> findByClientRedirectUrl(final String clientId, final String redirectUrl,
-            final boolean hasViewAllClient, final String operatorUserId, final Pageable pageable) {
+        final boolean hasViewAllClient, final String operatorUserId, final Pageable pageable) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
         return redirectUriDao.selectByClientRedirectUrl(clientId, redirectUrl, hasViewAllClient, operatorUserId,
                 selectOptions);
+    }
+
+    /**
+     * OAuthクライアントリダイレクトURLの登録
+     * 
+     * @param oauthClientRedirectUrl
+     *            OAuthクライアントリダイレクトURL
+     */
+    public void insert(final OauthClientRedirectUrl oauthClientRedirectUrl) {
+        redirectUriDao.insert(oauthClientRedirectUrl);
     }
 }

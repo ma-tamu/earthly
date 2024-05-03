@@ -7,28 +7,34 @@ function doPost(url, body) {
 }
 
 function doFormPost(url, body) {
-    return execute(url, "POST", "application/x-www-form-urlencoded", body);
+    return execute(url, "POST", "application/x-www-form-urlencoded", null, body);
 }
 
-function doPost(url, contentType, body) {
-    return execute(url, "POST", contentType, body);
+function doPost(url, contentType, csrfToken, body) {
+    return execute(url, "POST", contentType, csrfToken, body);
 }
 
-function execute(url, method, contentType, param) {
+function execute(url, method, contentType, csrfToken, param) {
     let deferred = new $.Deferred();
 
     $.ajax({
         url: url,
         method: method,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
         data: param,
         contentType: contentType,
-        cache: false
+        cache: false,
+        xhrFields: {
+            withCredentials: true
+        }
     }).then(
-        function (data, response) {
-            deferred.resolve(data, response);
+        function (data, response, status) {
+            deferred.resolve(data, response, status);
         },
-        function (data, response) {
-            deferred.resolve(data, response);
+        function (data, response, status) {
+            deferred.resolve(data, response, status);
         }
     );
     return deferred.promise();

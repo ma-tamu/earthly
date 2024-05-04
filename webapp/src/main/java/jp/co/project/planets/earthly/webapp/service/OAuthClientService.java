@@ -1,5 +1,6 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -179,8 +180,15 @@ public class OAuthClientService {
         return oauthClientLogic.create(oauthClientEntryDto.name(), oauthClientEntryDto.scopes(), userInfoDto.id());
     }
 
-    public void validateEditPermission(final String id, final OAuthClientEditDto oauthClientEditDto,
-        final EarthlyUserInfoDto userInfoDto) {
+    /**
+     * OAuthクライアントの編集権限検証
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    public void validateEditPermission(final String id, final EarthlyUserInfoDto userInfoDto) {
 
         final var permissionEnumList = userInfoDto.permissionEnumList();
         if (!permissionEnumList.contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
@@ -209,7 +217,7 @@ public class OAuthClientService {
     public String update(final String id, final OAuthClientEditDto oauthClientEditDto,
         final EarthlyUserInfoDto userInfoDto) {
 
-        validateEditPermission(id, oauthClientEditDto, userInfoDto);
+        validateEditPermission(id, userInfoDto);
 
         final var oauthClient = oauthClientRepository.findByPrimaryKey(id);
         oauthClient.setName(oauthClientEditDto.name());
@@ -295,7 +303,28 @@ public class OAuthClientService {
     }
 
     /**
-     * OAuthクライアントリダイレクトURL検索
+     * OAuthクライアントリダイレクトURL追加
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param redirectUrl
+     *            リダイレクトURL
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    @Transactional
+    public void addRedirectUrl(final String id, final String redirectUrl, final EarthlyUserInfoDto userInfoDto) {
+
+        validateEditPermission(id, userInfoDto);
+
+        final var currentDateTime = LocalDateTime.now();
+        final var oauthClientRedirectUrl = new OauthClientRedirectUrl(null, id, redirectUrl, currentDateTime,
+                userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+        oauthClientRedirectUrlRepository.insert(oauthClientRedirectUrl);
+    }
+
+    /**
+     * OAuthクライアントログアウトリダイレクトURL検索
      *
      * @param id
      *            OAuthクライアントID

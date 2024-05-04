@@ -6,25 +6,42 @@
       <div class="modal-header">
         リダイレクトURI追加
       </div>
-      <form method="post" name="redirectUriSearch" onsubmit="return false;"
-            th:action="@{/clients/__${id}__/redirectUris}">
-        <div class="modal-body">
-          <div class="card">
-            <div class="card-body">
-              <div class="row m-1">
-                <div class="col-12">
-                  <label for="redirectUri">リダイレクトURI</label>
-                  <input type="text" class="form-control" id="redirectUri" name="redirectUri">
+      <div id="redirectUrlEntryContent">
+        <form method="post" name="entryRedirectUri" onsubmit="return false;"
+              th:action="@{/clients/__${id}__/redirectUrls/__${action}__}" th:fragment="redirectUrlEntryContent"
+              th:with="action=${readOnly}? 'add' : 'confirm'">
+          <div class="modal-body">
+            <div class="card">
+              <div class="card-body" th:object="${OAuthClientRedirectUrlEntryForm}">
+                <div class="row m-1">
+                  <div class="col-12">
+                    <label for="redirectUrl">リダイレクトURI</label>
+                    <input type="text" class="form-control"
+                           th:classappend="${#fields.hasErrors('redirectUrl')}?'is-invalid'" th:field="*{redirectUrl}"
+                           th:readonly="${readOnly}">
+                    <div class="invalid-feedback" th:errors="*{redirectUrl}"
+                         th:if="${#fields.hasErrors('redirectUrl')}">
+                      リダイレクトURLは必須です。
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary cancel" data-bs-dismiss="modal" type="button">キャンセル</button>
-          <button class="btn btn-primary redirect-uri assign" type="button">追加</button>
-        </div>
-      </form>
+          <div class="modal-footer" th:unless="${readOnly}">
+            <button type="button" class="btn btn-secondary cancel" data-bs-dismiss="modal"
+                    onclick="cancelAddRedirectUrl()">キャンセル
+            </button>
+            <button type="button" class="btn btn-primary" onclick="postRedirectUrl()">確認</button>
+          </div>
+          <div class="modal-footer" th:if="${readOnly}">
+            <button type="button" class="btn btn-secondary cancel" data-bs-dismiss="modal"
+                    onclick="cancelAddRedirectUrl()">キャンセル
+            </button>
+            <button type="button" class="btn btn-primary" onclick="postRedirectUrl()">追加</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

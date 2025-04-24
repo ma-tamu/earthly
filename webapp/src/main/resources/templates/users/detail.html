@@ -6,81 +6,80 @@
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
 </head>
-<body class="modal-open">
-<th:block th:replace="parts/template::header"></th:block>
-<th:block th:replace="parts/template::navigation"></th:block>
-<main id="main" class="main">
-  <div class="pagetitle">
-    <div class="row">
-      <div class="col-9">
-        <h1 th:text="#{page.title.user.detail}">ユーザー詳細</h1>
-      </div>
-      <div class="col-3">
-        <div class="text-end">
-          <div class="btn-group">
-            <div data-bs-placement="top" data-bs-toggle="tooltip" th:title="#{page.tooltip.edit.password}">
-              <button class="btn btn-info rounded-pill m-1 edit-password" data-bs-target="#passwordModal"
-                      data-bs-toggle="modal">
-                <i class="bx bxs-key"></i>
-              </button>
-            </div>
-            <div data-bs-toggle="tooltip" data-bs-placement="top" th:title="#{page.tooltip.edit}">
-              <button class="btn btn-info rounded-pill m-1 edit">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-            <div data-bs-toggle="tooltip" data-bs-placement="top"
-                 th:if="${!#strings.equals(#authentication.principal.id, userDetailDto.userEntity.id)}">
-              <button class="btn btn-info rounded-pill m-1" th:title="#{page.tooltip.delete}"
-                      data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bx bx-trash"></i>
-              </button>
-            </div>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.user.detail}">ユーザー詳細</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/users}" th:text="#{page.title.user.list}">ユーザーリスト</a></li>
+              <li class="breadcrumb-item active">
+                <th:block th:text="${userDetailDto.userEntity.name}"/>
+              </li>
+            </ol>
           </div>
         </div>
-      </div>
-    </div>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a th:href="@{/users}">ユーザーリスト</a>
-        </li>
-        <li class="breadcrumb-item active">
-          <th:block th:text="${userDetailDto.userEntity.name}"/>
-        </li>
-      </ol>
-    </nav>
-  </div>
-  <section class="section profile">
-    <div class="card detail" th:styleappend="${!#bools.isFalse(editMode)} ? 'display: none'">
-      <div class="card-body">
-        <div class="card-title" th:text="${userDetailDto.userEntity.loginId}">login id</div>
-        <div class="profile-overview">
-          <div class="row">
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${userDetailDto.userEntity.loginId}">ログインID</h3>
+          <div class="card-tools">
+            <span data-toggle="tooltip" data-placement="top" th:title="#{page.button.title.password.edit}">
+              <button type="button" class="btn btn-sm btn-primary" data-target="#password" data-toggle="modal">
+                <i class="fas fa-key"></i>
+              </button>
+            </span>
+            <button type="button" class="btn btn-sm btn-primary" th:title="#{page.button.title.edit}"
+                    data-target="#edit" data-toggle="modal">
+              <i class="fas fa-user-edit"></i>
+            </button>
+            <th:block th:if="${!#strings.equals(#authentication.principal.id, userDetailDto.userEntity.id)}">
+              <button type="button" class="btn btn-sm btn-danger" th:title="#{page.button.title.delete}"
+                      data-target="#delete" data-toggle="modal">
+                  <i class="fas fa-trash-alt"></i>
+              </button>
+            </th:block>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.name}">ユーザー名</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${userDetailDto.userEntity.name}">name</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mail}">メールアドレス</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${userDetailDto.userEntity.mail}">mail</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
             <div class="col-lg-9 col-md-8">
               <th:block
-                  th:text="${T(jp.co.project.planets.earthly.schema.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
+                  th:text="${T(jp.co.project.planets.earthly.schema.emuns.Gender).of(userDetailDto.userEntity.gender).name}">
                 M
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:if="${#strings.equals(userDetailDto.userEntity.language, 'ja')}"
@@ -92,26 +91,26 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${userDetailDto.userEntity.timezone}">Asia/Tokyo</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.company}">会社</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${userDetailDto.userEntity.company.name}">company</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.lockout}">ロックアウト</div>
             <div class="col-lg-9 col-md-8">
               <i class="bx" th:classappend="${userDetailDto.userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
               <th:block th:text="${userDetailDto.userEntity.lockout} ?'ON':'OFF'">ON</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mfa}">2要素認証</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:if="${userDetailDto.userEntity.mfa}">
@@ -123,137 +122,24 @@
             </div>
           </div>
         </div>
+        <!-- /.card-footer-->
       </div>
-    </div>
-    <div class="card edit" th:styleappend="${!#bools.isTrue(editMode)} ? 'display: none'">
-      <form method="post" th:with="action=${readOnly}? 'update' : 'edit'"
-            th:action="@{/users/__${userDetailDto.userEntity.id}__/__${action}__}" th:object="${userUpdateForm}">
-        <div class="card-body">
-          <div class="card-title" th:text="${userDetailDto.userEntity.loginId}">login id</div>
-          <div class="profile-overview">
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.name}">ユーザー名</div>
-              <div class="col-lg-9 col-md-8">
-                <input type="text" class="form-control" th:data-before="${userDetailDto.userEntity.name}"
-                       th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:disabled="${readOnly}"
-                       th:field="*{name}">
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-                  ユーザー名は必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mail}">メールアドレス</div>
-              <div class="col-lg-9 col-md-8">
-                <input type="email" class="form-control" th:data-before="${userDetailDto.userEntity.mail}"
-                       th:classappend="${#fields.hasErrors('mail')}?'is-invalid'" th:disabled="${readOnly}"
-                       th:field="*{mail}">
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}">
-                  メールアドレスは必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.gender}">性別</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block
-                    th:text="${T(jp.co.project.planets.earthly.schema.emuns.GenderEnum).of(userDetailDto.userEntity.gender).name}">
-                  M
-                </th:block>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.language}">言語</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block th:replace="parts/language::select(*{language})"/>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
-                  言語は必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.timezone}">タイムゾーン</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block th:replace="parts/timezone::select(*{timezone})"/>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('timezone')}" th:errors="*{timezone}">
-                  タイムゾーンは必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.company}">会社</div>
-              <div class="col-lg-9 col-md-8">
-                <input type="text" class="form-control" th:data-before="${userDetailDto.userEntity.company.name}"
-                       th:classappend="${#fields.hasErrors('company')}?'is-invalid'" th:disabled="${readOnly}"
-                       autocomplete="on" list="companyDataList" th:field="*{company}">
-                <input type="hidden" th:data-before="${userDetailDto.userEntity.company.id()}" th:disabled="${readOnly}"
-                       th:field="*{companyId}">
-                <datalist id="companyDataList"></datalist>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('company')}" th:errors="*{company}">
-                  所属会社は必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.lockout}">ロックアウト</div>
-              <div class="col-lg-9 col-md-8">
-                <div class="form-check form-switch"
-                     th:unless="${#strings.equals(userDetailDto.userEntity.id, #authentication.getPrincipal().id)}">
-                  <input type="checkbox" class="form-check-input" th:data-before="${userDetailDto.userEntity.lockout}"
-                         th:classappend="${#fields.hasErrors('lockout')}?'is-invalid'" id="lockout"
-                         th:field="*{lockout}" th:disabled="${readOnly}">
-                  <label for="lockout">do you lockout ?</label>
-                </div>
-                <th:block th:if="${#strings.equals(userDetailDto.userEntity.id, #authentication.getPrincipal().id)}">
-                  <i class="bx" th:classappend="${userDetailDto.userEntity.lockout} ? 'bx-lock' : 'bx-lock-open'"></i>
-                  <th:block th:text="${userDetailDto.userEntity.lockout} ?'ON':'OFF'">ON</th:block>
-                </th:block>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.user.mfa}">2要素認証</div>
-              <div class="col-lg-9 col-md-8">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" id="mfa" th:classappend="${#fields.hasErrors('mfa')}?'is-invalid'"
-                         th:data-before="${userDetailDto.userEntity.mfa}" th:disabled="${readOnly}"
-                         th:field="*{mfa}" type="checkbox">
-                  <label for="mfa">enable mfa ?</label>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 text-end">
-                <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
-                <button type="submit" class="btn btn-primary confirm" th:disabled="${readOnly}"
-                        th:styleappend="${readOnly}?'display:none'">確認
-                </button>
-                <button type="submit" class="btn btn-primary update" th:disabled="${#bools.isFalse(readOnly)}"
-                        th:styleappend="${#bools.isFalse(readOnly)}?'display:none'">更新
-                </button>
-              </div>
-            </div>
+      <!-- /.card -->
+      <hr>
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.user.role.list}">保持ロールリスト</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary" th:title="#{page.button.title.assign}"
+                    data-target="#assignRole" data-toggle="modal">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger unassign-role" th:title="#{page.button.title.unassigned}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
         </div>
-      </form>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">
-          <div class="row">
-            <div class="col-8">
-              <th:block th:text="#{page.label.user.role.list}">保持ロールリスト</th:block>
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1 assign-role" data-bs-target="#assignRoleModal"
-                      data-bs-toggle="modal">
-                <i class="bx bx-add-to-queue"></i>
-              </button>
-              <button class="btn btn-info rounded-pill m-1 unassign-role">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-          </div>
+        <div class="card-body card-default">
           <form method="get" name="searchAssignedRole"
                 onsubmit="return false;"
                 th:action="@{/users/__${userDetailDto.userEntity.id}__/roles/assigns}">
@@ -262,7 +148,7 @@
                 <input class="form-control" name="roleName" placeholder="ロール名" type="text">
               </div>
               <div class="col-sm-2">
-                <button class="btn btn-primary assigned-role" type="button">検索</button>
+                <button type="button" class="btn btn-primary assigned-role" th:text="#{page.button.search}">検索</button>
               </div>
             </div>
           </form>
@@ -272,25 +158,31 @@
               th:if="${!#lists.isEmpty(rolePage.content)}">
           <div id="roleContent">
             <th:block th:fragment="roleContent">
-              <th:block th:replace="parts/pagination::pagination(${rolePage})"/>
-              <table class="table table-striped table-borderless assign-role-list" th:fragment="assignRoleList">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.user.role.name}">ロール名</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="role : ${rolePage.content}">
-                  <td>
-                    <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名</a>
-                  </td>
-                  <td class="text-end">
-                    <input class="form-check-input" name="unassigns" style="display: none" th:value="${role.id}"
-                           type="checkbox">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+              <div class="row">
+                <div class="col-12">
+                  <th:block th:replace="parts/pagination::pagination(${rolePage})"/>
+                </div>
+              </div>
+              <div class="row mr-3 ml-3">
+                <table class="table table-striped table-borderless assign-role-list" th:fragment="assignRoleList">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.user.role.name}">ロール名</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="role : ${rolePage.content}">
+                    <td>
+                      <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名</a>
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input" name="unassigns" style="display: none"
+                             th:value="${role.id}" >
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
               <div class="row">
                 <div class="col-12">
                   <th:block th:replace="parts/pagination::pagination(${rolePage})"/>
@@ -298,56 +190,62 @@
               </div>
             </th:block>
           </div>
-          <div class="row row-unassigned" style="display: none">
-            <div class="col-8">
+        </form>
+        <div class="card-footer  row-unassigned" style="display: none">
+          <div class="row">
+            <div class="col-8" th:text="#{page.panel.unassigned.message}">
               解除対象を選択してください。
             </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-primary unassigned-role" th:text="#{page.button.unassigned}" type="button">解除
+            <div class="col-4 text-right">
+              <button  type="button" class="btn btn-primary unassigned-role" th:text="#{page.button.unassigned}">解除
               </button>
-              <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
+              <button  type="button" class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}">キャンセル
               </button>
             </div>
           </div>
-        </form>
-      </div>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title" th:text="#{page.label.user.management.company.list}">管理会社リスト</div>
-        <div class="row-cols-auto text-center"
-             th:if="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
-          <img th:src="@{/img/inbox.png}" height="100" width="100" alt="empty">
         </div>
-        <table class="table table-striped table-borderless"
-               th:unless="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
-          <thead>
-          <tr>
-            <th th:text="#{page.label.user.management.company.name}">会社名</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="company : ${userDetailDto.userEntity.managementCompanyList}">
-            <td>
-              <a th:href="@{/companies/__${company.id}__}" th:text="${company.name}">会社名</a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
       </div>
-    </div>
-  </section>
-  <div th:replace="users/modal::passwordModal(${userDetailDto.userEntity.id})"></div>
-  <div th:replace="users/modal::delete(${userDetailDto.userEntity.id})"></div>
-  <div th:replace="users/assign::roleModal(${userDetailDto.userEntity.id})"></div>
-  <th:block th:if="${errorCode}">
-    <div th:replace="parts/alert::danger"></div>
-  </th:block>
-</main>
+      <hr>
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.user.management.company.list}">管理会社リスト</h3>
+        </div>
+        <div class="card-body card-default">
+          <div class="row-cols-auto text-center"
+               th:if="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
+            <img th:src="@{/img/inbox.png}" height="100" width="100" alt="empty">
+          </div>
+          <table class="table table-striped table-borderless"
+                 th:unless="${#lists.isEmpty(userDetailDto.userEntity.managementCompanyList)}">
+            <thead>
+            <tr>
+              <th th:text="#{page.label.user.management.company.name}">会社名</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="company : ${userDetailDto.userEntity.managementCompanyList}">
+              <td>
+                <a th:href="@{/companies/__${company.id}__}" th:text="${company.name}">会社名</a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <div th:replace="users/modal::edit(${userDetailDto.userEntity}, ${userUpdateForm})"></div>
+    <div th:if="${readOnly}" th:replace="users/modal::confirm(${userDetailDto.userEntity.id}, ${userUpdateForm})"></div>
+    <div th:replace="users/modal::password(${userDetailDto.userEntity.id})"></div>
+    <div th:replace="users/modal::delete(${userDetailDto.userEntity.id})"></div>
+    <div th:replace="users/modal::roleModal(${userDetailDto.userEntity.id})"></div>
+  </div>
+</div>
+</body>
+
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     let param = {keyword: this.value};
     let deferred = doGet(/*[[@{'/api/suggests/companies'}]]*/'', param);
@@ -357,7 +255,7 @@
         $.each(data.components, function (index, item) {
             let option = $('<option />');
             option.val(item.name);
-            option.html(item.id);
+            option.attr('id', item.id);
             $('#companyDataList').append(option);
         });
     });
@@ -365,60 +263,23 @@
         console.error(data)
     });
 
+    $('#edit').on('hidden.bs.modal', function (e) {
+       cancel();
+    });
     $('#company').on('input', function () {
-        let id = $("#companyDataList option[value='" + $(this).val() + "']").text();
+        let id = $("#companyDataList option[value='" + $(this).val() + "']").attr('id');
         $('#companyId').val(id);
     });
     $('#company').on('change', function () {
-        let id = $("#companyDataList option[value='" + this.value + "']").text();
+        let id = $("#companyDataList option[value='" + this.value + "']").attr('id');
         $('#companyId').val(id);
     });
 
-    $('button.edit').on('click', function () {
-        $('div.card.detail').hide();
-        $('div.card.edit').show();
-    });
     $('button.update').on('click', function () {
-        let id = $("#companyDataList option[value='" + $('#company').val() + "']").text();
+        let id = $("#companyDataList option[value='" + $('#company').val() + "']").attr('id');
         $('#companyId').val(id);
-        const cardEdit = $('div.card.edit');
-        cardEdit.find('input').prop('disabled', false);
-        cardEdit.find('select').prop('disabled', false);
     });
 
-    function cancel() {
-        $('.confirm button').disabled = false;
-        $('.update').disabled = true;
-
-        $('.edit > form').find('input').each((i, e) => {
-            let v = e.dataset.before;
-            if (v === undefined) {
-                return true;
-            }
-            if (e.type === 'checkbox') {
-                e.checked = JSON.parse(v);
-                e.disabled = false;
-            } else {
-                e.value = v;
-                e.disabled = false;
-            }
-        });
-        $('.edit > form').find('select').each((i, e) => {
-            let before = e.dataset.before;
-            if (before === undefined) {
-                return true;
-            }
-            Array.from(e.options).forEach(opt => {
-                if (opt.value === before) {
-                    opt.selected = true;
-                    return true;
-                }
-            });
-            e.disabled = false;
-        });
-        $('div.card.detail').show();
-        $('div.card.edit').hide();
-    }
 
     $('.on-search').on('click', function () {
         searchRole();
@@ -435,7 +296,8 @@
         const form = $('form[name=assignRole]');
         let body = form.serialize();
         let url = form.attr('action');
-        let deferred = doFormPost(url, body);
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
         deferred.done(function (data, response) {
             $('form[name=roleSearch]').prepend(data);
             searchRole();
@@ -505,7 +367,8 @@
         const form = $('form[name=roleUnassigned]');
         let body = form.serialize();
         let url = form.attr('action');
-        let deferred = doFormPost(url, body);
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
         deferred.done(function (data, response) {
             // $('#roleContent').prepend(data);
             searchRole();
@@ -517,5 +380,18 @@
         });
     });
 </script>
-</body>
+<script th:inline="javascript" th:if="${editModal}">
+    $(function () {
+        $('#edit').modal('show')
+    });
+</script>
+
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#confirm').modal('show')
+    });
+    $('#confirm').on('hidden.bs.modal', function (e) {
+        cancel();
+    });
+</script>
 </html>

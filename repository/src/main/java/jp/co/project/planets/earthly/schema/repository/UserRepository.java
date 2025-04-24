@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +36,7 @@ public class UserRepository {
     private final CompanyDao companyDao;
     private final RoleDao roleDao;
 
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
     /**
      * new instance user repository
@@ -47,14 +47,15 @@ public class UserRepository {
      *            company dao
      * @param roleDao
      *            role dao
-     * @param entityql
+     * @param queryDsl
+     *            query dsl
      */
     public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao,
-            final Entityql entityql) {
+        final QueryDsl queryDsl) {
         this.userDao = userDao;
         this.companyDao = companyDao;
         this.roleDao = roleDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -66,6 +67,11 @@ public class UserRepository {
      */
     public Optional<User> findByPrimaryKey(final String id) {
         return Optional.ofNullable(userDao.selectById(id));
+    }
+
+    public List<User> findByPrimaryKeysAccessibly(final List<String> ids, final boolean hasViewAllCompany,
+        final String executionUserId) {
+        return userDao.selectByPrimaryKeysAccessibly(ids, hasViewAllCompany, executionUserId);
     }
 
     /**
@@ -91,7 +97,7 @@ public class UserRepository {
      * @return UserEntity
      */
     public Optional<UserEntity> findAccessibleByPrimaryKey(final String id,
-            final List<PermissionEnum> permissionEnumList, final String executionUserId) {
+        final List<PermissionEnum> permissionEnumList, final String executionUserId) {
         final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
         final var userOptional = userDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, executionUserId);
         if (userOptional.isEmpty()) {
@@ -109,7 +115,7 @@ public class UserRepository {
     }
 
     private UserEntity generateUserEntity(final User user, final CompanyEntity companyEntity,
-            final List<Role> roleList, final List<Company> managementCompanyList) {
+        final List<Role> roleList, final List<Company> managementCompanyList) {
         final var regionEntity = new RegionEntity(companyEntity.regionId(), companyEntity.regionName());
         final var languageEntity = new LanguageEntity(companyEntity.languageId(), companyEntity.languageName());
         final var countryEntity = new CountryEntity(companyEntity.countryId(), companyEntity.countryName(),
@@ -126,8 +132,8 @@ public class UserRepository {
     }
 
     public UserSearchResultDto findByLoginIdAndNameAndCompany(final String loginId, final String name,
-            final String company, final Pageable pageable, final List<PermissionEnum> permissionEnumList,
-            final String executionUserId) {
+        final String company, final Pageable pageable, final List<PermissionEnum> permissionEnumList,
+        final String executionUserId) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
         final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
         final var userList = userDao.selectByLoginIdAndNameAndCompany(loginId, name, company, hasViewAllCompany,
@@ -144,7 +150,7 @@ public class UserRepository {
      */
     public Optional<User> findByMail(final String loginId, final String mail) {
         final var user = new User_();
-        return entityql.from(user).where(w -> {
+        return queryDsl.from(user).where(w -> {
             w.eq(user.loginId, loginId);
             w.eq(user.mail, mail);
             w.eq(user.isDeleted, false);

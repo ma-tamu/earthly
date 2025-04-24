@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="success(message)">
+  <script th:inline="javascript" th:fragment="success">
+      toastr.success(/*[[${#messages.msg(message, messageArs)}]]*/'a');
+  </script>
+</th:block>
+<th:block th:fragment="danger(message)">
+  <script th:inline="javascript" th:fragment="danger" >
+      toastr.error(/*[[${#messages.msg(message, messageArs)}]]*/'a');
+  </script>
+</th:block>
+</html>

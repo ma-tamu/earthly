@@ -75,23 +75,35 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param workDate 年月日
-     * @Param startTime 始業時間
-     * @Param endTime 終業時間
-     * @Param officialWorkingTime 所定内通常勤務
-     * @Param officialMidnightWorkingTime 所定内深夜勤務
-     * @Param officialBreakTime 所定内休憩勤務
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param id
+     *            id
+     * @Param workDate
+     *            年月日
+     * @Param startTime
+     *            始業時間
+     * @Param endTime
+     *            終業時間
+     * @Param officialWorkingTime
+     *            所定内通常勤務
+     * @Param officialMidnightWorkingTime
+     *            所定内深夜勤務
+     * @Param officialBreakTime
+     *            所定内休憩勤務
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
     public WorkTime(final String id, final LocalDate workDate, final LocalTime startTime, final LocalTime endTime,
-            final LocalTime officialWorkingTime, final LocalTime officialMidnightWorkingTime,
-            final LocalTime officialBreakTime, final LocalDateTime createdAt, final String createdBy,
-            final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+        final LocalTime officialWorkingTime, final LocalTime officialMidnightWorkingTime,
+        final LocalTime officialBreakTime, final LocalDateTime createdAt, final String createdBy,
+        final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
         this.id = id;
         this.workDate = workDate;
         this.startTime = startTime;

@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import jakarta.annotation.Nonnull;
 import jp.co.project.planets.earthly.common.logic.CryptoLogic;
+import jp.co.project.planets.earthly.common.logic.RoleLogic;
 import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
@@ -65,6 +67,7 @@ public class UserService {
     private final TotpLogic totpLogic;
 
     private static final int MIN_PASSWORD_LENGTH = 8;
+    private final RoleLogic roleLogic;
 
     /**
      * new instance user service
@@ -88,9 +91,10 @@ public class UserService {
      * @param totpLogic
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
-            final CompanyRepository companyRepository, final RoleRepository roleRepository,
-            final UserRoleRepository userRoleRepository, final MessageSource messageSource,
-            final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic, final TotpLogic totpLogic) {
+        final CompanyRepository companyRepository, final RoleRepository roleRepository,
+        final UserRoleRepository userRoleRepository, final MessageSource messageSource,
+        final PasswordEncoder passwordEncoder, final CryptoLogic cryptoLogic, final TotpLogic totpLogic,
+        final RoleLogic roleLogic) {
         this.userLogic = userLogic;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
@@ -100,6 +104,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.cryptoLogic = cryptoLogic;
         this.totpLogic = totpLogic;
+        this.roleLogic = roleLogic;
     }
 
     /**
@@ -116,11 +121,15 @@ public class UserService {
         validateAccessible(id, userInfoDto);
         final var userEntity = userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id())
                 .orElseThrow(() -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
+        final var unassignedRoleDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, null,
+                PageRequest.of(0, 10), userInfoDto.id(), userInfoDto.permissionEnumList());
+        final var unassignedRolePage = new PageImpl<>(unassignedRoleDto.roleList());
+
         if (!userEntity.isMfa()) {
-            return new UserDetailDto(userEntity, null);
+            return new UserDetailDto(userEntity, null, unassignedRolePage);
         }
         final var image = totpLogic.generateQrImage(userEntity.loginId(), userEntity.secret());
-        return new UserDetailDto(userEntity, image);
+        return new UserDetailDto(userEntity, image, unassignedRolePage);
     }
 
     /**
@@ -162,7 +171,7 @@ public class UserService {
      */
     @Transactional
     public PageImpl<UserSimpleEntity> search(final UserSearchDto userSearchDto, final Pageable pageable,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
 
         final var userSearchResultDto = userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(),
                 userSearchDto.name(), userSearchDto.company(), pageable, userInfoDto.permissionEnumList(),
@@ -331,7 +340,7 @@ public class UserService {
      */
     @Transactional
     public void editPassword(final String id, final String currentPassword, final String newPassword,
-            final String confirmNewPassword, final EarthlyUserInfoDto userInfoDto) {
+        final String confirmNewPassword, final EarthlyUserInfoDto userInfoDto) {
 
         if (!passwordEncoder.matches(currentPassword, userInfoDto.getPassword())) {
             throw new BadRequestException(EWA4XX011);
@@ -374,7 +383,7 @@ public class UserService {
 
     @Transactional
     public void updatePassword(@Nonnull final String id, @Nonnull final String newPassword,
-            @Nonnull final String renewPassword) {
+        @Nonnull final String renewPassword) {
 
         if (!StringUtils.equals(newPassword, renewPassword)) {
             throw new BadRequestException(EWA4XX007);
@@ -475,7 +484,7 @@ public class UserService {
     }
 
     public Page<Role> findAssignedRole(final String id, final Optional<String> roleNameOptional,
-            final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
         final var roleSearchResultDto = roleRepository.findAssignedRoleByUserIdAndLikeName(id, roleNameOptional,
                 pageable, userInfoDto.id(), userInfoDto.permissionEnumList());
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
@@ -496,7 +505,7 @@ public class UserService {
      */
     @Transactional
     public PageImpl<Role> findUnassignedRole(final String id, final String roleName, final Pageable pageable,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
         final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, roleName, pageable,
                 userInfoDto.id(), userInfoDto.permissionEnumList());
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
@@ -539,7 +548,7 @@ public class UserService {
      */
     @VisibleForTesting
     void validateAssignableRole(final String id, final List<String> assignRoleList,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
         final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, StringUtils.EMPTY,
                 Pageable.ofSize(Integer.MAX_VALUE), userInfoDto.id(), userInfoDto.permissionEnumList());
         final var unassignedRoleIdList = roleSearchResultDto.roleList().stream().map(Role::getId).toList();
@@ -571,9 +580,9 @@ public class UserService {
 
     @Transactional
     public void unassignedRole(final String id, final List<String> unassignedRoleList,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
         validateAccessible(id, userInfoDto);
-        //        validateAssignableRole(id, unassignedRoleList, userInfoDto);
+        // validateAssignableRole(id, unassignedRoleList, userInfoDto);
 
         final var userRoleList = userRoleRepository.findByUserIdAndRoleId(id, unassignedRoleList);
         if (userRoleList.size() < unassignedRoleList.size()) {
@@ -585,7 +594,7 @@ public class UserService {
     }
 
     void validate(final String id, final List<String> unassignedRoleList,
-            final EarthlyUserInfoDto userInfoDto) {
+        final EarthlyUserInfoDto userInfoDto) {
 
     }
 }

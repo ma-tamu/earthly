@@ -61,19 +61,28 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param name OAuthクライアント名
-     * @Param clientId クライアントID
-     * @Param clientSecret クライアントシークレット
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param id
+     *            id
+     * @Param name
+     *            OAuthクライアント名
+     * @Param clientId
+     *            クライアントID
+     * @Param clientSecret
+     *            クライアントシークレット
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
     public OauthClient(final String id, final String name, final String clientId, final String clientSecret,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+        final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt, final String updatedBy,
+        final Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.clientId = clientId;

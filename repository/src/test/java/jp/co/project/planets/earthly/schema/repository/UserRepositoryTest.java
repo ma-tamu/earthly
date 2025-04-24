@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.TestConfig;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
-import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.emuns.Gender;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.schema.model.entity.CountryEntity;
@@ -79,7 +79,7 @@ class UserRepositoryTest {
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
         final var role01 = new Role("ROLE_ID_01", "ROLE_NAME_01", null, "NULL", null, "NULL", false);
         final var roleList = List.of(role01);
-        final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
+        final var expected = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", Gender.MALE.getValue(),
                 "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
                 Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, Boolean.FALSE, null, belongCompanyEntity, roleList,
                 Collections.emptyList(), LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,

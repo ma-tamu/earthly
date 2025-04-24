@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
 import org.seasar.doma.boot.ConfigAutowireable;
+import org.seasar.doma.jdbc.SelectOptions;
 
 import jp.co.project.planets.earthly.schema.db.dao.base.CompanyBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
@@ -29,4 +30,21 @@ public interface CompanyDao extends CompanyBaseDao {
 
     @Select
     List<Company> selectManagementCompanyByUserId(String userId);
+
+    /**
+     * 閲覧できる会社の会社名を部分検索する。
+     * 
+     * @param name
+     *            会社名
+     * @param userId
+     *            操作ユーザーID
+     * @param hasViewAllCompany
+     *            view_all_companyを持っているか
+     * @param options
+     *            select option
+     * @return 会社リスト
+     */
+    @Select
+    List<CompanyEntity> selectAccessibleByLikeAnyName(String name, String userId, boolean hasViewAllCompany,
+        SelectOptions options);
 }

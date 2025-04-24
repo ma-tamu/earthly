@@ -20,6 +20,9 @@ import jp.co.project.planets.earthly.schema.model.entity.UserSimpleEntity;
 public interface UserDao extends UserBaseDao {
 
     @Select
+    List<User> selectByPrimaryKeysAccessibly(List<String> ids, boolean hasViewAllCompany, String executionUserId);
+
+    @Select
     Optional<User> selectByLoginId(String loginId);
 
     @Select
@@ -27,5 +30,5 @@ public interface UserDao extends UserBaseDao {
 
     @Select
     List<UserSimpleEntity> selectByLoginIdAndNameAndCompany(String loginId, String name, String company,
-            boolean hasViewAllCompany, String executionUserId, SelectOptions selectOptions);
+        boolean hasViewAllCompany, String executionUserId, SelectOptions selectOptions);
 }

@@ -3,6 +3,7 @@ package jp.co.project.planets.earthly.webapp.controller.form.user;
 import java.io.Serializable;
 
 import org.hibernate.validator.constraints.Length;
+import org.jilt.Builder;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import jp.co.project.planets.earthly.common.annotation.validate.Timezone;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.webapp.controller.form.DtoConvertible;
 
+@Builder(factoryMethod = "builder")
 public record UserUpdateForm(@NotBlank @Length(min = 1, max = 128) String name,
         @NotBlank @Email String mail, @NotBlank @Pattern(regexp = "ja|en") String language,
         @NotBlank @Timezone String timezone, @NotBlank String company, @NotBlank String companyId, Boolean lockout,

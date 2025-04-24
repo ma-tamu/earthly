@@ -8,6 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import com.google.common.annotations.VisibleForTesting;
 import jp.co.project.planets.earthly.common.logic.OAuthClientLogic;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
@@ -28,8 +30,10 @@ import jp.co.project.planets.earthly.schema.repository.OAuthClientRedirectUrlRep
 import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 import jp.co.project.planets.earthly.schema.repository.OAuthClientScopeRepository;
 import jp.co.project.planets.earthly.schema.repository.ScopeRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
+import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
 import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientDetailDto;
@@ -52,13 +56,14 @@ public class OAuthClientService {
 
     private final MessageSource messageSource;
     private final LogoutRedirectRepository logoutRedirectRepository;
+    private final UserRepository userRepository;
 
     public OAuthClientService(final OAuthClientLogic oauthClientLogic,
         final OAuthClientRepository oauthClientRepository, final ScopeRepository scopeRepository,
         final OAuthClientScopeRepository oauthClientScopeRepository,
         final OAuthClientRedirectUrlRepository oauthClientRedirectUrlRepository,
         final OAuthClientManagementRepository oauthClientManagementRepository, final MessageSource messageSource,
-        final LogoutRedirectRepository logoutRedirectRepository) {
+        final LogoutRedirectRepository logoutRedirectRepository, final UserRepository userRepository) {
         this.oauthClientLogic = oauthClientLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.scopeRepository = scopeRepository;
@@ -67,6 +72,7 @@ public class OAuthClientService {
         this.oauthClientManagementRepository = oauthClientManagementRepository;
         this.messageSource = messageSource;
         this.logoutRedirectRepository = logoutRedirectRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -130,7 +136,11 @@ public class OAuthClientService {
         final var client = oauthClientRepository.findAccessibleById(id, permissionEnumList, operationUserId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX018));
         final boolean canEditableClient = oauthClientLogic.canEditableClient(id, permissionEnumList, operationUserId);
-        final var redirectUrlPage = new PageImpl<>(client.redirectUrls());
+        final var pageable = PageRequest.of(0, 10);
+        final var oauthClientRedirectUriSearchResultDto = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id,
+                null, canEditableClient, operationUserId, pageable);
+        final var redirectUrlPage = new PageImpl<>(oauthClientRedirectUriSearchResultDto.oauthClientRedirectUriList(),
+                pageable, oauthClientRedirectUriSearchResultDto.total());
         final var logoutRedirectUrlPage = new PageImpl<>(client.logoutRedirectUrls());
         final var userPage = new PageImpl<>(client.managementUserList());
         return new OAuthClientDetailDto(client, redirectUrlPage, logoutRedirectUrlPage, userPage, canEditableClient);
@@ -297,9 +307,10 @@ public class OAuthClientService {
         final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
         final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        final var byClientRedirectUrl = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id, redirectUtl,
-                hasViewAllOAuthClient, userInfoDto.id(), pageable);
-        return new PageImpl<>(byClientRedirectUrl);
+        final var oauthClientRedirectUriSearchResultDto = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id,
+                redirectUtl, hasViewAllOAuthClient, userInfoDto.id(), pageable);
+        return new PageImpl<>(oauthClientRedirectUriSearchResultDto.oauthClientRedirectUriList(), pageable,
+                oauthClientRedirectUriSearchResultDto.total());
     }
 
     /**
@@ -324,6 +335,37 @@ public class OAuthClientService {
     }
 
     /**
+     * リダイレクトURI削除
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param redirectUrlIdList
+     *            削除対象のリダイレクトURI IDリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             存在しないリダイレクトURIがある場合に発生
+     */
+    @Transactional
+    public void removeRedirectUri(final String id, final List<String> redirectUrlIdList,
+        final EarthlyUserInfoDto userInfoDto) {
+
+        validateEditPermission(id, userInfoDto);
+
+        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var redirectUriList = oauthClientRedirectUrlRepository.findByClientIdAndRedirectUris(id,
+                redirectUrlIdList, hasViewAllOAuthClient, userInfoDto.id());
+        if (redirectUriList.size() != redirectUrlIdList.size()) {
+            throw new BadRequestException(ErrorCode.EWA4XX021);
+        }
+
+        for (final var redirectUri : redirectUriList) {
+            oauthClientRedirectUrlRepository.delete(redirectUri.getId());
+        }
+    }
+
+    /**
      * OAuthクライアントログアウトリダイレクトURL検索
      *
      * @param id
@@ -341,9 +383,62 @@ public class OAuthClientService {
         final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
         final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        final var logoutRedirectUrlList = logoutRedirectRepository.findByClientRedirectUrl(id, logoutRedirectUtl,
-                hasViewAllOAuthClient, userInfoDto.id(), pageable);
-        return new PageImpl<>(logoutRedirectUrlList);
+        final var oauthClientLogoutRedirectUriSearchResultDto = logoutRedirectRepository.findByClientRedirectUrl(id,
+                logoutRedirectUtl, hasViewAllOAuthClient, userInfoDto.id(), pageable);
+        return new PageImpl<>(oauthClientLogoutRedirectUriSearchResultDto.oauthClientLogoutRedirectUriList(), pageable,
+                oauthClientLogoutRedirectUriSearchResultDto.total());
+    }
+
+    /**
+     * OAuthクライアントログアウトリダイレクトURL追加
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param redirectUrl
+     *            リダイレクトURL
+     * @param userInfoDto
+     *            ユーザー情報
+     */
+    @Transactional
+    public void addLogoutRedirectUrl(final String id, final String redirectUrl, final EarthlyUserInfoDto userInfoDto) {
+        validateEditPermission(id, userInfoDto);
+
+        final var currentDateTime = LocalDateTime.now();
+        final var oauthClientLogoutRedirectUri = new LogoutRedirectUrl(null, id, redirectUrl, currentDateTime,
+                userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+        logoutRedirectRepository.insert(oauthClientLogoutRedirectUri);
+
+    }
+
+    /**
+     * ログアウトリダイレクトURI削除
+     *
+     * @param id
+     *            OAuthクライアントID
+     * @param redirectUrlIdList
+     *            削除対象のログアウトリダイレクトURI IDリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             存在しないリダイレクトURIがある場合に発生
+     */
+    @Transactional
+    public void removeLogoutRedirectUri(final String id, final List<String> redirectUrlIdList,
+        final EarthlyUserInfoDto userInfoDto) {
+
+        validateEditPermission(id, userInfoDto);
+
+        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var logoutRedirectUriList = logoutRedirectRepository.findByClientIdAndRedirectUris(id,
+                redirectUrlIdList, hasViewAllOAuthClient, userInfoDto.id());
+        if (logoutRedirectUriList.size() != redirectUrlIdList.size()) {
+            throw new BadRequestException(ErrorCode.EWA4XX021);
+        }
+
+        for (final var redirectUri : logoutRedirectUriList) {
+            logoutRedirectRepository.delete(redirectUri.getId());
+        }
     }
 
     /**
@@ -353,6 +448,8 @@ public class OAuthClientService {
      *            OAuthクライアントID
      * @param userName
      *            ユーザー名
+     * @param companyName
+     *            会社名
      * @param pageable
      *            ページャー
      * @param userInfoDto
@@ -360,13 +457,69 @@ public class OAuthClientService {
      * @return OAuthクライアント管理者リスト
      */
     public PageImpl<OAuthClientManagementUserEntity> searchManagementUser(final String id, final String userName,
-        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
+        final String companyName, final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
         final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var hasViewAllUser = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_USER);
         final var oauthClientManagementUserList = oauthClientManagementRepository.findByAccessibleClientIdAndUserId(id,
-                userName, hasViewAllOAuthClient, hasViewAllUser, userInfoDto.id(), pageable);
+                userName, companyName, hasViewAllOAuthClient, hasViewAllUser, userInfoDto.id(), pageable);
         return new PageImpl<>(oauthClientManagementUserList);
+    }
+
+    @Transactional
+    public PageImpl<OAuthClientManagementUserEntity> searchNotAssignUserUser(final String id, final String longinId,
+        final String userName, final String companyName, final Pageable pageable,
+        final EarthlyUserInfoDto userInfoDto) {
+        final var permissionList = userInfoDto.permissionEnumList();
+        final var hasViewAllOAuthClient = permissionList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var hasViewAllUser = permissionList.contains(PermissionEnum.VIEW_ALL_USER);
+        final var oauthClientManagementUserSearchResultDto = oauthClientManagementRepository
+                .findAccessibleUnassignedUserByAnyKeyword(id, longinId, userName, companyName, hasViewAllOAuthClient,
+                        hasViewAllUser, userInfoDto.id(), pageable);
+        return new PageImpl<>(oauthClientManagementUserSearchResultDto.oauthClientManagementUserList(), pageable,
+                oauthClientManagementUserSearchResultDto.total());
+    }
+
+    @Transactional
+    public void assignUser(final String id, final List<String> userIdList, final EarthlyUserInfoDto userInfoDto) {
+        validateEditPermission(id, userInfoDto);
+
+        // 割り当て対象のユーザーが既に管理者の場合は、エラーを返す。
+        final var permissionList = userInfoDto.permissionEnumList();
+        final var hasViewAllOAuthClient = permissionList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var hasViewAllUser = permissionList.contains(PermissionEnum.VIEW_ALL_USER);
+        final var oauthClientManagementList = oauthClientManagementRepository.findAccessibleByClientIdAndInUserId(id,
+                userIdList, hasViewAllOAuthClient, hasViewAllUser, userInfoDto.id());
+        if (CollectionUtils.isNotEmpty(oauthClientManagementList)) {
+            throw new BadRequestException(ErrorCode.EWA4XX022);
+        }
+
+        for (final var userId : userIdList) {
+            final var oauthClientManagement = new OauthClientManagement(null, id, userId, LocalDateTime.now(),
+                    userInfoDto.id());
+            oauthClientManagementRepository.insert(oauthClientManagement);
+        }
+    }
+
+    @Transactional
+    public void unassignUser(final String id, final List<String> userIdList, final EarthlyUserInfoDto userInfoDto) {
+
+        validateEditPermission(id, userInfoDto);
+
+        final var hasAllViewCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var userList = userRepository.findByPrimaryKeysAccessibly(userIdList, hasAllViewCompany,
+                userInfoDto.id());
+        if (userList.size() != userIdList.size()) {
+            throw new BadRequestException(ErrorCode.EWA4XX023);
+        }
+
+        final var oauthClientManagementList = oauthClientManagementRepository.findByUniqueKey(id, userIdList);
+        if (oauthClientManagementList.size() != userIdList.size()) {
+            throw new BadRequestException(ErrorCode.EWA4XX023);
+        }
+        for (final var oauthClientManagement : oauthClientManagementList) {
+            oauthClientManagementRepository.delete(oauthClientManagement);
+        }
     }
 }

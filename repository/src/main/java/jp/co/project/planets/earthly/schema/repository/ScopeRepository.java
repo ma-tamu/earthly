@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.repository;
 
 import java.util.List;
 
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.ScopeDao;
@@ -15,11 +15,11 @@ import jp.co.project.planets.earthly.schema.db.entity.Scope;
 public class ScopeRepository {
 
     private final ScopeDao scopeDao;
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
-    public ScopeRepository(final ScopeDao scopeDao, final Entityql entityql) {
+    public ScopeRepository(final ScopeDao scopeDao, final QueryDsl queryDsl) {
         this.scopeDao = scopeDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     /**

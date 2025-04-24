@@ -45,14 +45,19 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param roleId id
-     * @Param permissionId id
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
+     * @Param id
+     *            id
+     * @Param roleId
+     *            id
+     * @Param permissionId
+     *            id
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
      */
     public RolePermission(final String id, final String roleId, final String permissionId,
-            final LocalDateTime createdAt, final String createdBy) {
+        final LocalDateTime createdAt, final String createdBy) {
         this.id = id;
         this.roleId = roleId;
         this.permissionId = permissionId;

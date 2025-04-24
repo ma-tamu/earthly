@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body>
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main class="main" id="main">
+  <div class="pagetitle">
+    <div class="row">
+      <div class="col-9">
+        <h1 th:text="#{page.title.role.entry}">ロール登録</h1>
+      </div>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}" th:text="#{page.title.home}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" th:text="#{page.title.role.entry}">
+          ロール登録
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="container">
+    <form method="post" th:action="@{/roles/entry}" th:object="${roleEntryForm}">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="name" th:text="#{page.label.role.name}">ロール名</label>
+            <input  type="text" class="form-control" id="name" th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                   th:field="*{name}"  th:readonly="${readOnly}">
+            <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+              ロール名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="name" th:text="#{page.label.role.description}">概要</label>
+            <input  type="text" class="form-control" id="description" th:classappend="${#fields.hasErrors('description')}?'is-invalid'"
+                    th:field="*{description}"  th:readonly="${readOnly}">
+            <div class="invalid-feedback" th:errors="*{description}" th:if="${#fields.hasErrors('description')}">
+              概要は必須です。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-6">
+          <button type="button" class="btn btn-secondary rounded-pill" data-bs-target="#cancelModal"
+                  data-bs-toggle="modal"
+                  th:text="#{page.button.back}">戻る
+          </button>
+          <div th:replace="roles/modal::cancel"></div>
+          <button type="submit" class="btn btn-primary rounded-pill" th:text="#{page.button.confirm}">確認
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+</body>
+<th:block th:replace="roles/modal::entryConfirm"></th:block>
+<th:block th:replace="roles/modal::cancel"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:inline="javascript">
+    [# th:if="${readOnly}"]
+    $(function () {
+        $('#entryConfirm').modal('show')
+    });
+    [/]
+    $('.entry-cancel').on('click', function () {
+        $('input[type=text]').removeProp('readonly');
+    });
+</script>
+</html>

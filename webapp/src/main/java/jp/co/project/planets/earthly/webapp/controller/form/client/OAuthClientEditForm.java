@@ -8,7 +8,7 @@ import jp.co.project.planets.earthly.webapp.annotation.validator.ValidScope;
 import jp.co.project.planets.earthly.webapp.model.dto.OAuthClientEditDto;
 
 /**
- * OAuthクライアント辺風FROM
+ * OAuthクライアント編集FROM
  *
  * @param name
  *            名前

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="modal-open">
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main id="main" class="main">
+  <div class="pagetitle">
+    <div class="row">
+      <div class="col-9">
+        <h1>パーミッション詳細</h1>
+      </div>
+      <div class="col-3">
+        <div class="text-end">
+          <div class="btn-group">
+            <div data-bs-toggle="tooltip" data-bs-placement="top">
+              <button class="btn btn-info rounded-pill m-1" th:title="#{page.tooltip.delete}"
+                      data-bs-toggle="modal" data-bs-target="#delete">
+                <i class="bx bx-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}" th:text="#{page.title.home}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a th:href="@{/roles}" th:text="#{page.title.permission.list}">パーミッションリスト</a>
+        </li>
+        <li class="breadcrumb-item active">
+          <th:block>パーミッション名</th:block>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <section class="section profile">
+    <div class="card detail">
+      <div class="card-body">
+        <div class="card-title">パーミッション名</div>
+        <div class="profile-overview">
+          <div class="row">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.permission.name}">パーミッション名</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block>name</th:block>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title">
+            <div class="row">
+              <div class="col-8">
+                <th:block>付与ロール</th:block>
+              </div>
+              <div class="col-4 text-end">
+                <button class="btn btn-info rounded-pill m-1 assign-role"
+                        data-bs-target="#assignRole" data-bs-toggle="modal">
+                  <i class="bx bx-add-to-queue"></i>
+                </button>
+                <button class="btn btn-info rounded-pill m-1 remove-role">
+                  <i class="bx bx-edit"></i>
+                </button>
+              </div>
+            </div>
+            <form method="get" name="searchAssignedRole" onsubmit="return false;">
+              <div class="row">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="roleName" placeholder="ロール名">
+                </div>
+                <div class="col-sm-2">
+                  <button class="btn btn-primary assigned-role" type="button">検索</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <form method="post" name="role" onsubmit="return false;"
+                th:action="@{/roles/id/permissions/removes}"
+                th:if="${!#lists.isEmpty(assignRolePage.content)}">
+            <div id="assignRoleContent">
+              <th:block th:fragment="assignRolePage">
+                <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
+                <table class="table table-striped table-borderless assign-role-list"
+                       th:fragment="assignRoleList">
+                  <thead>
+                  <tr>
+                    <th>ロール名</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="role : ${assignRolePage.content}">
+                    <td>
+                      <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">パーミッション名</a>
+                    </td>
+                    <td class="text-end">
+                      <input class="form-check-input" name="userIds" style="display: none"
+                             th:value="${role.id}"
+                             type="checkbox">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-12">
+                    <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+            <div class="row row-unassigned" style="display: none">
+              <div class="col-8">
+                削除対象を選択してください。
+              </div>
+              <div class="col-4 text-end">
+                <button class="btn btn-primary unassigned-role" th:text="#{page.button.delete}" type="button">削除
+                </button>
+                <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<th:block th:replace="systems/permissions/modal::delete(${permission.id})"></th:block>
+<th:block th:replace="systems/permissions/modal::assignRole(${permission.id})"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+
+</body>
+</html>

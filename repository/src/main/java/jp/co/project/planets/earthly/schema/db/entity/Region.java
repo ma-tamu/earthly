@@ -53,16 +53,23 @@ public class Region extends AbstractRegion implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param name 名前
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param id
+     *            id
+     * @Param name
+     *            名前
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
     public Region(final String id, final String name, final LocalDateTime createdAt, final String createdBy,
-            final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+        final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;

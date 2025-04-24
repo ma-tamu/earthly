@@ -91,6 +91,17 @@ public class CompanyDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectAccessibleByLikeAnyName(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/CompanyDao/selectAccessibleByLikeAnyName.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
     public void testSelectAccessibleByPrimaryKey(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
                 "META-INF/jp/co/project/planets/earthly/schema/db/dao/CompanyDao/selectAccessibleByPrimaryKey.sql",

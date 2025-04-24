@@ -19,7 +19,26 @@ public interface RedirectUriDao extends OauthClientRedirectUrlBaseDao {
     @Select
     List<String> selectByClientId(String clientId);
 
+    /**
+     * 入力されたリダイレクトURIとOAuthクライアントIDで対象のリダイレクトURIを取得する。
+     * 
+     * @param clientId
+     *            OAuthクライアントID
+     * @param redirectUrl
+     *            リダイレクトURI
+     * @param hasViewAllOAuthClient
+     *            すべてのOAuthクライアント閲覧有無
+     * @param operatorUserId
+     *            操作ユーザーID
+     * @param options
+     *            select option
+     * @return リダイレクトURIリスト
+     */
     @Select
     List<OauthClientRedirectUrl> selectByClientRedirectUrl(String clientId, String redirectUrl,
-            boolean hasViewAllOAuthClient, String operatorUserId, SelectOptions options);
+        boolean hasViewAllOAuthClient, String operatorUserId, SelectOptions options);
+
+    @Select
+    List<OauthClientRedirectUrl> selectByClientIdAndRedirectUris(String clientId, List<String> redirectUriIdList,
+        boolean hasViewAllOAuthClient, String operatorUserId, SelectOptions option);
 }

@@ -86,4 +86,15 @@ public class RedirectUriDaoTest {
         execute(sqlFile);
     }
 
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByClientRedirectUrl(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientRedirectUrl.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
 }

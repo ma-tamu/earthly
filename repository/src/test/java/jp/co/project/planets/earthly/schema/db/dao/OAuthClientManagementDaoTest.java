@@ -98,4 +98,15 @@ public class OAuthClientManagementDaoTest {
         execute(sqlFile);
     }
 
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByAccessibleClientIdAndUserName(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectByAccessibleClientIdAndUserName.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
 }

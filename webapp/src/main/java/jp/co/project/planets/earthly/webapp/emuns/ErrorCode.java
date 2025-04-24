@@ -49,6 +49,14 @@ public enum ErrorCode implements Code {
     EWA4XX018("EWA4XX018", NOTFOUND_CLIENT),
     /** OAuthクライアントを編集することはできません。 */
     EWA4XX019("EWA4XX019", FORBIDDEN_EDIT_CLIENT),
+    /** 会社登録の権限がありません。 */
+    EWA4XX020("EWA4XX020", FORBIDDEN_ENTRY_COMPANY),
+    /** 削除対象に無効なリダイレクトURIが含まれています。 */
+    EWA4XX021("EWA4XX021", CLIENT_REDIRECT_URI_REMOVE_INVALID),
+    /** 割り当て対象のユーザーは既にOAuthクライアントの管理者になっています。 */
+    EWA4XX022("EWA4XX022", CLIENT_MANAGEMENT_USER_ALREADY_REGISTERED),
+    /** 選択されたOAuthクライアントの管理者を閲覧できないため、解除できません。 */
+    EWA4XX023("EWA4XX023", CLIENT_MANAGEMENT_USER_FORBIDDEN),
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     EWA5XX999("EWA5XX999", UNEXPECTED);

@@ -93,29 +93,42 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param loginId ログインID
-     * @Param name ユーザー名
-     * @Param gender 性別
+     * @Param id
+     *            id
+     * @Param loginId
+     *            ログインID
+     * @Param name
+     *            ユーザー名
+     * @Param gender
+     *            性別
      * @Param language
      * @Param timezone
-     * @Param mail メールアドレス
-     * @Param password パスワード
-     * @Param lockout ロックアウト
+     * @Param mail
+     *            メールアドレス
+     * @Param password
+     *            パスワード
+     * @Param lockout
+     *            ロックアウト
      * @Param twoFactorAuthentication
      * @Param secret
-     * @Param companyId 所属会社
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param companyId
+     *            所属会社
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
     public User(final String id, final String loginId, final String name, final String gender, final String language,
-            final String timezone, final String mail, final String password, final Boolean lockout,
-            final Boolean twoFactorAuthentication, final String secret, final String companyId,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+        final String timezone, final String mail, final String password, final Boolean lockout,
+        final Boolean twoFactorAuthentication, final String secret, final String companyId,
+        final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt, final String updatedBy,
+        final Boolean isDeleted) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;

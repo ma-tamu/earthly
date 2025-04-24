@@ -1,6 +1,6 @@
 package jp.co.project.planets.earthly.schema.repository;
 
-import org.seasar.doma.jdbc.criteria.NativeSql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.OAuthClientScopeDao;
@@ -14,11 +14,11 @@ import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope_;
 public class OAuthClientScopeRepository {
 
     private final OAuthClientScopeDao oauthClientScopeDao;
-    private final NativeSql nativeSql;
+    private final QueryDsl queryDsl;
 
-    public OAuthClientScopeRepository(final OAuthClientScopeDao oauthClientScopeDao, final NativeSql nativeSql) {
+    public OAuthClientScopeRepository(final OAuthClientScopeDao oauthClientScopeDao, final QueryDsl queryDsl) {
         this.oauthClientScopeDao = oauthClientScopeDao;
-        this.nativeSql = nativeSql;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -41,6 +41,6 @@ public class OAuthClientScopeRepository {
      */
     public int deleteByClientId(final String clientId) {
         final var oauthClientScope = new OauthClientScope_();
-        return nativeSql.delete(oauthClientScope).where(w -> w.eq(oauthClientScope.oauthClientId, clientId)).execute();
+        return queryDsl.delete(oauthClientScope).where(w -> w.eq(oauthClientScope.oauthClientId, clientId)).execute();
     }
 }

@@ -24,6 +24,8 @@ public final class ErrorMessageKey {
     public static final String FORBIDDEN_ENTRY_CLIENT = "exception.forbidden.entry.client";
     /** OAuthクライアントを編集することはできません。 */
     public static final String FORBIDDEN_EDIT_CLIENT = "exception.forbidden.edit.client";
+    /** 会社登録の権限がありません。 */
+    public static final String FORBIDDEN_ENTRY_COMPANY = "exception.forbidden.entry.company";
     /** 所属会社の編集ができません。 */
     public static final String NOT_MODIFY_BELONG_COMPANY = "exception.modify.company";
     /** 新しいパスワードと新しいパスワードの再入力が一致しません。 */
@@ -58,6 +60,15 @@ public final class ErrorMessageKey {
 
     /** 入力されたメールアドレスが正しくありません。 */
     public static final String NOT_FOUND_MAIL_USER = "exception.notfound.forgot.password.mail";
+
+    /** 削除対象に無効なリダイレクトURIが含まれています。 */
+    public static final String CLIENT_REDIRECT_URI_REMOVE_INVALID = "exception.client.redirect.uri.remove.invalid";
+
+    /** 割り当て対象のユーザーは既にOAuthクライアントの管理者になっています。 */
+    public static final String CLIENT_MANAGEMENT_USER_ALREADY_REGISTERED = "exception.client.management.user.already.registered";
+
+    /** 選択されたOAuthクライアントの管理者を閲覧できないため、解除できません。 */
+    public static final String CLIENT_MANAGEMENT_USER_FORBIDDEN = "exception.client.management.user.forbidden";
 
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";

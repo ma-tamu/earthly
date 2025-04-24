@@ -147,15 +147,15 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
      * @Param refreshTokenMetadata
      */
     public Oauth2Authorization(final String id, final String registeredClientId, final String principalName,
-            final String authorizationGrantType, final String attributes, final String state,
-            final String authorizationCodeValue, final LocalDateTime authorizationCodeIssuedAt,
-            final LocalDateTime authorizationCodeExpiresAt, final String authorizationCodeMetadata,
-            final String accessTokenValue, final LocalDateTime accessTokenIssuedAt,
-            final LocalDateTime accessTokenExpiresAt, final String accessTokenMetadata, final String accessTokenType,
-            final String accessTokenScopes, final String oidcIdTokenValue, final LocalDateTime oidcIdTokenIssuedAt,
-            final LocalDateTime oidcIdTokenExpiresAt, final String oidcIdTokenMetadata, final String refreshTokenValue,
-            final LocalDateTime refreshTokenIssuedAt, final LocalDateTime refreshTokenExpiresAt,
-            final String refreshTokenMetadata) {
+        final String authorizationGrantType, final String attributes, final String state,
+        final String authorizationCodeValue, final LocalDateTime authorizationCodeIssuedAt,
+        final LocalDateTime authorizationCodeExpiresAt, final String authorizationCodeMetadata,
+        final String accessTokenValue, final LocalDateTime accessTokenIssuedAt,
+        final LocalDateTime accessTokenExpiresAt, final String accessTokenMetadata, final String accessTokenType,
+        final String accessTokenScopes, final String oidcIdTokenValue, final LocalDateTime oidcIdTokenIssuedAt,
+        final LocalDateTime oidcIdTokenExpiresAt, final String oidcIdTokenMetadata, final String refreshTokenValue,
+        final LocalDateTime refreshTokenIssuedAt, final LocalDateTime refreshTokenExpiresAt,
+        final String refreshTokenMetadata) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;

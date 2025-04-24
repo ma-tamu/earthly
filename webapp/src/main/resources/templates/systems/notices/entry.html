@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body>
+<th:block th:replace="parts/template::header"></th:block>
+<th:block th:replace="parts/template::navigation"></th:block>
+<main class="main" id="main">
+  <div class="pagetitle">
+    <div class="row">
+      <div class="col-9">
+        <h1 th:text="#{page.title.notice.entry}">お知らせ登録</h1>
+      </div>
+    </div>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a th:href="@{/}" th:text="#{page.title.home}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" th:text="#{page.title.notice.entry}">
+          お知らせ登録
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="container">
+    <form method="post" th:action="@{/notices/entry}" th:object="${noticeEntryForm}">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="title" th:text="#{page.label.notice.title}">件名</label>
+            <input  type="text" class="form-control" id="title" th:classappend="${#fields.hasErrors('title')}?'is-invalid'"
+                   th:field="*{title}"  th:readonly="${readOnly}">
+            <div class="invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+              件名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="body" th:text="#{page.label.notice.body}">本文</label>
+            <textarea class="form-control" id="body" th:classappend="${#fields.hasErrors('body')}?'is-invalid'"
+                      th:field="*{body}"  th:readonly="${readOnly}"></textarea>
+            <div class="invalid-feedback" th:errors="*{body}" th:if="${#fields.hasErrors('body')}">
+              本文は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="startDate" th:text="#{page.label.notice.title}">掲載開始日</label>
+            <input  type="date" class="form-control" id="startDate" th:classappend="${#fields.hasErrors('startDate')}?'is-invalid'"
+                    th:field="*{startDate}"  th:readonly="${readOnly}">
+            <div class="invalid-feedback" th:errors="*{startDate}" th:if="${#fields.hasErrors('startDate')}">
+              掲載開始日は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label class="form-label" for="endDate" th:text="#{page.label.notice.title}">掲載終了日</label>
+            <input  type="date" class="form-control" id="endDate" th:classappend="${#fields.hasErrors('endDate')}?'is-invalid'"
+                    th:field="*{endDate}"  th:readonly="${readOnly}">
+            <div class="invalid-feedback" th:errors="*{endDate}" th:if="${#fields.hasErrors('title')}">
+              掲載終了日は必須です。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-6">
+          <button type="button" class="btn btn-secondary rounded-pill" data-bs-target="#cancelModal"
+                  data-bs-toggle="modal"
+                  th:text="#{page.button.back}">戻る
+          </button>
+          <div th:replace="roles/modal::cancel"></div>
+          <button type="submit" class="btn btn-primary rounded-pill" th:text="#{page.button.confirm}">確認
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
+</body>
+<th:block th:replace="systems/notices/modal::entryConfirm"></th:block>
+<th:block th:replace="systems/notices/modal::cancel"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:inline="javascript">
+    [# th:if="${readOnly}"]
+    $(function () {
+        $('#entryConfirm').modal('show')
+    });
+    [/]
+    $('.entry-cancel').on('click', function () {
+        $('input[type=text]').removeProp('readonly');
+    });
+</script>
+</html>

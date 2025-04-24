@@ -27,6 +27,10 @@ public class Role extends AbstractRole implements java.io.Serializable {
     @Column(name = "name")
     String name;
 
+    /**  */
+    @Column(name = "description")
+    String description;
+
     /** 作成日 */
     @Column(name = "created_at")
     LocalDateTime createdAt;
@@ -53,18 +57,27 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param name ロール名
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param id
+     *            id
+     * @Param name
+     *            ロール名
+     * @Param description
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
-    public Role(final String id, final String name, final LocalDateTime createdAt, final String createdBy,
-            final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+    public Role(final String id, final String name, final String description, final LocalDateTime createdAt,
+        final String createdBy, final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
@@ -108,6 +121,25 @@ public class Role extends AbstractRole implements java.io.Serializable {
      */
     public void setName(final String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description
+     *            the description
+     */
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     /**

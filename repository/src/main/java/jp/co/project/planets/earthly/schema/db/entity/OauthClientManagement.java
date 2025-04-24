@@ -45,14 +45,19 @@ public class OauthClientManagement extends AbstractOauthClientManagement impleme
     /**
      * new instance
      * 
-     * @Param id ID
-     * @Param oauthClientId OAuthクライアントId
-     * @Param userId ユーザーID
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
+     * @Param id
+     *            ID
+     * @Param oauthClientId
+     *            OAuthクライアントId
+     * @Param userId
+     *            ユーザーID
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
      */
     public OauthClientManagement(final String id, final String oauthClientId, final String userId,
-            final LocalDateTime createdAt, final String createdBy) {
+        final LocalDateTime createdAt, final String createdBy) {
         this.id = id;
         this.oauthClientId = oauthClientId;
         this.userId = userId;

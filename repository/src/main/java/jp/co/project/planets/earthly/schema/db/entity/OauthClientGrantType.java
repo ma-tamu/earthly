@@ -35,9 +35,12 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param oauthClientId OAuthクライアントid
-     * @Param grantTypeId 認可タイプid
+     * @Param id
+     *            id
+     * @Param oauthClientId
+     *            OAuthクライアントid
+     * @Param grantTypeId
+     *            認可タイプid
      */
     public OauthClientGrantType(final String id, final String oauthClientId, final String grantTypeId) {
         this.id = id;

@@ -8,6 +8,7 @@ import org.seasar.doma.boot.ConfigAutowireable;
 import org.seasar.doma.jdbc.SelectOptions;
 
 import jp.co.project.planets.earthly.schema.db.dao.base.OauthClientManagementBaseDao;
+import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 
@@ -66,5 +67,14 @@ public interface OAuthClientManagementDao extends OauthClientManagementBaseDao {
      */
     @Select
     List<OAuthClientManagementUserEntity> selectByAccessibleClientIdAndUserName(String clientId, String userName,
-        boolean hasViewAllClient, boolean hasViewAllUser, String operatorUserId, SelectOptions options);
+        String companyName, boolean hasViewAllClient, boolean hasViewAllUser, String operatorUserId,
+        SelectOptions options);
+
+    @Select
+    List<OAuthClientManagementUserEntity> selectAccessibleUnassignedUserByAnyKeyword(String clientId, String loginId,
+        String userName, String companyName, boolean hasViewAllUser, String operatorUserId, SelectOptions options);
+
+    @Select
+    List<OauthClientManagement> selectAccessibleByClientIdAndInUserId(String clientId, List<String> userIdList,
+        boolean hasViewAllClient, boolean hasViewAllUser, String operatorUserId);
 }

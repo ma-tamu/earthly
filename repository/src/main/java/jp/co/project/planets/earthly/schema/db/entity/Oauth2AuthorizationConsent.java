@@ -45,7 +45,7 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
      * @Param authorities
      */
     public Oauth2AuthorizationConsent(final String id, final String registeredClientId, final String principalName,
-            final String authorities) {
+        final String authorities) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;

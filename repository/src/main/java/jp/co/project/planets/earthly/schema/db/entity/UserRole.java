@@ -45,14 +45,19 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param userId id
-     * @Param roleId id
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
+     * @Param id
+     *            id
+     * @Param userId
+     *            id
+     * @Param roleId
+     *            id
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
      */
     public UserRole(final String id, final String userId, final String roleId, final LocalDateTime createdAt,
-            final String createdBy) {
+        final String createdBy) {
         this.id = id;
         this.userId = userId;
         this.roleId = roleId;

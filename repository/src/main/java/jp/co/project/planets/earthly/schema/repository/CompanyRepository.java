@@ -3,11 +3,14 @@ package jp.co.project.planets.earthly.schema.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.seasar.doma.boot.Pageables;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.dto.CompanySearchResultDto;
 
 /**
  * company repository
@@ -50,7 +53,7 @@ public class CompanyRepository {
      * @return 会社
      */
     public Optional<Company> findByAccessiblePrimaryKey(final String id, final List<PermissionEnum> permissionEnumList,
-            final String executionUserId) {
+        final String executionUserId) {
         final var hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
         return companyDao.selectAccessibleByPrimaryKey(id, executionUserId, hasViewAllCompany);
     }
@@ -67,7 +70,7 @@ public class CompanyRepository {
      * @return 会社一覧
      */
     public List<Company> findAccessibleByUserId(final String userId, final Optional<String> keywordOptional,
-            final List<PermissionEnum> permissionEnumList) {
+        final List<PermissionEnum> permissionEnumList) {
         final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
         return companyDao.selectAccessibleByUserId(userId, keywordOptional, hasViewAllCompany);
     }
@@ -81,6 +84,28 @@ public class CompanyRepository {
      */
     public List<Company> findManagementCompanyByUserId(final String userId) {
         return companyDao.selectManagementCompanyByUserId(userId);
+    }
+
+    /**
+     * 閲覧できる会社の会社名を部分検索する。
+     *
+     * @param name
+     *            会社名
+     * @param userId
+     *            操作ユーザーID
+     * @param permissionList
+     *            パーミッションリスト
+     * @param pageable
+     *            ページャー
+     * @return 会社検索結果
+     */
+    public CompanySearchResultDto findByLikeAnyName(final String name, final String userId,
+        final List<PermissionEnum> permissionList, final Pageable pageable) {
+        final boolean hasViewAllCompany = permissionList.contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var options = Pageables.toSelectOptions(pageable).count();
+        final var companyEntityList = companyDao.selectAccessibleByLikeAnyName(name, userId, hasViewAllCompany,
+                options);
+        return new CompanySearchResultDto(companyEntityList, options.getCount());
     }
 
 }

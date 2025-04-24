@@ -57,18 +57,26 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * new instance
      * 
-     * @Param id id
-     * @Param oauthClientId OAuthクライアントid
-     * @Param redirectUrl リダイレクトURL
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param id
+     *            id
+     * @Param oauthClientId
+     *            OAuthクライアントid
+     * @Param redirectUrl
+     *            リダイレクトURL
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      */
     public OauthClientRedirectUrl(final String id, final String oauthClientId, final String redirectUrl,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+        final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt, final String updatedBy,
+        final Boolean isDeleted) {
         this.id = id;
         this.oauthClientId = oauthClientId;
         this.redirectUrl = redirectUrl;

@@ -1,11 +1,11 @@
 package jp.co.project.planets.earthly.webapp.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 import org.springframework.web.filter.GenericFilterBean;
-
-import com.google.common.base.Joiner;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,8 +24,9 @@ public class RequestFilter extends GenericFilterBean {
         try {
             final var httpServletRequest = (HttpServletRequest) request;
             MDC.put("request", httpServletRequest.getRequestURI());
-            final var requestParameter = Joiner.on(",").withKeyValueSeparator("=")
-                    .join(httpServletRequest.getParameterMap());
+            final var requestParameter = httpServletRequest.getParameterMap().entrySet().stream()
+                    .map(entry -> entry.getKey() + "=" + Arrays.toString(entry.getValue()))
+                    .collect(Collectors.joining(","));
             MDC.put("parameter", requestParameter);
             chain.doFilter(request, response);
         } finally {

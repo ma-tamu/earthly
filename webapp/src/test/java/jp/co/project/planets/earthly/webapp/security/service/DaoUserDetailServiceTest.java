@@ -19,7 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.db.entity.User;
-import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.emuns.Gender;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
 import jp.co.project.planets.earthly.schema.repository.UserRepository;
@@ -48,7 +48,7 @@ class DaoUserDetailServiceTest {
     @Test
     void ログインIDに紐づくユーザーが存在する場合にUserDetailsがかえされること() {
 
-        final var user = new User("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", GenderEnum.MALE.getValue(), "ja",
+        final var user = new User("USER_ID_01", "LOGIN_ID_01", "USER_NAME_01", Gender.MALE.getValue(), "ja",
                 Timezone.ASIA_TOKYO.getId(), "norelay@exanmep.com", "PASSWORD", false, false, null, "COMPANY_ID_01",
                 null, null, null, null, false);
         when(userRepository.findByLoginId(eq("LOGIN_ID_01"))).thenReturn(Optional.of(user));

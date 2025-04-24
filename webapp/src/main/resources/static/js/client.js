@@ -1,5 +1,5 @@
 function doGet(url, param) {
-    return execute(url, "GET", "application/json", param);
+    return execute(url, "GET", "application/json", null, param);
 }
 
 function doPost(url, body) {

@@ -57,18 +57,25 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
     /**
      * new instance
      * 
-     * @Param companyId 会社ID
-     * @Param userId ユーザーID
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @Param companyId
+     *            会社ID
+     * @Param userId
+     *            ユーザーID
+     * @Param createdAt
+     *            作成日
+     * @Param createdBy
+     *            作成者
+     * @Param updatedAt
+     *            更新日
+     * @Param updatedBy
+     *            更新者
+     * @Param isDeleted
+     *            削除フラグ
      * @Param id
      */
     public ManagementCompanyUser(final String companyId, final String userId, final LocalDateTime createdAt,
-            final String createdBy, final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted,
-            final String id) {
+        final String createdBy, final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted,
+        final String id) {
         this.companyId = companyId;
         this.userId = userId;
         this.createdAt = createdAt;

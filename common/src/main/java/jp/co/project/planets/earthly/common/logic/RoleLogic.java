@@ -3,6 +3,7 @@ package jp.co.project.planets.earthly.common.logic;
 import org.springframework.stereotype.Component;
 
 import jp.co.project.planets.earthly.schema.db.entity.UserRole;
+import jp.co.project.planets.earthly.schema.repository.RoleRepository;
 
 /**
  * role logic
@@ -10,7 +11,13 @@ import jp.co.project.planets.earthly.schema.db.entity.UserRole;
 @Component
 public class RoleLogic {
 
+    private final RoleRepository roleRepository;
+
     public static final String POPULAR_ID = "c34088eb93e211ed80c50242ac120003";
+
+    public RoleLogic(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     /**
      * ユーザー作成時のデフォルトロール

@@ -3,10 +3,13 @@ package jp.co.project.planets.earthly.webapp.controller.form.client;
 import java.io.Serializable;
 
 /**
- * OAuthクライアントログアウトリダイレクト検索FORM
+ * OAuthクライアントログアウトリダイレクトURI検索FORM
  * 
  * @param logoutRedirectUrl
- *            検索するログアウトリダイレクトURL
+ *            検索するログアウトリダイレクトURI
+ * @param isRemoveMode
+ *            削除モード有無
  */
-public record OAuthClientLogoutRedirectUrlSearchForm(String logoutRedirectUrl) implements Serializable {
+public record OAuthClientLogoutRedirectUrlSearchForm(String logoutRedirectUrl, Boolean isRemoveMode)
+        implements Serializable {
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{page.header.title}">Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.company.entry}">会社登録</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/companies}" th:text="#{page.title.company.list}">会社リスト</a>
+              </li>
+              <li class="breadcrumb-item active" th:text="#{page.title.company.entry}">会社登録</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="alert alert-danger alert-dismissible fade show" th:if="${errorCode}">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        <th:block th:text="${#messages.msgOrNullWithParams(errorCode.messageKey, messageArgs)}">エラーメッセージ</th:block>
+      </div>
+      <form method="post" class="form-horizontal entry" th:action="@{/companies/entries}" th:object="${companyEntryForm}">
+        <div class="form-group row m-1">
+          <label class="col-sm-2 col-form-label" for="name" th:text="#{page.label.company.name}">会社名</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                   th:field="*{name}" th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+              会社名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-sm-2 form-label" for="country" th:text="#{page.label.company.country}">所属国</label>
+          <div class="col-sm-6">
+            <select class="form-control" id="country" name="country"
+                    th:classappend="${#fields.hasErrors('country')}?'is-invalid'" th:disabled="${readOnly}">
+              <option></option>
+              <option th:each="country : ${countryList}" th:text="${country.getName}" th:value="${country.getId}">
+                国名
+              </option>
+            </select>
+            <div class="invalid-feedback" th:errors="*{country}" th:if="${#fields.hasErrors('country')}">
+              所属国は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row m-1 text-center justify-content-end">
+          <button type="button" class="btn btn-secondary mr-1" data-target="#cancel"
+                  data-toggle="modal" th:text="#{page.button.back}">戻る
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.confirm}">確認</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+</div>
+</body>
+<th:block th:replace="companies/modal::entry"></th:block>
+<th:block th:replace="companies/modal::cancel"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#entry').modal('show')
+    });
+    $('#entry').on('hidden.bs.modal', function (e) {
+        const form = $('form.entry');
+        form.find('input').each((i, e) => {
+            e.readOnly = false;
+        });
+        form.find('select').each((i, e) => {
+            e.disabled = false;
+        });
+    });
+</script>
+</html>

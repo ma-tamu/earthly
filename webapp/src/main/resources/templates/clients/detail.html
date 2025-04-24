@@ -6,59 +6,53 @@
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
 </head>
-<body class="modal-open">
-<th:block th:replace="parts/template::header"></th:block>
-<th:block th:replace="parts/template::navigation"></th:block>
-<main id="main" class="main">
-  <div class="pagetitle">
-    <div class="row">
-      <div class="col-9">
-        <h1 th:text="#{page.title.client.detail}">OAuthクライアント詳細</h1>
-      </div>
-      <div class="col-3">
-        <div class="text-end">
-          <div class="btn-group">
-            <div data-bs-toggle="tooltip" data-bs-placement="top" th:title="#{page.tooltip.edit}">
-              <button class="btn btn-info rounded-pill m-1 edit">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-            <div data-bs-toggle="tooltip" data-bs-placement="top">
-              <button class="btn btn-info rounded-pill m-1" th:title="#{page.tooltip.delete}"
-                      data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bx bx-trash"></i>
-              </button>
-            </div>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.client.detail}">OAuthクライアント詳細</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/clients}"
+                                             th:text="#{page.title.client.list}">OAuthクライアントリスト</a></li>
+              <li class="breadcrumb-item active">
+                <th:block th:text="${OAuthClientDetailEntity.name}"/>
+              </li>
+            </ol>
           </div>
         </div>
-      </div>
-    </div>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a th:href="@{/clients}" th:text="#{page.title.client.list}">OAuthクライアントリスト</a>
-        </li>
-        <li class="breadcrumb-item active">
-          <th:block th:text="${OAuthClientDetailEntity.name}">OAuthクライアント名</th:block>
-        </li>
-      </ol>
-    </nav>
-  </div>
-  <section class="section profile">
-    <div class="card detail" th:styleappend="${!#bools.isFalse(editMode)} ? 'display: none'">
-      <div class="card-body">
-        <div class="card-title" th:text="${OAuthClientDetailEntity.name}">OAuthクライアント名</div>
-        <div class="profile-overview">
-          <div class="row">
-            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.name}">クライアント名</div>
-            <div class="col-lg-9 col-md-8">
-              <th:block th:text="${OAuthClientDetailEntity.name}">name</th:block>
-            </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${OAuthClientDetailEntity.name}">OAuthクライアント名</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary edit" th:title="#{page.button.title.edit}"
+                    data-target="#edit" data-toggle="modal">
+              <i class="fas fa-user-edit"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger delete" th:title="#{page.button.title.delete}"
+                    data-target="#delete" data-toggle="modal">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
-          <div class="row">
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.grantType}">付与タイプ</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:each="grantType:${OAuthClientDetailEntity.grantTypes}">
@@ -69,7 +63,7 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.scope}">スコープ</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:each="scope:${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}">
@@ -78,452 +72,497 @@
               </th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.id}">クライアントID</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${OAuthClientDetailEntity.clientId}">client ID</th:block>
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.secret}">シークレット</div>
             <div class="col-lg-9 col-md-8">
               <th:block th:text="${OAuthClientDetailEntity.secret}">シークレット</th:block>
             </div>
           </div>
         </div>
+        <!-- /.card-footer-->
       </div>
-    </div>
+      <!-- /.card -->
+      <hr>
 
-    <!--/* 編集 */-->
-    <div class="card edit" th:styleappend="${#bools.isFalse(editMode)} ? 'display: none'">
-      <form method="post" th:with="action=${readOnly}? 'update' : 'edit'"
-            th:action="@{/clients/__${OAuthClientDetailEntity.id}__/__${action}__}"
-            th:object="${OAuthClientEditForm}">
-        <div class="card-body">
-          <div class="card-title" th:text="${OAuthClientDetailEntity.name}">OAuthクライアント名</div>
-          <div class="profile-overview">
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.name}">クライアント名</div>
-              <div class="col-lg-9 col-md-8">
-                <input type="text" class="form-control" th:data-before="${OAuthClientDetailEntity.name}"
-                       th:classappend="${#fields.hasErrors('name')}?'is-invalid'" th:disabled="${readOnly}"
-                       th:field="*{name}">
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-                  クライアント名は必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.grantType}">付与タイプ</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block th:each="grantType:${OAuthClientDetailEntity.grantTypes}">
-                  <th:block th:if="${grantTypeStat.first}" th:text="${grantType.type}"></th:block>
-                  <th:block th:unless="${grantTypeStat.first}">
-                    &nbsp;<th:block th:text="${grantType.type}"></th:block>
-                  </th:block>
-                </th:block>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.scope}">スコープ</div>
-              <div class="col-lg-9 col-md-8">
-                <select class="form-select" id="scope" multiple="multiple" name="scope"
-                        th:classappend="${#fields.hasErrors('scope')}?'is-invalid'"
-                        th:readonly="${readOnly}"
-                        th:data-before="${#strings.listJoin(OAuthClientDetailEntity.scopes, ',')}">
-                  <option th:each="scopeEnum : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
-                          th:text="${scopeEnum.name()}" th:value="${scopeEnum.id}"
-                          th:selected="${#lists.contains(OAuthClientEditForm.scope, scopeEnum.id)}">
-                  </option>
-                </select>
-                <div class="invalid-feedback" th:if="${#fields.hasErrors('scope')}" th:errors="*{scope}">
-                  スコープは必須です。
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.id}">クライアントID</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block th:text="${OAuthClientDetailEntity.clientId}">client ID</th:block>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-3 col-md-4 label" th:text="#{page.label.client.secret}">シークレット</div>
-              <div class="col-lg-9 col-md-8">
-                <th:block th:text="${OAuthClientDetailEntity.secret}">シークレット</th:block>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12 text-end">
-                <button type="button" class="btn btn-secondary" onclick="cancel()">Cancel</button>
-                <button type="submit" class="btn btn-primary confirm" th:disabled="${readOnly}"
-                        th:styleappend="${readOnly}?'display:none'">確認
-                </button>
-                <button type="submit" class="btn btn-primary update" th:disabled="${#bools.isFalse(readOnly)}"
-                        th:styleappend="${#bools.isFalse(readOnly)}?'display:none'">更新
-                </button>
-              </div>
-            </div>
+      <!-- リダイレクトURIリスト -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.client.list.redirect.uri}">リダイレクトURIリスト</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary add-redirect-uri" th:title="#{page.button.title.add}"
+                    data-target="#addRedirectUri" data-toggle="modal">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger remove-redirect-uri"
+                    th:title="#{page.button.title.remove}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </div>
         </div>
-      </form>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">
-          <div class="row">
-            <div class="col-8">
-              <th:block th:text="#{page.label.client.list.redirect.uri}">リダイレクトURIリスト</th:block>
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1 add-redirect-url" data-bs-target="#addRedirectUrlModal"
-                      data-bs-toggle="modal">
-                <i class="bx bx-add-to-queue"></i>
-              </button>
-              <button class="btn btn-info rounded-pill m-1 remove-redirect-url">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-          </div>
-          <form method="get" name="searchAssignedRedirectUrl"
-                onsubmit="return false;"
-                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/redirectUrls}">
+        <div class="card-body card-default">
+          <form method="get" name="searchRedirectUri" onsubmit="return false;"
+                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/redirect-uris}">
+            <input type="hidden" name="isRemoveMode" value="false">
             <div class="row">
               <div class="col-sm-4">
-                <input type="text" class="form-control" name="redirectUrl" placeholder="リダイレクトURL"
+                <input type="text" class="form-control" name="redirectUri" placeholder="リダイレクトURI"
                        th:placeholder="#{page.placeholder.client.redirect.uri}">
               </div>
               <div class="col-sm-2">
-                <button class="btn btn-primary assigned-redirect-url" type="button">検索</button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <form method="post" name="removeRedirectUrl" onsubmit="return false;"
-              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/redirectUrls/removes}"
-              th:if="${!#lists.isEmpty(redirectUrlPage.content)}">
-          <div id="redirectUrlContent">
-            <th:block th:fragment="redirectUrlPage">
-              <th:block th:replace="parts/pagination::pagination(${redirectUrlPage})"/>
-              <table class="table table-striped table-borderless assign-redirect-url-list"
-                     th:fragment="addRedirectUrlList">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.client.redirect.uri}">リダイレクトURL</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="redirectUrl : ${redirectUrlPage.content}">
-                  <td th:text="${redirectUrl.redirectUrl}">
-                  </td>
-                  <td class="text-end">
-                    <input class="form-check-input" name="redirectUrlIds" style="display: none"
-                           th:value="${redirectUrl.id}"
-                           type="checkbox">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <div class="row">
-                <div class="col-12">
-                  <th:block th:replace="parts/pagination::pagination(${redirectUrlPage})"/>
-                </div>
-              </div>
-            </th:block>
-          </div>
-          <div class="row row-unassigned" style="display: none">
-            <div class="col-8">
-              削除対象を選択してください。
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-primary unassigned-role" th:text="#{page.button.delete}" type="button">削除
-              </button>
-              <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">
-          <div class="row">
-            <div class="col-8">
-              <th:block th:text="#{page.label.client.list.logout.uri}">ログアウトリダイレクトURIリスト</th:block>
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1 add-logout-redirect-url"
-                      data-bs-target="#addLogoutRedirectUrlModal" data-bs-toggle="modal">
-                <i class="bx bx-add-to-queue"></i>
-              </button>
-              <button class="btn btn-info rounded-pill m-1 remove-redirect-url">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-          </div>
-          <form method="get" name="searchAssignedLogoutRedirectUrl"
-                onsubmit="return false;"
-                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logouts/redirectUrls}">
-            <div class="row">
-              <div class="col-sm-4">
-                <input type="text" class="form-control" name="logoutRedirectUrl" placeholder="ログアウトリダイレクトURI"
-                       th:placeholder="#{page.placeholder.client.redirect.uri}">
-              </div>
-              <div class="col-sm-2">
-                <button class="btn btn-primary assigned-logout-redirect-url" type="button">検索</button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <form method="post" name="removeRedirectUrl" onsubmit="return false;"
-              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logouts/redirectUrls/removes}"
-              th:if="${!#lists.isEmpty(logoutRedirectUrlPage.content)}">
-          <div id="logoutRedirectUrlContent">
-            <th:block th:fragment="logoutRedirectUrlPage">
-              <th:block th:replace="parts/pagination::pagination(${logoutRedirectUrlPage})"/>
-              <table class="table table-striped table-borderless assign-role-list"
-                     th:fragment="addLogoutRedirectUrlList">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.client.redirect.uri}">ログアウトリダイレクトURI</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="redirectUrl : ${logoutRedirectUrlPage.content}">
-                  <td th:text="${redirectUrl.redirectUrl}">
-                  </td>
-                  <td class="text-end">
-                    <input class="form-check-input" name="redirectUrlIds" style="display: none"
-                           th:value="${redirectUrl.id}"
-                           type="checkbox">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <div class="row">
-                <div class="col-12">
-                  <th:block th:replace="parts/pagination::pagination(${logoutRedirectUrlPage})"/>
-                </div>
-              </div>
-            </th:block>
-          </div>
-          <div class="row row-unassigned" style="display: none">
-            <div class="col-8">
-              削除対象を選択してください。
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-primary unassigned-role" th:text="#{page.button.delete}" type="button">削除
-              </button>
-              <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <hr>
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">
-          <div class="row">
-            <div class="col-8">
-              <th:block th:text="#{page.label.client.list.management.user}">管理ユーザーリスト</th:block>
-            </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-info rounded-pill m-1 add-management-user"
-                      data-bs-target="#addManagementUserModal" data-bs-toggle="modal">
-                <i class="bx bx-add-to-queue"></i>
-              </button>
-              <button class="btn btn-info rounded-pill m-1 remove-management-user">
-                <i class="bx bx-edit"></i>
-              </button>
-            </div>
-          </div>
-          <form method="get" name="searchManagementUser"
-                onsubmit="return false;"
-                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/users}">
-            <div class="row">
-              <div class="col-sm-4">
-                <input type="text" class="form-control" name="userName" placeholder="ユーザー名"
-                       th:placeholder="#{page.placeholder.user.name}">
-              </div>
-              <div class="col-sm-2">
-                <button class="btn btn-primary assigned-management-user" type="button" th:text="#{page.button.search}">
+                <button type="button" class="btn btn-primary search-redirect-uri" th:text="#{page.button.search}">
                   検索
                 </button>
               </div>
             </div>
           </form>
         </div>
-        <form method="post" name="removeRedirectUrl" onsubmit="return false;"
-              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/users/removes}"
-              th:if="${!#lists.isEmpty(managementUserPage.content)}">
-          <div id="managementUserContent">
-            <th:block th:fragment="managementUserPage">
-              <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
-              <table class="table table-striped table-borderless add-management-user-list"
-                     th:fragment="addManagementUserList">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.user.name}">ユーザー名</th>
-                  <th th:text="#{page.label.user.company}">所属会社</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="user : ${managementUserPage.content}">
-                  <td>
-                    <a th:href="@{/users/__${user.userId}__}" th:text="${user.userName}"></a>
-                  </td>
-                  <td class="text-end">
-                    <input type="checkbox" class="form-check-input" name="users" style="display: none"
-                           th:value="${user.id}">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <div class="row">
-                <div class="col-12">
-                  <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+        <form method="post" name="removeRedirectUri" onsubmit="return false;"
+              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/redirect-uris/remove}"
+              th:if="${!#lists.isEmpty(redirectUriPage.content)}">
+          <div class="card-body card-default">
+            <div id="redirectUriContent">
+              <th:block th:fragment="redirectUriPage">
+                <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+                <table class="table table-sm table-striped redirect-url-list"
+                       th:fragment="addRedirectUriList">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.client.redirect.uri}">リダイレクトURL</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="redirectUri : ${redirectUriPage.content}">
+                    <td th:text="${redirectUri.redirectUrl}">
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input" name="redirectUriIds"
+                             th:styleappend="${#bools.isFalse(OAuthClientRedirectUrlSearchForm.isRemoveMode)}?'display: none'"
+                             th:value="${redirectUri.id}">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-12">
+                    <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+                  </div>
                 </div>
-              </div>
-            </th:block>
-          </div>
-          <div class="row row-unassigned" style="display: none">
-            <div class="col-8">
-              削除対象を選択してください。
+              </th:block>
             </div>
-            <div class="col-4 text-end">
-              <button class="btn btn-primary unassigned-role" th:text="#{page.button.delete}" type="button">削除
-              </button>
-              <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
-              </button>
+          </div>
+          <div class="card-footer row-unassigned" style="display: none; ">
+            <div class="row">
+              <div class="col-sm-8" th:text="#{page.panel.unassigned.message}">
+                削除対象を選択してください。
+              </div>
+              <div class="col-sm-4 text-right">
+                <button type="button" class="btn btn-primary remove-redirect-uri" th:text="#{page.button.delete}">削除
+                </button>
+                <button type="button" class="btn btn-light btn-outline-dark remove-redirect-uri-cancel"
+                        th:text="#{page.button.cancel}">
+                  キャンセル
+                </button>
+              </div>
             </div>
           </div>
         </form>
       </div>
-    </div>
+      <hr>
 
-  </section>
-  <div th:replace="clients/modal::delete(${OAuthClientDetailEntity.id})"></div>
-  <div th:replace="clients/assign::redirectUriModal(${OAuthClientDetailEntity.id})"></div>
-  <div th:replace="clients/assign::logoutRedirectUriModal(${OAuthClientDetailEntity.id})"></div>
-  <div th:replace="clients/assign::managementUserModal(${OAuthClientDetailEntity.id})"></div>
-  <th:block th:if="${errorCode}">
-    <div th:replace="parts/alert::danger"></div>
-  </th:block>
-</main>
+      <!-- ログアウトリダイレクトURIリスト -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.client.list.logout.redirect.uri}">
+            ログアウトリダイレクトURIリスト</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary add-logout-redirect-uri"
+                    th:title="#{page.button.title.add}" data-target="#addLogoutRedirectUri" data-toggle="modal">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger remove-logout-redirect-uri"
+                    th:title="#{page.button.title.remove}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body card-default">
+          <form method="get" name="searchLogoutRedirectUri" onsubmit="return false;"
+                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logout-redirect-uris}">
+            <input type="hidden" name="isRemoveMode" value="false">
+            <div class="row">
+              <div class="col-sm-4">
+                <input type="text" class="form-control" name="logoutRedirectUrl" placeholder="ログアウトリダイレクトURI"
+                       th:placeholder="#{page.placeholder.client.redirect.uri}">
+              </div>
+              <div class="col-sm-2">
+                <button type="button" class="btn btn-primary search-logout-redirect-uri"
+                        th:text="#{page.button.search}">検索
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <form method="post" name="removeLogoutRedirectUri" onsubmit="return false;"
+              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logout-redirect-uris/remove}"
+              th:if="${!#lists.isEmpty(logoutRedirectUriPage.content)}">
+          <div class="card-body card-default">
+            <div id="logoutRedirectUriContent">
+              <th:block th:fragment="logoutRedirectUriPage">
+                <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+                <table class="table table-sm table-striped logout-redirect-uri-list"
+                       th:fragment="logoutRedirectUrlList">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.client.redirect.uri}">ログアウトリダイレクトURI</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="logoutRedirectUri : ${logoutRedirectUriPage.content}">
+                    <td th:text="${logoutRedirectUri.redirectUrl}">
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input" name="logoutRedirectUriIds"
+                             th:value="${logoutRedirectUri.id}"
+                             th:styleappend="${#bools.isFalse(OAuthClientLogoutRedirectUrlSearchForm.isRemoveMode)}?'display: none'">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-12">
+                    <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <div class="card-footer row-unassigned" style="display: none; ">
+            <div class="row">
+              <div class="col-8">
+                削除対象を選択してください。
+              </div>
+              <div class="col-4 text-right">
+                <button type="button" class="btn btn-primary remove-logout-redirect-uri"
+                        th:text="#{page.button.delete}">
+                  削除
+                </button>
+                <button type="button" class="btn btn-light btn-outline-dark remove-logout-redirect-uri-cancel"
+                        th:text="#{page.button.cancel}">
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <hr>
+
+      <!-- OAuthクライアント管理ユーザー -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.client.list.management.user}">管理ユーザーリスト</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary add-management-user"
+                    th:title="#{page.button.title.assign}"
+                    data-target="#addManagementUser" data-toggle="modal">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger remove-management-user"
+                    th:title="#{page.button.title.unassigned}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body card-default">
+          <form method="get" name="searchManagementUser" onsubmit="return false;"
+                th:action="@{/clients/__${OAuthClientDetailEntity.id}__/management-users}">
+            <input type="hidden" name="isRemoveMode" value="false">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="userName" th:text="#{page.label.user.name}"
+                         style="margin-bottom: .1rem">ユーザー名</label>
+                  <input type="text" class="form-control" id="userName" name="userName" placeholder="ユーザー名"
+                         th:placeholder="#{page.placeholder.user.name}">
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label for="companyName" th:text="#{page.label.user.company}"
+                         style="margin-bottom: .1rem">所属会社</label>
+                  <input type="text" class="form-control" id="companyName" name="companyName" placeholder="所属会社"
+                         th:placeholder="#{page.placeholder.user.company}">
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <button type="button" class="btn btn-primary btn-sm search-management-user">
+                <i class="fas fa-search"></i>
+                <th:block th:text="#{page.button.search}">検索</th:block>
+              </button>
+            </div>
+          </form>
+        </div>
+        <form method="post" name="removeManagementUser" onsubmit="return false;"
+              th:action="@{/clients/__${OAuthClientDetailEntity.id}__/management-users/unassigns}"
+              th:if="${!#lists.isEmpty(managementUserPage.content)}">
+          <div class="card-body card-default">
+            <div id="managementUserContent">
+              <th:block th:fragment="managementUserPage">
+                <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                <table class="table table-sm table-striped add-management-user-list"
+                       th:fragment="addManagementUserList">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.user.name}">ユーザー名</th>
+                    <th th:text="#{page.label.user.company}">所属会社</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="user : ${managementUserPage.content}">
+                    <td>
+                      <a th:href="@{/users/__${user.userId}__}" th:text="${user.userName}"></a>
+                    </td>
+                    <td>
+                      <a th:href="@{/companies/__${user.companyId}__}" th:text="${user.companyName}">所属会社</a>
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input" name="userId" th:value="${user.userId}"
+                             th:styleappend="${#bools.isFalse(OAuthClientManagementUserSearchForm.isRemoveMode)}?'display: none'">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div class="row">
+                  <div class="col-12">
+                    <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+          </div>
+          <div class="card-footer row-unassigned" style="display: none; ">
+            <div class="row">
+              <div class="col-8">
+                削除対象を選択してください。
+              </div>
+              <div class="col-4 text-right">
+                <button type="button" class="btn btn-primary remove-management-user" th:text="#{page.button.delete}">
+                  削除
+                </button>
+                <button type="button" class="btn btn-light btn-outline-dark remove-management-user-cancel"
+                        th:text="#{page.button.cancel}">
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+<div th:replace="clients/modal::edit(${OAuthClientDetailEntity}, ${OAuthClientEditForm})"></div>
+<div th:replace="clients/modal::confirm(${OAuthClientDetailEntity.id}, ${OAuthClientEditForm})"></div>
+<div th:replace="clients/modal::delete(${OAuthClientDetailEntity.id})"></div>
+<div th:replace="clients/modal::addRedirectUri(${OAuthClientDetailEntity.id}, ${OAuthClientRedirectUrlAddForm})"></div>
+<div th:replace="clients/modal::addLogoutRedirectUri(${OAuthClientDetailEntity.id})"></div>
+<div th:replace="clients/modal::addManagementUser(${OAuthClientDetailEntity.id})"></div>
+<th:block th:if="${errorCode}">
+  <div th:replace="parts/toast::danger"></div>
+</th:block>
+
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
 <script type="text/javascript" th:inline="javascript">
 
-    $('button.edit').on('click', function () {
-        $('div.card.detail').hide();
-        $('div.card.edit').show();
-        $('#scope').select2();
+    $('#edit').on('hidden.bs.modal', function (e) {
+        cancel();
     });
-    $('button.update').on('click', function () {
-        const cardEdit = $('div.card.edit');
-        cardEdit.find('input').prop('disabled', false);
-        $('#scope').prop("disabled", false);
-    });
-
-    function cancel() {
-        $('.confirm button').disabled = false;
-        $('.update').disabled = true;
-
-        $('.edit > form').find('input').each((i, e) => {
-            let v = e.dataset.before;
-            if (v === undefined) {
-                return true;
-            }
-            if (e.type === 'checkbox') {
-                e.checked = JSON.parse(v);
-                e.disabled = false;
-            } else {
-                e.value = v;
-                e.disabled = false;
-            }
-        });
-        let url = $('.edit > form').attr('action').replace('update', 'edit');
-        $('.edit > form').attr('action', url);
-        $('#scope').select2().val(null).trigger('change');
-        $('#scope').select2().val($('#scope').data('before').split(',')).trigger('change');
-        $('#scope').prop("disabled", false);
-        $('div.card.detail').show();
-        $('div.card.edit').hide();
-    }
 
     $('#scope').select2();
-    [# th:if= "${readOnly}"]
-    $('#scope').prop("disabled", true);
-    [/]
-        function doSubmit() {
-            $('#scope').prop("disabled", false);
-        }
 
-        $('.assigned-redirect-url').on('click', function () {
-            postSearch('searchAssignedRedirectUrl', 'redirectUrlContent');
-        });
+    $('.search-redirect-uri').on('click', () => postSearch('searchRedirectUri', 'redirectUriContent'));
 
-    $('.assigned-logout-redirect-url').on('click', function () {
-        postSearch('searchAssignedLogoutRedirectUrl', 'logoutRedirectUrlContent');
+    $('.btn.add-redirect-uri').on('click', () => {
+        $('form.add-redirect-uri .form-control').val(null);
     });
 
-    $('.assigned-management-user').on('click', function () {
-        postSearch('searchManagementUser', 'managementUserContent');
+    $('.btn.add-logout-redirect-uri').on('click', () => {
+        $('form.add-logout-redirect-uri .form-control').val(null);
     });
 
-    $('.assigned-management-user').on('click', function () {
-        postSearch('searchManagementUser', 'managementUserContent');
+    $('.search-logout-redirect-uri').on('click', () => postSearch('searchLogoutRedirectUri', 'logoutRedirectUriContent'));
+    $('.search-unassigned-management-user').on('click', () => postSearch('searchUnassignedManagementUser', 'unassignedManagementUser'));
+    $('.search-management-user').on('click', () => postSearch('searchManagementUser', 'managementUserContent'));
+
+    $('#addManagementUser').on('show.bs.modal', () => {
+        $('.search-unassigned-management-user').trigger('click');
     });
 
-    function postSearch(formName, contentId) {
-        const form = $('form[name=' + formName + ']');
-        const body = form.serialize();
-        const url = form.attr('action');
-        const deferred = doGet(url, body);
-        deferred.done(function (data, response, status) {
-            $('#' + contentId).html(data);
-        });
-        deferred.fail(function (data, response) {
-            console.error(data);
-            window.location.href = "/earthly/error";
+
+    function cancelAddRedirectUrl() {
+        $('form.add-redirect-uri .form-control').each((i, e) => {
+            e.value = '';
         });
     }
 
-    function postRedirectUrl() {
-        const form = $('form[name=entryRedirectUri]');
+    $('.remove-redirect-uri').on('click', () => {
+        showRemoveCard('redirectUriIds', 'removeRedirectUri');
+    });
+
+    $('.remove-redirect-uri-cancel').on('click', () => {
+        hideRemoveCard('redirectUrlIds', 'removeRedirectUri');
+    });
+
+    $('.btn.btn-primary.remove-redirect-uri').on('click', () => {
+        const form = $('form[name=removeRedirectUri]');
         const body = form.serialize();
         const url = form.attr('action');
         const token = form.find('input[name=_csrf]').val();
-        const deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
         deferred.done(function (data, response) {
-            if (data.includes('html')) {
-                window.location = location.href;
-                return;
-            }
-            $('#redirectUrlEntryContent').html(data);
+            $("body").append(data);
+            const searchForm = $('form[name=searchRedirectUri]');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = false;
+            });
+            $('.search-redirect-uri').trigger('click');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = true;
+            });
         });
         deferred.fail(function (data, response) {
             console.error(data);
             window.location.href = "/earthly/error";
         });
-    }
+    });
 
-    function cancelAddRedirectUrl() {
-        $('form[name=entryRedirectUri] .form-control').each((i, e) => {
-            e.readOnly = false;
+    $('#addLogoutRedirectUri').on('hidden.bs.modal', function (e) {
+        $('form.add-logout-redirect-uri .form-control').each((i, e) => {
             e.value = '';
         });
-        const form = $('form[name=entryRedirectUri]');
-        const action = form.attr('action');
-        form.attr('action', action.replaceAll('/add', '/confirm'));
-        $('form[name=entryRedirectUri] .btn.btn-primary').text("確認");
+    });
+
+
+    $('.remove-logout-redirect-uri').on('click', () => {
+        showRemoveCard('logoutRedirectUriIds', 'removeLogoutRedirectUri');
+    });
+
+    $('.remove-logout-redirect-uri-cancel').on('click', () => {
+        hideRemoveCard('logoutRedirectUriIds', 'removeLogoutRedirectUri');
+    });
+
+    $('.btn.btn-primary.remove-logout-redirect-uri').on('click', () => {
+        const form = $('form[name=removeLogoutRedirectUri]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            const searchForm = $('form[name=searchLogoutRedirectUri]');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = false;
+            });
+            $('.search-logout-redirect-uri').trigger('click');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = true;
+            });
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    });
+
+    $('.assign-management-user').on('click', () => {
+        const form = $('form[name=assignManagementUser]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            $('.search-unassigned-management-user').trigger('click');
+            $('.search-management-user').trigger('click');
+            $('.btn.assign-management-user').prop('disabled', true);
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    });
+
+    function activeManagementUserAssignButton() {
+        $('.btn.assign-management-user').prop('disabled', true);
+        $('input[name=userId].assign-management-user').each((i, e) => {
+            if (e.checked) {
+                $('.btn.assign-management-user').prop('disabled', false);
+            }
+        });
     }
+
+    $('.remove-management-user').on('click', () => {
+        showRemoveCard('userId', 'removeManagementUser');
+    });
+
+    $('.remove-management-user-cancel').on('click', () => {
+        hideRemoveCard('userId', 'removeManagementUser');
+    });
+    $('.btn.btn-primary.remove-management-user').on('click', () => {
+        const form = $('form[name=removeManagementUser]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            const searchForm = $('form[name=searchManagementUser]');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = false;
+            });
+            $('.search-management-user').trigger('click');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = true;
+            });
+        })
+    });
+
 </script>
-</body>
+<script th:inline="javascript" th:if="${editModal}">
+    $(function () {
+        $('#edit').modal('show')
+    });
+</script>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#confirm').modal('show')
+    });
+    $('#confirm').on('hidden.bs.modal', function (e) {
+        cancel();
+    });
+</script>
+<script th:inline="javascript" th:if="${isAddRedirectUri}">
+    $(function () {
+        $('#addRedirectUri').modal('show')
+    });
+</script>
+<script th:inline="javascript" th:if="${isAddLogoutRedirectUri}">
+    $(function () {
+        $('#addLogoutRedirectUri').modal('show')
+    });
+</script>
 </html>

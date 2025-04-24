@@ -40,9 +40,9 @@ public class UserLogic {
     private static final Logger log = LoggerFactory.getLogger(UserLogic.class);
 
     public UserLogic(final RoleLogic roleLogic, final MailLogic mailLogic, final CryptoLogic cryptoLogic,
-            final TotpLogic totpLogic, final UserRepository userRepository,
-            final PasswordTokenRepository passwordTokenRepository,
-            final RecoveryCodeRepository recoveryCodeRepository) {
+        final TotpLogic totpLogic, final UserRepository userRepository,
+        final PasswordTokenRepository passwordTokenRepository,
+        final RecoveryCodeRepository recoveryCodeRepository) {
         this.roleLogic = roleLogic;
         this.mailLogic = mailLogic;
         this.cryptoLogic = cryptoLogic;
@@ -64,7 +64,7 @@ public class UserLogic {
      * @return UserEntity
      */
     public Optional<UserEntity> getAccessibleEntity(final String id, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
+        final String operationUserId) {
         return userRepository.findAccessibleByPrimaryKey(id, permissionEnumList, operationUserId);
     }
 
@@ -94,7 +94,7 @@ public class UserLogic {
         roleLogic.grantDefaultRole(id, operationUserId);
         insertRecoveryCode(id);
         insertPasswordToken(id);
-        //        mailLogic.postUserCreationNotification(id);
+        // mailLogic.postUserCreationNotification(id);
         return userOptional;
     }
 
@@ -159,7 +159,7 @@ public class UserLogic {
         user.setName(userDto.name());
         user.setMail(userDto.mail());
         final var lockout = StringUtils.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
-        user.setLockout(lockout);
+        user.setLockout(BooleanUtils.isTrue(lockout));
         user.setTwoFactorAuthentication(BooleanUtils.isTrue(userDto.isMfa()));
         user.setLanguage(userDto.language());
         user.setTimezone(userDto.timezone());

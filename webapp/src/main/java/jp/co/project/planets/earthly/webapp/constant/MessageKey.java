@@ -9,14 +9,16 @@ public final class MessageKey {
     }
 
     /** 更新されました。 */
-    public static final String UPDATE_SUCCESS = "page.alert.success.update";
+    public static final String UPDATE_SUCCESS = "page.toast.success.update";
 
     /** 削除しました。 */
-    public static final String DELETE_SUCCESS = "page.alert.success.delete";
+    public static final String DELETE_SUCCESS = "page.toast.success.delete";
 
     /** 割り当てしました。 */
-    public static final String ASSIGN_SUCCESS = "page.alert.success.assign";
+    public static final String ASSIGN_SUCCESS = "page.toast.success.assign";
+    /** 解除しました。 */
+    public static final String UNASSIGN_SUCCESS = "page.toast.success.unassign";
 
     /** パスワードを更新されました。 */
-    public static final String UPDATE_PASSWORD_SUCCESS = "page.alert.success.password";
+    public static final String UPDATE_PASSWORD_SUCCESS = "page.toast.success.password";
 }

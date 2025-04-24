@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -40,24 +40,24 @@ public class OAuthClientRepository {
     private final LogoutRedirectUrlDao logoutRedirectUrlDao;
     private final OAuthClientManagementDao oauthClientManagementDao;
 
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
     public OAuthClientRepository(final OAuthClientDao oauthClientDao, final GrantTypeDao grantTypeDao,
-            final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
-            final LogoutRedirectUrlDao logoutRedirectUrlDao, final OAuthClientManagementDao oauthClientManagementDao,
-            final Entityql entityql) {
+        final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
+        final LogoutRedirectUrlDao logoutRedirectUrlDao, final OAuthClientManagementDao oauthClientManagementDao,
+        final QueryDsl queryDsl) {
         this.oauthClientDao = oauthClientDao;
         this.grantTypeDao = grantTypeDao;
         this.scopeDao = scopeDao;
         this.redirectUriDao = redirectUriDao;
         this.logoutRedirectUrlDao = logoutRedirectUrlDao;
         this.oauthClientManagementDao = oauthClientManagementDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     public OauthClient findByPrimaryKey(final String id) {
         final var oauthClient_ = new OauthClient_();
-        return entityql.from(oauthClient_).where(w -> w.eq(oauthClient_.id, id)).forUpdate().fetchOne();
+        return queryDsl.from(oauthClient_).where(w -> w.eq(oauthClient_.id, id)).forUpdate().fetchOne();
     }
 
     /**
@@ -116,7 +116,7 @@ public class OAuthClientRepository {
      * @return OAuthClientEntity
      */
     public Optional<OAuthClientDetailEntity> findAccessibleById(final String id,
-            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
+        final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
         final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var hasViewAllUser = permissionEnumList.contains(PermissionEnum.VIEW_ALL_USER);
         return oauthClientDao.selectAccessibleById(id, hasViewAllOAuthClient, operatorUserId)
@@ -135,17 +135,17 @@ public class OAuthClientRepository {
      * @return OAuthClientDetailEntity
      */
     private OAuthClientDetailEntity generateOAuthClientDetailEntity(final OauthClient oauthClient,
-            final boolean hasViewAllUser, final String operatorUserId) {
+        final boolean hasViewAllUser, final String operatorUserId) {
         final var id = oauthClient.getId();
         final var grantTypes = grantTypeDao.selectByClientId(id);
         final var scopes = scopeDao.selectByClientId(id);
         final var scopeIdList = scopes.stream().map(Scope::getId).toList();
         final var oauthClientRedirectUrl = new OauthClientRedirectUrl_();
-        final var redirectUris = entityql.from(oauthClientRedirectUrl)
+        final var redirectUris = queryDsl.from(oauthClientRedirectUrl)
                 .where(w -> w.eq(oauthClientRedirectUrl.oauthClientId, id))
                 .orderBy(o -> o.asc(oauthClientRedirectUrl.id)).fetch();
         final var logoutRedirectUrl = new LogoutRedirectUrl_();
-        final var logoutRedirectUrls = entityql.from(logoutRedirectUrl)
+        final var logoutRedirectUrls = queryDsl.from(logoutRedirectUrl)
                 .where(w -> w.eq(logoutRedirectUrl.oauthClientId, id)).orderBy(o -> o.asc(logoutRedirectUrl.createdAt))
                 .fetch();
         final var managementUsers = oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id,
@@ -165,7 +165,7 @@ public class OAuthClientRepository {
      * @return OAuthクライアントリスト
      */
     public List<OauthClient> findByAccessible(final List<PermissionEnum> permissionEnumList,
-            final String operatorUserId) {
+        final String operatorUserId) {
         final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         return oauthClientDao.selectByAccessible(hasViewAllOAuthClient, operatorUserId);
     }
@@ -184,7 +184,7 @@ public class OAuthClientRepository {
      * @return OAuthクライアントリスト
      */
     public OAuthClientSearchResultDto findByName(final String name, final Pageable pageable,
-            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
+        final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
         final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var oauthClientList = oauthClientDao.selectByName(name, hasViewAllOAuthClient, operatorUserId,
@@ -193,7 +193,7 @@ public class OAuthClientRepository {
     }
 
     public Optional<OauthClient> findAccessibleByName(final String name, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
+        final String operationUserId) {
         final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         return oauthClientDao.selectByAccessibleName(name, hasViewAllOAuthClient, operationUserId);
     }
@@ -210,7 +210,7 @@ public class OAuthClientRepository {
      * @return oauth client management user list
      */
     public List<OAuthClientManagementUserEntity> findAccessiblyManagementUserByClientId(final String id,
-            final boolean hasViewAllUser, final String operatorUserId) {
+        final boolean hasViewAllUser, final String operatorUserId) {
         return oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id, hasViewAllUser, operatorUserId);
     }
 

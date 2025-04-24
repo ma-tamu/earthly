@@ -1,32 +1,359 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="modal" id="deleteModal" tabindex="-1" th:fragment="delete(id)">
-  <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
+
+<!-- ユーザー登録キャンセル -->
+<div th:fragment="cancel" class="modal fade" id="cancel">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form th:action="@{/users/__${id}__/delete}">
-        <div class="modal-header">
-          <h5 class="modal-title" th:text="#{page.modal.title.user}">ユーザー削除</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" th:text="#{page.modal.entry.cancel}">
+        登録をキャンセルしますか？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{page.button.back}">戻る</button>
+        <a type="button" class="btn btn-primary" th:href="@{/users}" th:text="#{page.button.ok}">OK</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ユーザー登録確認 -->
+<div class="modal fade" id="entry" th:fragment="entry(userEntryForm)">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">ユーザー登録確認</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/users/create}" th:object="${userEntryForm}">
         <div class="modal-body">
-          <p>削除しますか?</p>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="loginId" th:text="#{page.label.user.loginId}">
+              ログインID
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{loginId}">ログインID</th:block>
+              <input type="hidden" name="loginId" class="form-control" th:value="*{loginId}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.user.name}">
+              ユーザー名
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{name}">ユーザー名</th:block>
+              <input type="hidden" name="name" class="form-control" th:value="*{name}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="gender" th:text="#{page.label.user.gender}">
+              性別
+            </label>
+            <div class="col-sm-9">
+              <th:block th:switch="*{gender}">
+                <th:block th:case="M">男性</th:block>
+                <th:block th:case="F">女性</th:block>
+                <th:block th:case=*>その他</th:block>
+              </th:block>
+              <input type="hidden" name="gender" class="form-control" th:value="*{gender}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="language" th:text="#{page.label.user.language}">
+              言語
+            </label>
+            <div class="col-lg-9">
+              <th:block th:with="lang=${#strings.equals(userEntryForm.language, 'ja')?'日本語':'英語'}" th:text="${lang}">言語</th:block>
+              <input type="hidden" name="language" class="form-control" th:value="*{language}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.timezone}">
+              タイムゾーン
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{timezone}">タイムゾーン</th:block>
+              <input type="hidden" name="timezone" class="form-control" th:value="*{timezone}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.mail}">
+              メールアドレス
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{mail}">メールアドレス</th:block>
+              <input type="hidden" name="mail" class="form-control" th:value="*{mail}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="company" th:text="#{page.label.user.company}">
+              所属会社
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{companyName}">所属会社</th:block>
+              <input type="hidden" name="company" class="form-control" th:value="*{company}">
+              <input type="hidden" name="companyName" class="form-control" th:value="*{companyName}">
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">削除</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{page.button.cancel}">キャンセル</button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.create}">登録</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<div class="modal" id="passwordModal" tabindex="-1" th:fragment="passwordModal(id)">
+
+<!-- ユーザー編集 -->
+<div class="modal fade" id="edit" th:fragment="edit(userEntity, userUpdateForm)">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">ユーザー編集</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/users/__${userEntity.id}__/edit}" th:object="${userUpdateForm}">
+        <div class="modal-body edit">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.user.name}">
+              ユーザー名
+            </label>
+            <div class="col-sm-9">
+              <input type="text" id="name" name="name"
+                     class="form-control" th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                     th:field="*{name}" th:data-before="${userEntity.name}">
+              <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+                ユーザー名は必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.mail}">
+              メールアドレス
+            </label>
+            <div class="col-sm-9">
+              <input type="text" id="mail" name="mail" class="form-control"
+                     th:classappend="${#fields.hasErrors('mail')}?'is-invalid'"
+                     th:field="*{mail}" th:data-before="${userEntity.mail}">
+              <div class="invalid-feedback" th:errors="*{mail}" th:if="${#fields.hasErrors('mail')}">
+                メールアドレスは必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="company" th:text="#{page.label.user.company}">
+              所属会社
+            </label>
+            <div class="col-sm-9">
+              <input type="text" id="company" name="company" class="form-control"
+                     th:classappend="${#fields.hasErrors('companyId')}?'is-invalid'"
+                     th:field="*{company}" list="companyDataList" autocomplete="on"
+                     th:data-before="${userEntity.company.name}">
+              <input type="hidden" id="companyId" name="company" class="form-control" th:field="*{companyId}"
+                     th:data-before="${userEntity.company.id}">
+              <datalist id="companyDataList"></datalist>
+              <div class="invalid-feedback" th:errors="*{companyId}" th:if="${#fields.hasErrors('companyId')}">
+                所属会社は必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" th:text="#{page.label.user.language}">
+              言語
+            </label>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:replace="parts/language::select(*{language})"/>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('language')}" th:errors="*{language}">
+                言語は必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="timezone" th:text="#{page.label.user.timezone}">
+              タイムゾーン
+            </label>
+            <div class="col-sm-9">
+              <input type="text" id="timezone" name="timezone" class="form-control"
+                     th:classappend="${#fields.hasErrors('timezone')}?'is-invalid'"
+                     th:field="*{timezone}" th:data-before="${userEntity.timezone}">
+              <div class="invalid-feedback" th:errors="*{timezone}" th:if="${#fields.hasErrors('timezone')}">
+                タイムゾーンは必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="lockout" th:text="#{page.label.user.lockout}">
+              ロックアウト
+            </label>
+            <div class="col-sm-9">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" id="lockout" name="lockout" class="custom-control-input"
+                       th:classappend="${#fields.hasErrors('lockout')}?'is-invalid'"
+                       th:checked="*{lockout}" th:data-before="${userEntity.lockout}" value="true">
+                <label class="custom-control-label" for="lockout">&nbsp;</label>
+                <div class="invalid-feedback" th:errors="*{lockout}" th:if="${#fields.hasErrors('lockout')}">
+                  ロックアウトは必須です。
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mfa" th:text="#{page.label.user.mfa}">
+              2要素認証
+            </label>
+            <div class="col-sm-9">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" id="mfa" name="mfa" class="custom-control-input"
+                       th:classappend="${#fields.hasErrors('mfa')}?'is-invalid'"
+                       th:checked="*{mfa}" th:data-before="${userEntity.mfa}" value="true">
+                <label class="custom-control-label" for="mfa">&nbsp;</label>
+                <div class="invalid-feedback" th:errors="*{mfa}" th:if="${#fields.hasErrors('mfa')}">
+                  2要素認証は必須です。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">キャンセル</button>
+          <button type="submit" class="btn btn-primary">確認</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ユーザー編集確認 -->
+<div class="modal fade" id="confirm" th:fragment="confirm(id, userUpdateForm)">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">ユーザー編集確認</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/users/__${id}__/update}" th:object="${userUpdateForm}">
+        <div class="modal-body">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.user.name}">
+              ユーザー名
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{name}">ユーザー名</th:block>
+              <input type="hidden" name="name" class="form-control" th:value="*{name}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.mail}">
+              メールアドレス
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{mail}">メールアドレス</th:block>
+              <input type="hidden" name="mail" class="form-control" th:value="*{mail}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="company" th:text="#{page.label.user.company}">
+              所属会社
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{company}">所属会社</th:block>
+              <input type="hidden" name="company" class="form-control" th:value="*{company}">
+              <input type="hidden" name="companyId" class="form-control" th:value="*{companyId}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" th:text="#{page.label.user.language}">
+              言語
+            </label>
+            <div class="col-lg-9">
+              <th:block th:with="lang=${#strings.equals(userUpdateForm.language, 'ja')?'日本語':'英語'}" th:text="${lang}">言語</th:block>
+              <input type="hidden" name="language" class="form-control" th:value="*{language}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.timezone}">
+              タイムゾーン
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{timezone}">タイムゾーン</th:block>
+              <input type="hidden" name="timezone" class="form-control" th:value="*{timezone}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="lockout" th:text="#{page.label.user.lockout}">
+              ロックアウト
+            </label>
+            <div class="col-sm-9">
+              <th:block th:with="lockout=${#bools.isTrue(userUpdateForm.lockout)?'ON':'OFF'}" th:text="${lockout}">OFF</th:block>
+              <input type="hidden" name="lockout" class="form-control" th:value="*{lockout}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="mfa" th:text="#{page.label.user.mfa}">
+              2要素認証
+            </label>
+            <div class="col-sm-9">
+              <th:block th:with="mfa=${#bools.isTrue(userUpdateForm.mfa)?'ON':'OFF'}" th:text="${mfa}">OFF</th:block>
+              <input type="hidden" name="mfa" class="form-control" th:value="*{mfa}">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{page.button.cancel}">キャンセル</button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.update}">更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ユーザー削除 -->
+<div class="modal" id="delete" tabindex="-1" th:fragment="delete(id)">
+  <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
+    <div class="modal-content">
+      <form th:action="@{/users/__${id}__/delete}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{page.modal.title.user}">ユーザー削除</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>削除しますか?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.cancel}">Cancel</button>
+          <button type="button" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- パスワード変更 -->
+<div class="modal" id="password" tabindex="-1" th:fragment="password(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
     <div class="modal-content">
       <form method="post" th:action="@{/users/__${id}__/password/edit}">
         <div class="modal-header">
           <h5 class="modal-title" th:text="#{page.modal.title.user.edit.password}">パスワード変更</h5>
-          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <div class="row mb-3">
@@ -55,10 +382,74 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
-          <button class="btn btn-primary" type="submit">更新</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{page.button.cancel}">キャンセル</button>
+          <button class="btn btn-primary" type="submit" th:text="#{page.button.update}">更新</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- ロール割り当て -->
+<div th:fragment="roleModal(id)" class="modal" id="assignRole" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        ロール検索
+      </div>
+      <div class="modal-body">
+        <form method="get" name="roleSearch" onsubmit="return false;" th:action="@{/users/__${id}__/roles}">
+          <div class="card">
+            <div class="card-body">
+              <h5 th:text="#{page.modal.title.search}">検索条件</h5>
+              <div class="row m-1">
+                <div class="form-group col-12">
+                  <label for="roleName" style="margin-bottom: .1rem" >ロール名</label>
+                  <input class="form-control" id="roleName" name="roleName" type="text">
+                </div>
+              </div>
+              <div class="row text-center m-1">
+                <div class="col-12">
+                  <button class="btn btn-primary on-search" type="button">
+                    <i class="fas fa-search"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="post" name="assignRole" th:action="@{/users/__${id}__/roles/assigns}">
+          <div class="card role-list">
+            <div class="card-body" th:fragment="searchResult" th:if="${!unassignedRolePage.isEmpty()}">
+              <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th th:text="#{page.label.user.role.name}">ロール名</th>
+                  <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="role:${unassignedRolePage.content}">
+                  <td>
+                    <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名1</a>
+                  </td>
+                  <td class="text-right">
+                    <input class="form-check-input" name="assign" th:value="${role.id}" type="checkbox">
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary cancel" data-dismiss="modal" type="button">キャンセル</button>
+        <button class="btn btn-primary role assign" type="button">割り当て</button>
+      </div>
     </div>
   </div>
 </div>

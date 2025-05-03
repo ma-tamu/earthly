@@ -53,19 +53,19 @@ public class Scope extends AbstractScope implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param name
+     * @param name
      *            スコープ名
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public Scope(final String id, final String name, final LocalDateTime createdAt, final String createdBy,

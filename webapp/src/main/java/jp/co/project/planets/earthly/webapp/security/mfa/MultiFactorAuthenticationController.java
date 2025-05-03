@@ -3,6 +3,7 @@ package jp.co.project.planets.earthly.webapp.security.mfa;
 import java.io.IOException;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -23,15 +24,16 @@ import jp.co.project.planets.earthly.webapp.service.MfaService;
  */
 @Controller
 @RequestMapping("mfa")
-public class MfaController {
+public class MultiFactorAuthenticationController {
 
     private final MfaService mfaService;
 
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
 
-    public MfaController(final MfaService mfaService, final AuthenticationSuccessHandler successHandler,
-            final AuthenticationFailureHandler failureHandler) {
+    public MultiFactorAuthenticationController(final MfaService mfaService,
+        final AuthenticationSuccessHandler successHandler,
+        final AuthenticationFailureHandler failureHandler) {
         this.mfaService = mfaService;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
@@ -43,15 +45,13 @@ public class MfaController {
     }
 
     @PostMapping
-    public void verify(final String code, final HttpServletRequest request, final HttpServletResponse response,
-            final MfaAuthentication authentication) throws ServletException, IOException {
-        final var firstAuthentication = authentication.getAuthentication();
-        final var userInfoDto = (EarthlyUserInfoDto) firstAuthentication.getPrincipal();
+    public void verify(final String code, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto,
+        final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final boolean successful = mfaService.verify(code, userInfoDto);
         if (successful) {
             mfaService.updateSecurityContext(userInfoDto);
-            SecurityContextHolder.getContext().setAuthentication(firstAuthentication);
-            successHandler.onAuthenticationSuccess(request, response, firstAuthentication);
+            successHandler.onAuthenticationSuccess(request, response,
+                    SecurityContextHolder.getContext().getAuthentication());
         } else {
             failureHandler.onAuthenticationFailure(request, response,
                     new BadCredentialsException("bat credentials mfa code"));

@@ -93,35 +93,35 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param loginId
+     * @param loginId
      *            ログインID
-     * @Param name
+     * @param name
      *            ユーザー名
-     * @Param gender
+     * @param gender
      *            性別
-     * @Param language
-     * @Param timezone
-     * @Param mail
+     * @param language
+     * @param timezone
+     * @param mail
      *            メールアドレス
-     * @Param password
+     * @param password
      *            パスワード
-     * @Param lockout
+     * @param lockout
      *            ロックアウト
-     * @Param twoFactorAuthentication
-     * @Param secret
-     * @Param companyId
+     * @param twoFactorAuthentication
+     * @param secret
+     * @param companyId
      *            所属会社
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public User(final String id, final String loginId, final String name, final String gender, final String language,

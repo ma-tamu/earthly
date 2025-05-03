@@ -39,10 +39,10 @@ public class OauthClientConsent extends AbstractOauthClientConsent implements ja
     /**
      * new instance
      * 
-     * @Param id
-     * @Param registeredClientId
-     * @Param principalName
-     * @Param authorities
+     * @param id
+     * @param registeredClientId
+     * @param principalName
+     * @param authorities
      */
     public OauthClientConsent(final String id, final String registeredClientId, final String principalName,
         final String authorities) {

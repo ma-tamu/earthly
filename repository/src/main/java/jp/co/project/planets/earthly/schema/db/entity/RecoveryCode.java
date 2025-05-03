@@ -39,10 +39,10 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     /**
      * new instance
      * 
-     * @Param id
-     * @Param userid
-     * @Param code
-     * @Param used
+     * @param id
+     * @param userid
+     * @param code
+     * @param used
      */
     public RecoveryCode(final String id, final String userid, final String code, final Boolean used) {
         this.id = id;

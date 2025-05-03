@@ -26,14 +26,14 @@ public interface OauthClientRedirectUrlBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(OauthClientRedirectUrl entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(OauthClientRedirectUrl entity);
 
     /**

@@ -16,10 +16,14 @@ public class RecoveryCodeListener implements EntityListener<RecoveryCode> {
     @Override
     public void preInsert(RecoveryCode entity, PreInsertContext<RecoveryCode> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(RecoveryCode entity, PreUpdateContext<RecoveryCode> context) {
+        
+        
     }
 
     @Override

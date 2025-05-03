@@ -45,15 +45,15 @@ public class OauthClientManagement extends AbstractOauthClientManagement impleme
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            ID
-     * @Param oauthClientId
+     * @param oauthClientId
      *            OAuthクライアントId
-     * @Param userId
+     * @param userId
      *            ユーザーID
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
      */
     public OauthClientManagement(final String id, final String oauthClientId, final String userId,

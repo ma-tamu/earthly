@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jilt.Builder;
 
 import jp.co.project.planets.earthly.schema.db.entity.User;
 
@@ -23,6 +24,7 @@ import jp.co.project.planets.earthly.schema.db.entity.User;
  * @param companyName
  *            所属会社名
  */
+@Builder(factoryMethod = "builder")
 public record UserDto(String loginId, String name, String mail, String gender, String language, String timezone,
         String company, String companyName, Boolean lockout, Boolean isMfa) {
 

@@ -39,10 +39,10 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     /**
      * new instance
      * 
-     * @Param id
-     * @Param registeredClientId
-     * @Param principalName
-     * @Param authorities
+     * @param id
+     * @param registeredClientId
+     * @param principalName
+     * @param authorities
      */
     public Oauth2AuthorizationConsent(final String id, final String registeredClientId, final String principalName,
         final String authorities) {

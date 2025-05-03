@@ -1,5 +1,7 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import static jp.co.project.planets.earthly.common.constant.PageBoundary.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -136,13 +138,26 @@ public class OAuthClientService {
         final var client = oauthClientRepository.findAccessibleById(id, permissionEnumList, operationUserId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX018));
         final boolean canEditableClient = oauthClientLogic.canEditableClient(id, permissionEnumList, operationUserId);
-        final var pageable = PageRequest.of(0, 10);
+        final var pageable = PageRequest.of(0, DEFAULT_PAGE_SIZE);
+
+        final boolean hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+                .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
+
         final var oauthClientRedirectUriSearchResultDto = oauthClientRedirectUrlRepository.findByClientRedirectUrl(id,
-                null, canEditableClient, operationUserId, pageable);
+                null, hasViewAllOAuthClient, operationUserId, pageable);
         final var redirectUrlPage = new PageImpl<>(oauthClientRedirectUriSearchResultDto.oauthClientRedirectUriList(),
                 pageable, oauthClientRedirectUriSearchResultDto.total());
-        final var logoutRedirectUrlPage = new PageImpl<>(client.logoutRedirectUrls());
-        final var userPage = new PageImpl<>(client.managementUserList());
+        final var oauthClientLogoutRedirectUriSearchResultDto = logoutRedirectRepository.findByClientRedirectUrl(id,
+                null, hasViewAllOAuthClient, operationUserId, pageable);
+        final var logoutRedirectUrlPage = new PageImpl<>(
+                oauthClientLogoutRedirectUriSearchResultDto.oauthClientLogoutRedirectUriList(), pageable,
+                oauthClientLogoutRedirectUriSearchResultDto.total());
+        final var oauthClientManagementUserSearchResultDto = oauthClientManagementRepository
+                .findAccessibleUnassignedUserByAnyKeyword(id, null, null, null, hasViewAllOAuthClient, hasViewAllUser,
+                        operationUserId, pageable);
+        final var userPage = new PageImpl<>(oauthClientManagementUserSearchResultDto.oauthClientManagementUserList(),
+                pageable, oauthClientManagementUserSearchResultDto.total());
         return new OAuthClientDetailDto(client, redirectUrlPage, logoutRedirectUrlPage, userPage, canEditableClient);
     }
 
@@ -352,7 +367,7 @@ public class OAuthClientService {
 
         validateEditPermission(id, userInfoDto);
 
-        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+        final boolean hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var redirectUriList = oauthClientRedirectUrlRepository.findByClientIdAndRedirectUris(id,
                 redirectUrlIdList, hasViewAllOAuthClient, userInfoDto.id());
@@ -381,7 +396,7 @@ public class OAuthClientService {
     @Transactional
     public PageImpl<LogoutRedirectUrl> searchLogoutRedirectUrl(final String id, final String logoutRedirectUtl,
         final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
-        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+        final boolean hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var oauthClientLogoutRedirectUriSearchResultDto = logoutRedirectRepository.findByClientRedirectUrl(id,
                 logoutRedirectUtl, hasViewAllOAuthClient, userInfoDto.id(), pageable);
@@ -428,7 +443,7 @@ public class OAuthClientService {
 
         validateEditPermission(id, userInfoDto);
 
-        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+        final boolean hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var logoutRedirectUriList = logoutRedirectRepository.findByClientIdAndRedirectUris(id,
                 redirectUrlIdList, hasViewAllOAuthClient, userInfoDto.id());
@@ -456,17 +471,34 @@ public class OAuthClientService {
      *            ユーザー情報
      * @return OAuthクライアント管理者リスト
      */
+    @Transactional
     public PageImpl<OAuthClientManagementUserEntity> searchManagementUser(final String id, final String userName,
         final String companyName, final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
-        final var hasViewAllOAuthClient = userInfoDto.permissionEnumList()
+        final boolean hasViewAllOAuthClient = userInfoDto.permissionEnumList()
                 .contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        final var hasViewAllUser = userInfoDto.permissionEnumList()
-                .contains(PermissionEnum.VIEW_ALL_USER);
+        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
         final var oauthClientManagementUserList = oauthClientManagementRepository.findByAccessibleClientIdAndUserId(id,
                 userName, companyName, hasViewAllOAuthClient, hasViewAllUser, userInfoDto.id(), pageable);
         return new PageImpl<>(oauthClientManagementUserList);
     }
 
+    /**
+     * OAuthクライアント管理者未割り当てユーザー検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param longinId
+     *            ログインID
+     * @param userName
+     *            ユーザー名
+     * @param companyName
+     *            所属会社名
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return OAuthクライアント管理者未割り当てユーザーリスト
+     */
     @Transactional
     public PageImpl<OAuthClientManagementUserEntity> searchNotAssignUserUser(final String id, final String longinId,
         final String userName, final String companyName, final Pageable pageable,
@@ -481,6 +513,18 @@ public class OAuthClientService {
                 oauthClientManagementUserSearchResultDto.total());
     }
 
+    /**
+     * OAuthクライアント管理者割り当て
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param userIdList
+     *            ユーザーIDリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             割り当て対象のユーザーが既に割り当たっている場合に発生
+     */
     @Transactional
     public void assignUser(final String id, final List<String> userIdList, final EarthlyUserInfoDto userInfoDto) {
         validateEditPermission(id, userInfoDto);
@@ -502,6 +546,18 @@ public class OAuthClientService {
         }
     }
 
+    /**
+     * OAuthクライアント管理者解除
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param userIdList
+     *            ユーザーIDリスト
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             対象ユーザーが閲覧できない又は既にOAuthクライアント管理者でない場合に発生
+     */
     @Transactional
     public void unassignUser(final String id, final List<String> userIdList, final EarthlyUserInfoDto userInfoDto) {
 

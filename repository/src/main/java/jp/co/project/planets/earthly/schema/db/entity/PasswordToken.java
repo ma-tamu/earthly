@@ -41,13 +41,13 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param userId
+     * @param userId
      *            ユーザーID
-     * @Param token
+     * @param token
      *            トークン
-     * @Param expire
+     * @param expire
      *            有効期限
      */
     public PasswordToken(final String id, final String userId, final String token, final LocalDateTime expire) {

@@ -1,6 +1,7 @@
 package jp.co.project.planets.earthly.schema.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
@@ -32,5 +33,18 @@ public class CountryRepository {
     @Cacheable("countries")
     public List<Country> findAll() {
         return countryDao.selectAll();
+    }
+
+    /**
+     * Retrieves the Country entity corresponding to the provided primary key.
+     *
+     * @param id
+     *            The unique identifier of the Country entity to retrieve.
+     * @return An Optional containing the Country entity if found, or an empty
+     *             Optional
+     *             if no entity with the specified id exists.
+     */
+    public Optional<Country> findByPrimaryKey(final String id) {
+        return Optional.ofNullable(countryDao.selectById(id));
     }
 }

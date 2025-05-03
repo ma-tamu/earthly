@@ -16,10 +16,14 @@ public class OauthClientListener implements EntityListener<OauthClient> {
     @Override
     public void preInsert(OauthClient entity, PreInsertContext<OauthClient> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(OauthClient entity, PreUpdateContext<OauthClient> context) {
+        
+        
     }
 
     @Override

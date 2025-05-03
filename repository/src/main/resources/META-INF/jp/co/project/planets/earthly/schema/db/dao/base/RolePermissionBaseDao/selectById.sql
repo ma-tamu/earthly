@@ -1,7 +1,7 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 role_permission
-where
+WHERE
     id = /* id */'a'
     

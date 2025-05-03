@@ -41,7 +41,7 @@ public class MfaService {
     public void updateSecurityContext(final EarthlyUserInfoDto userInfoDto) {
 
         final var earthlyUserInfoDto = new EarthlyUserInfoDto(userInfoDto.id(), userInfoDto.loginId(),
-                userInfoDto.name(), userInfoDto.password(), userInfoDto.lockout(), userInfoDto.tfa(), true,
+                userInfoDto.name(), userInfoDto.password(), userInfoDto.lockout(), userInfoDto.mfa(), true,
                 userInfoDto.secret(), userInfoDto.company(), userInfoDto.permissionEnumList(),
                 userInfoDto.grantedAuthorities());
         final var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(earthlyUserInfoDto,

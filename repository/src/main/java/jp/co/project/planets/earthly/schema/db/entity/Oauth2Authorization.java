@@ -121,30 +121,30 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * new instance
      * 
-     * @Param id
-     * @Param registeredClientId
-     * @Param principalName
-     * @Param authorizationGrantType
-     * @Param attributes
-     * @Param state
-     * @Param authorizationCodeValue
-     * @Param authorizationCodeIssuedAt
-     * @Param authorizationCodeExpiresAt
-     * @Param authorizationCodeMetadata
-     * @Param accessTokenValue
-     * @Param accessTokenIssuedAt
-     * @Param accessTokenExpiresAt
-     * @Param accessTokenMetadata
-     * @Param accessTokenType
-     * @Param accessTokenScopes
-     * @Param oidcIdTokenValue
-     * @Param oidcIdTokenIssuedAt
-     * @Param oidcIdTokenExpiresAt
-     * @Param oidcIdTokenMetadata
-     * @Param refreshTokenValue
-     * @Param refreshTokenIssuedAt
-     * @Param refreshTokenExpiresAt
-     * @Param refreshTokenMetadata
+     * @param id
+     * @param registeredClientId
+     * @param principalName
+     * @param authorizationGrantType
+     * @param attributes
+     * @param state
+     * @param authorizationCodeValue
+     * @param authorizationCodeIssuedAt
+     * @param authorizationCodeExpiresAt
+     * @param authorizationCodeMetadata
+     * @param accessTokenValue
+     * @param accessTokenIssuedAt
+     * @param accessTokenExpiresAt
+     * @param accessTokenMetadata
+     * @param accessTokenType
+     * @param accessTokenScopes
+     * @param oidcIdTokenValue
+     * @param oidcIdTokenIssuedAt
+     * @param oidcIdTokenExpiresAt
+     * @param oidcIdTokenMetadata
+     * @param refreshTokenValue
+     * @param refreshTokenIssuedAt
+     * @param refreshTokenExpiresAt
+     * @param refreshTokenMetadata
      */
     public Oauth2Authorization(final String id, final String registeredClientId, final String principalName,
         final String authorizationGrantType, final String attributes, final String state,

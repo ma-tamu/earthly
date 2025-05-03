@@ -9,7 +9,7 @@ import org.seasar.doma.Metamodel;
 import org.seasar.doma.Table;
 
 /**
- * 会社組織
+ * 組織
  */
 @Entity(listener = OrganizationListener.class, metamodel = @Metamodel)
 @Table(name = "organization")
@@ -18,16 +18,16 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
-    /** ID */
+    /** グループID */
     @Id
     @Column(name = "id")
     String id;
 
-    /** 会社Id */
+    /** 会社ID */
     @Column(name = "company_id")
     String companyId;
 
-    /** 組織名 */
+    /** グループ名 */
     @Column(name = "name")
     String name;
 
@@ -57,21 +57,21 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * new instance
      * 
-     * @Param id
-     *            ID
-     * @Param companyId
-     *            会社Id
-     * @Param name
-     *            組織名
-     * @Param createdAt
+     * @param id
+     *            グループID
+     * @param companyId
+     *            会社ID
+     * @param name
+     *            グループ名
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public Organization(final String id, final String companyId, final String name, final LocalDateTime createdAt,

@@ -21,7 +21,7 @@
 */
 @Entity<#if useListener || namingType != "NONE" || useMetamodel>(</#if><#if useListener>listener = ${listenerClassSimpleName}.class</#if><#if namingType != "NONE"><#if useListener>, </#if>naming = ${namingType.referenceName}</#if><#if useMetamodel><#if useListener || namingType != "NONE">, </#if>metamodel = @Metamodel</#if><#if useListener || namingType != "NONE" || useMetamodel>)</#if>
 <#if showCatalogName && catalogName?? || showSchemaName && schemaName?? || showTableName && tableName??>
-    @Table(<#if showCatalogName && catalogName??>catalog = "${catalogName}"</#if><#if showSchemaName && schemaName??><#if showCatalogName && catalogName??>, </#if>schema = "${schemaName}"</#if><#if showTableName><#if showCatalogName && catalogName?? || showSchemaName && schemaName??>, </#if>name = "${tableName}"</#if>)
+@Table(<#if showCatalogName && catalogName??>catalog = "${catalogName}"</#if><#if showSchemaName && schemaName??><#if showCatalogName && catalogName??>, </#if>schema = "${schemaName}"</#if><#if showTableName><#if showCatalogName && catalogName?? || showSchemaName && schemaName??>, </#if>name = "${tableName}"</#if>)
 </#if>
 public class <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if><#if superclassSimpleName??> extends ${superclassSimpleName}</#if> implements java.io.Serializable {
 
@@ -30,28 +30,27 @@ private static final long serialVersionUID = 1L;
 
 <#list ownEntityPropertyDescs as property>
 
-
     <#if showDbComment && property.comment??>
-        /** ${property.comment} */
+    /** ${property.comment} */
     <#else>
-        /** */
+    /** */
     </#if>
     <#if property.id>
-        @Id
+    @Id
         <#if property.generationType??>
-            @GeneratedValue(strategy = ${property.generationType.referenceName})
+    @GeneratedValue(strategy = ${property.generationType.referenceName})
             <#if property.generationType == "SEQUENCE">
-                @SequenceGenerator(sequence = "${tableName}_${property.columnName}"<#if property.initialValue??>, initialValue = ${property.initialValue}</#if><#if property.allocationSize??>, allocationSize = ${property.allocationSize}</#if>)
+    @SequenceGenerator(sequence = "${tableName}_${property.columnName}"<#if property.initialValue??>, initialValue = ${property.initialValue}</#if><#if property.allocationSize??>, allocationSize = ${property.allocationSize}</#if>)
             <#elseif property.generationType == "TABLE">
-                @TableGenerator(pkColumnValue = "${tableName}_${property.columnName}"<#if property.initialValue??>, initialValue = ${property.initialValue}</#if><#if property.allocationSize??>, allocationSize = ${property.allocationSize}</#if>)
+    @TableGenerator(pkColumnValue = "${tableName}_${property.columnName}"<#if property.initialValue??>, initialValue = ${property.initialValue}</#if><#if property.allocationSize??>, allocationSize = ${property.allocationSize}</#if>)
             </#if>
         </#if>
     </#if>
     <#if property.version>
-        @Version
+    @Version
     </#if>
     <#if property.showColumnName && property.columnName??>
-        @Column(name = "${property.columnName}")
+    @Column(name = "${property.columnName}")
     </#if>
     <#if !useAccessor>public </#if>${property.propertyClassSimpleName} ${property.name};
 </#list>
@@ -64,39 +63,39 @@ private static final long serialVersionUID = 1L;
 
 public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>() {
 }
-/**
-* new instance
+    /**
+     * new instance
 <#list ownEntityPropertyDescs as property>
-    * @Param ${property.name}
-    *         ${property.comment}
+     * @param ${property.name}
+     *         ${property.comment}
 </#list>
-*/
-public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>(<#list ownEntityPropertyDescs as property>final ${property.propertyClassSimpleName} ${property.name}<#if property_has_next>,</#if></#list>) {
+     */
+    public <#if entityPrefix??>${entityPrefix}</#if>${simpleName}<#if entitySuffix??>${entitySuffix}</#if>(<#list ownEntityPropertyDescs as property>final ${property.propertyClassSimpleName} ${property.name}<#if property_has_next>,</#if></#list>) {
 <#list ownEntityPropertyDescs as property>
-    this.${property.name} = ${property.name};
+        this.${property.name} = ${property.name};
 </#list>
-}
+    }
 
 <#if useAccessor>
     <#list ownEntityPropertyDescs as property>
 
-        /**
-        * Returns the ${property.name}.
-        *
-        * @return the ${property.name}
-        */
-        public ${property.propertyClassSimpleName} get${property.name?cap_first}() {
+    /**
+     * Returns the ${property.name}.
+     *
+     * @return the ${property.name}
+     */
+    public ${property.propertyClassSimpleName} get${property.name?cap_first}() {
         return ${property.name};
-        }
+    }
 
-        /**
-        * Sets the ${property.name}.
-        *
-        * @param ${property.name} the ${property.name}
-        */
-        public void set${property.name?cap_first}(${property.propertyClassSimpleName} ${property.name}) {
+    /**
+     * Sets the ${property.name}.
+     *
+     * @param ${property.name} the ${property.name}
+     */
+    public void set${property.name?cap_first}(${property.propertyClassSimpleName} ${property.name}) {
         this.${property.name} = ${property.name};
-        }
+    }
     </#list>
 </#if>
 }

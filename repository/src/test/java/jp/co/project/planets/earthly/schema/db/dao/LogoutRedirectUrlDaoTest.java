@@ -91,6 +91,17 @@ public class LogoutRedirectUrlDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectByClientIdAndRedirectUris(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/LogoutRedirectUrlDao/selectByClientIdAndRedirectUris.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
     public void testSelectByClientLogoutRedirectUrl(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
                 "META-INF/jp/co/project/planets/earthly/schema/db/dao/LogoutRedirectUrlDao/selectByClientLogoutRedirectUrl.sql",

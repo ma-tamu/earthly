@@ -75,29 +75,29 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param workDate
+     * @param workDate
      *            年月日
-     * @Param startTime
+     * @param startTime
      *            始業時間
-     * @Param endTime
+     * @param endTime
      *            終業時間
-     * @Param officialWorkingTime
+     * @param officialWorkingTime
      *            所定内通常勤務
-     * @Param officialMidnightWorkingTime
+     * @param officialMidnightWorkingTime
      *            所定内深夜勤務
-     * @Param officialBreakTime
+     * @param officialBreakTime
      *            所定内休憩勤務
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public WorkTime(final String id, final LocalDate workDate, final LocalTime startTime, final LocalTime endTime,

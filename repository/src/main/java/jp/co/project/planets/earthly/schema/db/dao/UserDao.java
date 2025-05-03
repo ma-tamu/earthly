@@ -31,4 +31,8 @@ public interface UserDao extends UserBaseDao {
     @Select
     List<UserSimpleEntity> selectByLoginIdAndNameAndCompany(String loginId, String name, String company,
         boolean hasViewAllCompany, String executionUserId, SelectOptions selectOptions);
+
+    @Select
+    List<User> selectCompanyManagerByName(String name, String companyId, boolean hasViewAllUser, String executionUserId,
+        SelectOptions selectOptions);
 }

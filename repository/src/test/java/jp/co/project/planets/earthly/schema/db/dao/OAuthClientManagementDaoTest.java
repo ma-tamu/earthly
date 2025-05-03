@@ -91,6 +91,28 @@ public class OAuthClientManagementDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectAccessibleByClientIdAndInUserId(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleByClientIdAndInUserId.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testSelectAccessibleUnassignedUserByAnyKeyword(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleUnassignedUserByAnyKeyword.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
     public void testSelectAccessiblyManagementUserByClientId(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
                 "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessiblyManagementUserByClientId.sql",

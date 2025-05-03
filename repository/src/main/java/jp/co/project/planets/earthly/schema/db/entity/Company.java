@@ -57,21 +57,21 @@ public class Company extends AbstractCompany implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param name
+     * @param name
      *            名前
-     * @Param countryId
+     * @param countryId
      *            所属国
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public Company(final String id, final String name, final String countryId, final LocalDateTime createdAt,

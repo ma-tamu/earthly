@@ -30,7 +30,7 @@
         <div class="row justify-content-end">
           <div class="col-1 text-right">
             <div class="btn-group">
-              <a class="btn btn-primary rounded-pill m-1" data-bs-toggle="tooltip" data-placement="top"
+              <a class="btn btn-primary btn-sm m-1" data-bs-toggle="tooltip" data-placement="top"
                  th:title="#{page.tooltip.entry}" th:href="@{/clients/entries}">
                 <i class="fas fa-user-plus"></i>
               </a>
@@ -52,13 +52,11 @@
                 <input type="text" id="name" name="name" class="form-control" th:value="${OAuthClientSearchForm.name}">
               </div>
             </div>
-            <div class="row text-center m-1">
-              <div class="col-12">
+            <div class="row justify-content-center mt-3">
                 <button type="submit" class="btn btn-primary">
                   <i class="fas fa-search"></i>
                   <th:block th:text="#{page.button.search}">検索</th:block>
                 </button>
-              </div>
             </div>
           </div>
         </div>

@@ -27,7 +27,9 @@ WHERE
       /*%end */
       AND oauth_client.is_deleted = 0
   )
+  /*%if @isNotBlank(logoutRedirectUrl)*/
   AND logout_redirect_url.redirect_url LIKE /* @infix(logoutRedirectUrl) */''
+  /*%end */
   AND logout_redirect_url.is_deleted = 0
 ORDER BY
   logout_redirect_url.created_at DESC,

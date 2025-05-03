@@ -43,6 +43,9 @@ function cancel() {
     });
 }
 
+$('#edit').on('hidden.bs.modal', function (e) {
+    cancel();
+});
 
 function postSearch(formName, contentId) {
     const form = $('form[name=' + formName + ']');

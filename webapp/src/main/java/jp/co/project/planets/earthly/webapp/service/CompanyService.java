@@ -1,30 +1,79 @@
 package jp.co.project.planets.earthly.webapp.service;
 
+import java.time.LocalDateTime;
+import java.util.Locale;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jp.co.project.planets.earthly.common.logic.UserLogic;
+import jp.co.project.planets.earthly.common.model.dto.CompanyEntryDto;
+import jp.co.project.planets.earthly.common.model.dto.UserDto;
+import jp.co.project.planets.earthly.schema.db.entity.Company;
+import jp.co.project.planets.earthly.schema.db.entity.ManagementCompanyUser;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;
 import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
 import jp.co.project.planets.earthly.schema.repository.CountryRepository;
+import jp.co.project.planets.earthly.schema.repository.ManagementCompanyUserRepository;
+import jp.co.project.planets.earthly.schema.repository.OrganizationRepository;
+import jp.co.project.planets.earthly.schema.repository.UserRepository;
+import jp.co.project.planets.earthly.webapp.constant.MessageKey;
 import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
+import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
+import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
+import jp.co.project.planets.earthly.webapp.model.dto.CompanyDetailDto;
+import jp.co.project.planets.earthly.webapp.model.dto.CompanyEditDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
+/**
+ * 会社サービス
+ */
 @Service
 public class CompanyService {
 
+    private final UserLogic userLogic;
+
     private final CompanyRepository companyRepository;
     private final CountryRepository countryRepository;
+    private final ManagementCompanyUserRepository managementCompanyUserRepository;
+    private final OrganizationRepository organizationRepository;
+    private final UserRepository userRepository;
 
-    public CompanyService(final CompanyRepository companyRepository, final CountryRepository countryRepository) {
+    private final MessageSource messageSource;
+
+    public CompanyService(final UserLogic userLogic, final CompanyRepository companyRepository,
+        final CountryRepository countryRepository,
+        final ManagementCompanyUserRepository managementCompanyUserRepository,
+        final OrganizationRepository organizationRepository, final UserRepository userRepository,
+        final MessageSource messageSource) {
+        this.userLogic = userLogic;
         this.companyRepository = companyRepository;
         this.countryRepository = countryRepository;
+        this.managementCompanyUserRepository = managementCompanyUserRepository;
+        this.organizationRepository = organizationRepository;
+        this.userRepository = userRepository;
+        this.messageSource = messageSource;
     }
 
+    /**
+     * 会社検索
+     * 
+     * @param name
+     *            会社名
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
     @Transactional
     public Page<CompanyEntity> search(final String name, final Pageable pageable,
         final EarthlyUserInfoDto userInfoDto) {
@@ -47,11 +96,136 @@ public class CompanyService {
      *             if the user lacks the ADD_COMPANY permission
      */
     @Transactional
-    public void entry(final EarthlyUserInfoDto userInfoDto) {
+    public void validateEntryPermission(final EarthlyUserInfoDto userInfoDto) {
 
         final var permissionEnumList = userInfoDto.permissionEnumList();
         if (!permissionEnumList.contains(PermissionEnum.ADD_COMPANY)) {
             throw new ForbiddenException(ErrorCode.EWA4XX020);
         }
+    }
+
+    /**
+     * 会社登録
+     * 
+     * @param companyEntryDto
+     *            会社登録DTO
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 登録した会社のID
+     * @throws NotFoundException
+     *             所属国が存在しない場合に発生
+     */
+    @Transactional
+    public String create(final CompanyEntryDto companyEntryDto, final EarthlyUserInfoDto userInfoDto) {
+
+        validateEntryPermission(userInfoDto);
+
+        final var country = countryRepository.findByPrimaryKey(companyEntryDto.country())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX024));
+
+        final var currentDateTime = LocalDateTime.now();
+        final var company = new Company(null, companyEntryDto.name(), country.getId(), currentDateTime,
+                userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+        companyRepository.insert(company);
+        final var createdCompany = companyRepository.findByName(company.getName())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX002));
+
+        final var userDto = new UserDto(companyEntryDto.firstLoginId(), companyEntryDto.firstUserName(),
+                companyEntryDto.mail(), companyEntryDto.gender(), companyEntryDto.language(),
+                companyEntryDto.timezone(), createdCompany.getId(), createdCompany.getName(), false, false);
+        final var user = userLogic.create(userDto, userInfoDto.id()).orElseThrow();
+
+        final var managementCompanyUser = new ManagementCompanyUser(null, createdCompany.getId(), user.getId(),
+                currentDateTime, userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+        managementCompanyUserRepository.insert(managementCompanyUser);
+        return company.getId();
+    }
+
+    /**
+     * 会社詳細の取得
+     * 
+     * @param id
+     *            会社ID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 会社詳細
+     */
+    @Transactional
+    public CompanyDetailDto findDetail(final String id, final EarthlyUserInfoDto userInfoDto) {
+
+        final boolean hasViewAllCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var company = companyRepository.findAccessibleByPrimaryKey(id, hasViewAllCompany, userInfoDto.id())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
+        final var countryList = countryRepository.findAll();
+        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
+        final var pageable = PageRequest.of(0, 10);
+        final var managementCompanyUserResultDto = userRepository.findCompanyManagerByName(null, id, hasViewAllUser,
+                pageable, userInfoDto.id());
+        final var managementUserPage = new PageImpl<>(managementCompanyUserResultDto.userList(), pageable,
+                managementCompanyUserResultDto.total());
+        return new CompanyDetailDto(company, countryList, managementUserPage);
+    }
+
+    @Transactional
+    public void validateEdit(final String id, final CompanyEditDto companyEditDto,
+        final EarthlyUserInfoDto userInfoDto) {
+
+        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_COMPANY)) {
+            managementCompanyUserRepository.findByUniqueKey(id, userInfoDto.id())
+                    .orElseThrow(() -> new BadRequestException(ErrorCode.EWA4XX026));
+        }
+        companyRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
+
+        countryRepository.findByPrimaryKey(companyEditDto.country())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX024));
+
+    }
+
+    /**
+     * 会社更新
+     *
+     * @param id
+     *            会社ID
+     * @param companyEditDto
+     *            会社編集DTO
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return メッセージ
+     */
+    @Transactional
+    public String update(final String id, final CompanyEditDto companyEditDto, final EarthlyUserInfoDto userInfoDto) {
+        validateEdit(id, companyEditDto, userInfoDto);
+
+        final var company = new Company(id, companyEditDto.name(), companyEditDto.country(), null, null,
+                LocalDateTime.now(), userInfoDto.id(), null);
+        companyRepository.update(company);
+        return messageSource.getMessage(MessageKey.UPDATE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
+    }
+
+    /**
+     * 会社削除
+     * 
+     * @param id
+     *            会社ID
+     * @param userInfoDto
+     *            ユーザー情報
+     * @throws BadRequestException
+     *             削除操作ができない場合に発生
+     */
+    @Transactional
+    public void delete(final String id, final EarthlyUserInfoDto userInfoDto) {
+
+        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_COMPANY)) {
+            managementCompanyUserRepository.findByUniqueKey(id, userInfoDto.id())
+                    .orElseThrow(() -> new BadRequestException(ErrorCode.EWA4XX026));
+        }
+
+        managementCompanyUserRepository.deleteByCompanyId(id);
+        organizationRepository.deleteByCompanyId(id);
+
+        final var company = companyRepository.findByPrimaryKey(id)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
+        company.setIsDeleted(Boolean.TRUE);
+        companyRepository.update(company);
     }
 }

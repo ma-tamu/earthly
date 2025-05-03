@@ -26,14 +26,14 @@ public interface LogoutRedirectUrlBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(LogoutRedirectUrl entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(LogoutRedirectUrl entity);
 
     /**

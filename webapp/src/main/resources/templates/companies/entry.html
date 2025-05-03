@@ -63,6 +63,85 @@
             </div>
           </div>
         </div>
+        <div class="form-group row m-1">
+          <label class="col-sm-2 col-form-label" th:text="#{page.label.company.first.user.loginId}">初期ログインID</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('firstLoginId')}?'is-invalid'"
+                   th:field="*{firstLoginId}" th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{firstLoginId}" th:if="${#fields.hasErrors('firstLoginId')}">
+              会社名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-sm-2 col-form-label" th:text="#{page.label.company.first.user.name}">初期ユーザー名</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('firstUserName')}?'is-invalid'"
+                   th:field="*{firstUserName}" th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{firstUserName}" th:if="${#fields.hasErrors('firstUserName')}">
+              会社名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="gender" th:text="#{page.label.user.gender}">性別</label>
+          <div class="col-6">
+            <select class="form-control" id="gender" name="gender" th:disabled="${readOnly}"
+                    th:classappend="${#fields.hasErrors('gender')}?'is-invalid'"
+                    th:styleappend="${readOnly}?'pointer-events: none;'" th:with="g=*{gender}">
+              <option></option>
+              <option th:each="genderEnum : ${T(jp.co.project.planets.earthly.schema.emuns.Gender).values()}"
+                      th:selected="${#strings.equals(genderEnum.value, g)}" th:text="${genderEnum.name()}"
+                      th:value="${genderEnum.value}">M
+              </option>
+            </select>
+            <div class="invalid-feedback" th:errors="*{gender}" th:if="${#fields.hasErrors('gender')}">
+              性別は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="language" th:text="#{page.label.user.language}"></label>
+          <div class="col-6">
+            <select class="form-control" id="language" name="language" th:disabled="${readOnly}"
+                    th:classappend="${#fields.hasErrors('language')}?'is-invalid'">
+              <option></option>
+              <option th:selected="${#strings.equals('ja', companyEntryForm.language)}"
+                      th:text="#{page.select.language.japanese}"
+                      value="ja"></option>
+              <option th:selected="${#strings.equals('en', companyEntryForm.language)}"
+                      th:text="#{page.select.language.english}"
+                      value="en"></option>
+            </select>
+            <div class="invalid-feedback" th:errors="*{language}" th:if="${#fields.hasErrors('language')}">
+              言語は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="timezone" th:text="#{page.label.user.timezone}"></label>
+          <div class="col-6">
+            <select class="form-control" id="timezone" name="timezone" th:disabled="${readOnly}"
+                    th:classappend="${#fields.hasErrors('timezone')}?'is-invalid'">
+              <option></option>
+              <option th:each="t: ${timezone}" th:selected="${#strings.equals(t.id, companyEntryForm.timezone)}"
+                      th:text="${t.id}" th:value="${t.id}"></option>
+            </select>
+            <div class="invalid-feedback" th:errors="*{timezone}" th:if="${#fields.hasErrors('timezone')}">
+              タイムゾーンは必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="mail" th:text="#{page.label.user.mail}">メールアドレス</label>
+          <div class="col-6">
+            <input class="form-control" id="mail" th:classappend="${#fields.hasErrors('mail')}?'is-invalid'"
+                   th:field="*{mail}" th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{mail}" th:if="${#fields.hasErrors('mail')}">
+              メールアドレスは必須です。
+            </div>
+          </div>
+        </div>
         <div class="row m-1 text-center justify-content-end">
           <button type="button" class="btn btn-secondary mr-1" data-target="#cancel"
                   data-toggle="modal" th:text="#{page.button.back}">戻る

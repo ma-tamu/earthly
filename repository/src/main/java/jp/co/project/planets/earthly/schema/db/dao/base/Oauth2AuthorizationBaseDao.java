@@ -26,14 +26,14 @@ public interface Oauth2AuthorizationBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(Oauth2Authorization entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(Oauth2Authorization entity);
 
     /**

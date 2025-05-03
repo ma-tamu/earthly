@@ -16,10 +16,14 @@ public class LanguageListener implements EntityListener<Language> {
     @Override
     public void preInsert(Language entity, PreInsertContext<Language> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(Language entity, PreUpdateContext<Language> context) {
+        
+        
     }
 
     @Override

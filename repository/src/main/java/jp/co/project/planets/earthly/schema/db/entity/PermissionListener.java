@@ -16,10 +16,14 @@ public class PermissionListener implements EntityListener<Permission> {
     @Override
     public void preInsert(Permission entity, PreInsertContext<Permission> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(Permission entity, PreUpdateContext<Permission> context) {
+        
+        
     }
 
     @Override

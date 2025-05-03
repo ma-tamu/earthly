@@ -65,25 +65,25 @@ public class SubOffice extends AbstractSubOffice implements java.io.Serializable
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param name
+     * @param name
      *            名前
-     * @Param officeId
+     * @param officeId
      *            オフィス
-     * @Param departmentCode
+     * @param departmentCode
      *            部門コード
-     * @Param belongCode
+     * @param belongCode
      *            所属コード
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public SubOffice(final String id, final String name, final String officeId, final String departmentCode,

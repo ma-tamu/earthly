@@ -16,10 +16,14 @@ public class GrantTypeListener implements EntityListener<GrantType> {
     @Override
     public void preInsert(GrantType entity, PreInsertContext<GrantType> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(GrantType entity, PreUpdateContext<GrantType> context) {
+        
+        
     }
 
     @Override

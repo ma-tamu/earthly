@@ -1,7 +1,7 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 user_role
-where
+WHERE
     id = /* id */'a'
     

@@ -1,7 +1,7 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 recovery_code
-where
+WHERE
     id = /* id */'a'
     

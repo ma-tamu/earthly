@@ -57,20 +57,20 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param name
+     * @param name
      *            ロール名
-     * @Param description
-     * @Param createdAt
+     * @param description
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public Role(final String id, final String name, final String description, final LocalDateTime createdAt,

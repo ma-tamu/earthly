@@ -16,10 +16,14 @@ public class OauthClientManagementListener implements EntityListener<OauthClient
     @Override
     public void preInsert(OauthClientManagement entity, PreInsertContext<OauthClientManagement> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(OauthClientManagement entity, PreUpdateContext<OauthClientManagement> context) {
+        
+        
     }
 
     @Override

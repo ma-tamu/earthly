@@ -16,10 +16,14 @@ public class WorkTimeListener implements EntityListener<WorkTime> {
     @Override
     public void preInsert(WorkTime entity, PreInsertContext<WorkTime> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(WorkTime entity, PreUpdateContext<WorkTime> context) {
+        
+        
     }
 
     @Override

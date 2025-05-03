@@ -26,14 +26,14 @@ public interface OauthClientManagementBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(OauthClientManagement entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(OauthClientManagement entity);
 
     /**

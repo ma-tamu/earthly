@@ -12,6 +12,9 @@ public final class ViewName {
 
     public static final String FORGOT_PASSWORD = "forgets/passwords/index";
 
+    public static final String REDIRECT_COMPANY_ENTRY = "redirect:/companies/entries";
+    public static final String REDIRECT_COMPANY_LIST = "redirect:/companies";
+
     public static final String REDIRECT_CLIENT_ENTRY = "redirect:/clients/entries";
     public static final String REDIRECT_CLIENT_DETAIL = "redirect:/clients/%s";
     public static final String CLIENT_DETAIL_REDIRECT_URL_PAGE = "clients/detail::redirectUriPage";

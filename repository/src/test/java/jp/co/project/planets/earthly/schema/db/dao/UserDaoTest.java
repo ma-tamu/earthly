@@ -108,4 +108,15 @@ public class UserDaoTest {
         execute(sqlFile);
     }
 
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByPrimaryKeysAccessibly(final TestInfo testInfo) throws Exception {
+        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectByPrimaryKeysAccessibly.sql",
+                dialect);
+        execute(sqlFile);
+    }
+
 }

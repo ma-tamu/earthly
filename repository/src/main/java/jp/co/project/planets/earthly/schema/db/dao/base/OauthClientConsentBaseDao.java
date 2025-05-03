@@ -26,14 +26,14 @@ public interface OauthClientConsentBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(OauthClientConsent entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(OauthClientConsent entity);
 
     /**

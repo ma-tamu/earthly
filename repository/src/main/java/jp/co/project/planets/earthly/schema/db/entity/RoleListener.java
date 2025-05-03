@@ -16,10 +16,14 @@ public class RoleListener implements EntityListener<Role> {
     @Override
     public void preInsert(Role entity, PreInsertContext<Role> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(Role entity, PreUpdateContext<Role> context) {
+        
+        
     }
 
     @Override

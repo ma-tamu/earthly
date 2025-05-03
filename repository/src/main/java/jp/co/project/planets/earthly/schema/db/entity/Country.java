@@ -61,23 +61,23 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param name
+     * @param name
      *            名前
-     * @Param regionId
+     * @param regionId
      *            リージョン
-     * @Param languageId
+     * @param languageId
      *            言語
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public Country(final String id, final String name, final String regionId, final String languageId,

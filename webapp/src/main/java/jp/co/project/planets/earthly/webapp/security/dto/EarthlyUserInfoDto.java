@@ -24,7 +24,7 @@ import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
  * @param permissionEnumList
  *            パーミッションリスト
  */
-public record EarthlyUserInfoDto(String id, String loginId, String name, String password, boolean lockout, boolean tfa,
+public record EarthlyUserInfoDto(String id, String loginId, String name, String password, boolean lockout, boolean mfa,
         boolean tfaSuccessful, String secret, CompanyDto company, List<PermissionEnum> permissionEnumList,
         List<? extends GrantedAuthority> grantedAuthorities) implements UserDetails {
     @Override

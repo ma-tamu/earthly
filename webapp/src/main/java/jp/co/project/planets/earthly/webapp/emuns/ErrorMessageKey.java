@@ -70,6 +70,15 @@ public final class ErrorMessageKey {
     /** 選択されたOAuthクライアントの管理者を閲覧できないため、解除できません。 */
     public static final String CLIENT_MANAGEMENT_USER_FORBIDDEN = "exception.client.management.user.forbidden";
 
+    /** 所属国が存在しません。 */
+    public static final String NOT_FOUND_CUNTRY = "exception.company.notfound.country";
+
+    /** 対象の会社は存在しません。 */
+    public static final String NOT_FOUND_COMPANY = "exception.notfound.company";
+
+    /** 編集する権限がありません。 */
+    public static final String NOT_HAVE_PERMISSION_EDIT = "exception.not.have.permission.edit";
+
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";
 

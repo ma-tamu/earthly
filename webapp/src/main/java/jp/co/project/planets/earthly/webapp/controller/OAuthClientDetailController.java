@@ -356,6 +356,19 @@ public class OAuthClientDetailController {
                 oauthClientManagementList);
     }
 
+    /**
+     * OAuthクライアント管理者未割り当てユーザー検索
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientNotAssignUserSearchForm
+     *            OAuthクライアント管理者未割り当て検索FORM
+     * @param pageable
+     *            ページャー
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 検索結果
+     */
     @GetMapping("management-users/not-assigns")
     public ModelAndView searchNotAssignUser(@PathVariable("id") final String id,
         final OAuthClientNotAssignUserSearchForm oauthClientNotAssignUserSearchForm,
@@ -367,6 +380,19 @@ public class OAuthClientDetailController {
                 .addObject(UNASSIGNED_MANAGEMENT_USER_PAGE, oauthClientManagementUserEntityPage);
     }
 
+    /**
+     * OAuthクライアント管理者割り当て
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientManagementUserAssignForm
+     *            OAuthクライアント管理者割り当てFROM
+     * @param bindingResult
+     *            binding result
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 割り当て結果
+     */
     @PostMapping("management-users/assigns")
     public ModelAndView assignManagementUser(@PathVariable("id") final String id,
         @ModelAttribute @Validated final OAuthClientManagementUserAssignForm oauthClientManagementUserAssignForm,
@@ -383,6 +409,19 @@ public class OAuthClientDetailController {
         }
     }
 
+    /**
+     * OAuthクライアント管理者解除
+     * 
+     * @param id
+     *            OAuthクライアントID
+     * @param oauthClientManagementUserUnassignForm
+     *            OAuthクライアント管理者解除FORM
+     * @param bindingResult
+     *            binding result
+     * @param userInfoDto
+     *            ユーザー情報
+     * @return 解除結果
+     */
     @PostMapping("management-users/unassigns")
     public ModelAndView unassignManagementUser(@PathVariable("id") final String id,
         @ModelAttribute @Validated final OAuthClientManagementUserUnassignForm oauthClientManagementUserUnassignForm,

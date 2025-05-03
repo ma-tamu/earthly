@@ -53,19 +53,19 @@ public class GrantType extends AbstractGrantType implements java.io.Serializable
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param type
+     * @param type
      *            付与タイプ
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
      */
     public GrantType(final String id, final String type, final LocalDateTime createdAt, final String createdBy,

@@ -35,11 +35,11 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     /**
      * new instance
      * 
-     * @Param id
+     * @param id
      *            id
-     * @Param oauthClientId
+     * @param oauthClientId
      *            OAuthクライアントid
-     * @Param scopeId
+     * @param scopeId
      *            スコープid
      */
     public OauthClientScope(final String id, final String oauthClientId, final String scopeId) {

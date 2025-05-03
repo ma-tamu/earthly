@@ -26,14 +26,14 @@ public interface ManagementCompanyUserBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(ManagementCompanyUser entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(ManagementCompanyUser entity);
 
     /**

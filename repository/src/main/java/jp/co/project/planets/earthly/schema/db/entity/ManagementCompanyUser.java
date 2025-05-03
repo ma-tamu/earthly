@@ -18,6 +18,11 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 
+    /**  */
+    @Id
+    @Column(name = "id")
+    String id;
+
     /** 会社ID */
     @Column(name = "company_id")
     String companyId;
@@ -46,36 +51,32 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    /**  */
-    @Id
-    @Column(name = "id")
-    String id;
-
     public ManagementCompanyUser() {
     }
 
     /**
      * new instance
      * 
-     * @Param companyId
+     * @param id
+     * @param companyId
      *            会社ID
-     * @Param userId
+     * @param userId
      *            ユーザーID
-     * @Param createdAt
+     * @param createdAt
      *            作成日
-     * @Param createdBy
+     * @param createdBy
      *            作成者
-     * @Param updatedAt
+     * @param updatedAt
      *            更新日
-     * @Param updatedBy
+     * @param updatedBy
      *            更新者
-     * @Param isDeleted
+     * @param isDeleted
      *            削除フラグ
-     * @Param id
      */
-    public ManagementCompanyUser(final String companyId, final String userId, final LocalDateTime createdAt,
-        final String createdBy, final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted,
-        final String id) {
+    public ManagementCompanyUser(final String id, final String companyId, final String userId,
+        final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt, final String updatedBy,
+        final Boolean isDeleted) {
+        this.id = id;
         this.companyId = companyId;
         this.userId = userId;
         this.createdAt = createdAt;
@@ -83,6 +84,24 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
+    }
+
+    /**
+     * Returns the id.
+     *
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the id.
+     *
+     * @param id
+     *            the id
+     */
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -217,24 +236,5 @@ public class ManagementCompanyUser extends AbstractManagementCompanyUser impleme
      */
     public void setIsDeleted(final Boolean isDeleted) {
         this.isDeleted = isDeleted;
-    }
-
-    /**
-     * Returns the id.
-     *
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the id.
-     *
-     * @param id
-     *            the id
-     */
-    public void setId(final String id) {
-        this.id = id;
     }
 }

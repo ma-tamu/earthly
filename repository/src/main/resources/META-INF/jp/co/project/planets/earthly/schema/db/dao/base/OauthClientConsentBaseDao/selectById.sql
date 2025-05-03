@@ -1,7 +1,7 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 oauth_client_consent
-where
+WHERE
     id = /* id */'a'
     

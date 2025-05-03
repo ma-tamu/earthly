@@ -57,6 +57,11 @@ public enum ErrorCode implements Code {
     EWA4XX022("EWA4XX022", CLIENT_MANAGEMENT_USER_ALREADY_REGISTERED),
     /** 選択されたOAuthクライアントの管理者を閲覧できないため、解除できません。 */
     EWA4XX023("EWA4XX023", CLIENT_MANAGEMENT_USER_FORBIDDEN),
+    /** 所属国が存在しません。 */
+    EWA4XX024("EWA4XX024", NOT_FOUND_CUNTRY),
+    /** 対象の会社は存在しません。 */
+    EWA4XX025("EWA4XX025", NOT_FOUND_COMPANY),
+    EWA4XX026("EWA4XX026", NOT_HAVE_PERMISSION_EDIT),
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     EWA5XX999("EWA5XX999", UNEXPECTED);

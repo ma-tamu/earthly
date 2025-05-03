@@ -16,10 +16,14 @@ public class LogoutRedirectUrlListener implements EntityListener<LogoutRedirectU
     @Override
     public void preInsert(LogoutRedirectUrl entity, PreInsertContext<LogoutRedirectUrl> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(LogoutRedirectUrl entity, PreUpdateContext<LogoutRedirectUrl> context) {
+        
+        
     }
 
     @Override

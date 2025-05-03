@@ -16,10 +16,14 @@ public class OrganizationListener implements EntityListener<Organization> {
     @Override
     public void preInsert(Organization entity, PreInsertContext<Organization> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(Organization entity, PreUpdateContext<Organization> context) {
+        
+        
     }
 
     @Override

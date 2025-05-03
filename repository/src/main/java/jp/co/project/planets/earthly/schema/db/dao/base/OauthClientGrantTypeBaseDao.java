@@ -26,14 +26,14 @@ public interface OauthClientGrantTypeBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(OauthClientGrantType entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(OauthClientGrantType entity);
 
     /**

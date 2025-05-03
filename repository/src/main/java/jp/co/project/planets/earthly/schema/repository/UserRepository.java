@@ -17,6 +17,7 @@ import jp.co.project.planets.earthly.schema.db.entity.Role;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.db.entity.User_;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.dto.ManagementCompanyUserResultDto;
 import jp.co.project.planets.earthly.schema.model.dto.UserSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;
@@ -155,6 +156,29 @@ public class UserRepository {
             w.eq(user.mail, mail);
             w.eq(user.isDeleted, false);
         }).fetchOptional();
+    }
+
+    /**
+     * 会社管理者のユーザーを取得
+     * 
+     * @param name
+     *            ユーザー名
+     * @param companyId
+     *            会社ID
+     * @param hasViewAllUser
+     *            すべてのユーザーが閲覧できるか
+     * @param pageable
+     *            ページャー
+     * @param executionUserId
+     *            実行ユーザーID
+     * @return 会社管理者
+     */
+    public ManagementCompanyUserResultDto findCompanyManagerByName(final String name, final String companyId,
+        final boolean hasViewAllUser, final Pageable pageable, final String executionUserId) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var userList = userDao.selectCompanyManagerByName(name, companyId, hasViewAllUser, executionUserId,
+                selectOptions);
+        return new ManagementCompanyUserResultDto(userList, pageable.getOffset(), selectOptions.getCount());
     }
 
     /**

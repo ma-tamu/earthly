@@ -46,8 +46,7 @@ public class LogoutRedirectRepository {
         final Pageable pageable) {
         final var selectOptions = Pageables.toSelectOptions(pageable);
         final var logoutRedirectUrlList = logoutRedirectUrlDao.selectByClientLogoutRedirectUrl(clientId,
-                logoutRedirectUrl, hasViewAllClient,
-                operatorUserId, selectOptions);
+                logoutRedirectUrl, hasViewAllClient, operatorUserId, selectOptions);
         return new OAuthClientLogoutRedirectUriSearchResultDto(logoutRedirectUrlList, pageable.getOffset(),
                 selectOptions.getCount());
     }

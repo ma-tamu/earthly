@@ -16,10 +16,14 @@ public class UserListener implements EntityListener<User> {
     @Override
     public void preInsert(User entity, PreInsertContext<User> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(User entity, PreUpdateContext<User> context) {
+        
+        
     }
 
     @Override

@@ -26,14 +26,14 @@ public interface PasswordTokenBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(PasswordToken entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(PasswordToken entity);
 
     /**

@@ -26,14 +26,14 @@ public interface OauthClientScopeBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(OauthClientScope entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(OauthClientScope entity);
 
     /**

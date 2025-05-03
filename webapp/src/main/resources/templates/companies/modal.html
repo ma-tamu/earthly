@@ -15,17 +15,79 @@
         <div class="modal-body">
           <div class="card-body">
             <div class="row mb-3">
-              <div class="col-6">
-                <label class="form-label" for="name" th:text="#{page.label.company.name}">会社名</label>
-                <input type="hidden" class="form-control" th:field="*{name}">
+              <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.company.name}">会社名</label>
+              <div class="col-sm-9">
                 <th:block th:text="*{name}"></th:block>
+              </div>
+              <input type="hidden" class="form-control" th:field="*{name}">
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="country"
+                     th:text="#{page.label.company.country}">所属国</label>
+              <input type="hidden" class="form-control" th:field="*{country}">
+              <div class="col-sm-9">
+                <th:block th:each="country : ${countryList}">
+                  <th:block th:if="${#strings.equals(country.id, companyEntryForm.country)}"
+                            th:text="${country.getName}"></th:block>
+                </th:block>
               </div>
             </div>
             <div class="row mb-3">
-              <div class="col-6">
-                <label class="form-label" for="country" th:text="#{page.label.company.country}">所属国</label>
-                <input type="hidden" class="form-control" th:field="*{country}">
-                <th:block th:text="*{country}"></th:block>
+              <label class="col-sm-3 col-form-label" for="firstLoginId"
+                     th:text="#{page.label.company.first.user.loginId}">初期ログインID</label>
+              <div class="col-sm-9">
+                <th:block th:text="*{firstLoginId}"></th:block>
+              </div>
+              <input type="hidden" class="form-control" th:field="*{firstLoginId}">
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="name"
+                     th:text="#{page.label.company.first.user.name}">初期ユーザー名</label>
+              <div class="col-sm-9">
+                <th:block th:text="*{firstUserName}"></th:block>
+              </div>
+              <input type="hidden" class="form-control" th:field="*{firstUserName}">
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="gender" th:text="#{page.label.user.gender}">
+                性別
+              </label>
+              <div class="col-sm-9">
+                <th:block th:switch="*{gender}">
+                  <th:block th:case="M">男性</th:block>
+                  <th:block th:case="F">女性</th:block>
+                  <th:block th:case=*>その他</th:block>
+                </th:block>
+                <input type="hidden" name="gender" class="form-control" th:value="*{gender}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="language" th:text="#{page.label.user.language}">
+                言語
+              </label>
+              <div class="col-lg-9">
+                <th:block th:with="lang=${#strings.equals(companyEntryForm.language, 'ja')?'日本語':'英語'}"
+                          th:text="${lang}">言語
+                </th:block>
+                <input type="hidden" name="language" class="form-control" th:value="*{language}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.timezone}">
+                タイムゾーン
+              </label>
+              <div class="col-sm-9">
+                <th:block th:text="*{timezone}">タイムゾーン</th:block>
+                <input type="hidden" name="timezone" class="form-control" th:value="*{timezone}">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 col-form-label" for="mail" th:text="#{page.label.user.mail}">
+                メールアドレス
+              </label>
+              <div class="col-sm-9">
+                <th:block th:text="*{mail}">メールアドレス</th:block>
+                <input type="hidden" name="mail" class="form-control" th:value="*{mail}">
               </div>
             </div>
           </div>
@@ -64,23 +126,23 @@
 </div>
 
 <!-- 会社編集 -->
-<div class="modal" id="edit" tabindex="-1" th:fragment="edit">
+<div class="modal" id="edit" tabindex="-1" th:fragment="edit(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg edit-modal">
     <div class="modal-content">
-      <form method="post" th:action="@{/companies/edit}" th:object="${companyEditForm}">
+      <form method="post" th:action="@{/companies/__${id}__/edit}" th:object="${companyEditForm}">
         <div class="modal-header">
           <h5 class="modal-title" th:text="#{page.modal.title.company.edit}">会社編集</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body edit">
           <div class="row mb-3">
             <div class="col-3" th:text="#{page.label.company.name}">会社名</div>
             <div class="col-9">
               <input type="text" class="form-control" id="name"
                      th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
-                     th:field="*{name}" th:readonly="${readOnly}">
+                     th:field="*{name}">
               <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
                 会社名は必須です。
               </div>
@@ -89,8 +151,8 @@
           <div class="row mb-3">
             <div class="col-3" th:text="#{page.label.company.country}">所属国</div>
             <div class="col-9">
-              <select class="form-select" id="country" name="country"
-                      th:classappend="${#fields.hasErrors('country')}?'is-invalid'" th:readonly="${readOnly}">
+              <select class="form-control" id="country" name="country"
+                      th:classappend="${#fields.hasErrors('country')}?'is-invalid'">
                 <option th:each="country : ${countryList}" th:text="${country.getName}" th:value="${country.getId}"
                         th:selected="${country.getId == companyEditForm.country}">国名
                 </option>
@@ -113,10 +175,10 @@
 </div>
 
 <!-- 会社編集確認 -->
-<div class="modal" id="confirm" tabindex="-1" th:fragment="confirm">
+<div class="modal" id="confirm" tabindex="-1" th:fragment="confirm(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg entry-confirm-modal">
     <div class="modal-content">
-      <form method="post" th:action="@{/companies/update}" th:object="${companyEditForm}">
+      <form method="post" th:action="@{/companies/__${id}__/update}" th:object="${companyEditForm}">
         <div class="modal-header">
           <h5 class="modal-title" th:text="#{page.modal.title.company.confirm.edit}">会社編集確認</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -125,17 +187,20 @@
         </div>
         <div class="modal-body">
           <div class="row mb-3">
-            <div class="col-6">
-              <label class="form-label" for="name" th:text="#{page.label.company.name}">会社名</label>
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.company.name}">会社名</label>
+            <div class="col-sm-9">
               <input type="hidden" class="form-control" name="name" th:value="*{name}">
               <th:block th:text="*{name}"></th:block>
             </div>
           </div>
           <div class="row mb-3">
-            <div class="col-6">
-              <label class="form-label" for="country" th:text="#{page.label.company.country}">所属国</label>
+              <label class="col-sm-3 form-label" for="country" th:text="#{page.label.company.country}">所属国</label>
+            <div class="col-sm-9">
               <input type="hidden" class="form-control" name="country" th:value="*{country}">
-              <th:block th:text="*{country}"></th:block>
+              <th:block th:each="country : ${countryList}">
+                <th:block th:if="${#strings.equals(country.id, companyEditForm.country)}"
+                          th:text="${country.getName}"></th:block>
+              </th:block>
             </div>
           </div>
         </div>
@@ -154,7 +219,7 @@
 <div class="modal" id="delete" tabindex="-1" th:fragment="delete(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
     <div class="modal-content">
-      <form th:action="@{/companies/__${id}__/delete}">
+      <form method="post" th:action="@{/companies/__${id}__/delete}">
         <div class="modal-header">
           <h5 class="modal-title" th:text="#{page.modal.title.company.delete}">会社削除</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -168,7 +233,7 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{page.button.cancel}">
             キャンセル
           </button>
-          <button type="button" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
         </div>
       </form>
     </div>
@@ -190,11 +255,13 @@
               <h5 th:text="#{page.modal.title.search}">検索条件</h5>
               <div class="row m-1">
                 <div class="col-6">
-                  <label for="userId" style="margin-bottom: .1rem" th:text="#{page.label.user.loginId}">ログインID</label>
+                  <label for="userId" style="margin-bottom: .1rem"
+                         th:text="#{page.label.user.loginId}">ログインID</label>
                   <input type="text" class="form-control" id="userId" name="userId">
                 </div>
                 <div class="col-6">
-                  <label for="userName" style="margin-bottom: .1rem" th:text="#{page.label.user.name}">ユーザー名</label>
+                  <label for="userName" style="margin-bottom: .1rem"
+                         th:text="#{page.label.user.name}">ユーザー名</label>
                   <input type="text" class="form-control" id="userName" name="userName">
                 </div>
               </div>

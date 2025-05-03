@@ -36,7 +36,7 @@
     <!-- Main content -->
     <section class="content">
       <!-- Default box -->
-      <div class="card">
+      <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="${company.name}">会社名</h3>
           <div class="card-tools">
@@ -54,7 +54,10 @@
           <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.company.country}">所属国</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${company.countryId}">所属国</th:block>
+              <th:block th:each="country : ${countryList}">
+                <th:block th:if="${#strings.equals(country.id, company.countryId)}"
+                          th:text="${country.getName}">所属国</th:block>
+              </th:block>
             </div>
           </div>
         </div>
@@ -63,15 +66,16 @@
       <!-- /.card -->
       <hr>
 
-      <div class="card">
+      <!-- 管理ユーザーリスト -->
+      <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="#{page.label.company.list.management.user}">管理ユーザーリスト</h3>
           <div class="card-tools">
-            <button type="button" class="btn btn-sm btn-primary" th:title="#{page.button.title.assign}"
-                    data-target="#assignManagementUser" data-toggle="modal">
+            <button type="button" class="btn btn-sm btn-primary add-management-user"
+                    th:title="#{page.button.title.assign}" data-target="#assignManagementUser" data-toggle="modal">
               <i class="fas fa-edit"></i>
             </button>
-            <button type="button" class="btn btn-sm btn-danger unassign-role"
+            <button type="button" class="btn btn-sm btn-danger remove-management-user"
                     th:title="#{page.button.title.unassigned}">
               <i class="fas fa-trash-alt"></i>
             </button>
@@ -83,20 +87,25 @@
                 th:action="@{/companies/__${company.id}__/managements/users}">
             <div class="row">
               <div class="col-sm-4">
-                <input type="text" class="form-control" name="userName"
+                <div class="form-group">
+                  <label th:tel="#{page.label.company.management.user.name}">ユーザー名</label>
+                  <input type="text" class="form-control" name="userName"
                        th:placeholder="#{page.placeholder.company.management.user.name}">
+                </div>
               </div>
-              <div class="col-sm-2">
-                <button type="button" class="btn btn-primary assigned-role" th:text="#{page.button.search}">検索
-                </button>
-              </div>
+            </div>
+            <div class="row justify-content-center">
+              <button type="button" class="btn btn-primary assigned-role">
+                <i class="fas fa-search"></i>
+                <th:block th:text="#{page.button.search}">検索</th:block>
+              </button>
             </div>
           </form>
         </div>
         <form method="post" name="roleUnassigned" onsubmit="return false;"
               th:action="@{/companies/__${company.id}__/management-users/unassigns}"
               th:if="${!#lists.isEmpty(managementUserPage.content)}">
-          <div id="roleContent">
+          <div id="managementUserContent">
             <th:block th:fragment="managementUserContent">
               <div class="row">
                 <div class="col-12">
@@ -104,7 +113,7 @@
                 </div>
               </div>
               <div class="row mr-3 ml-3">
-                <table class="table table-striped table-borderless assign-role-list"
+                <table class="table table-striped table-sm assign-management-user-list"
                        th:fragment="assignManagementUserList">
                   <thead>
                   <tr>
@@ -150,7 +159,7 @@
       <hr>
 
       <!-- グループ -->
-      <div class="card">
+      <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="#{page.label.company.list.group}">グループリスト</h3>
           <div class="card-tools">
@@ -210,40 +219,35 @@
   </div>
 </div>
 
-<th:block th:replace="companies/modal::edit"></th:block>
-<th:block th:replace="companies/modal::confirm"></th:block>
+<th:block th:replace="companies/modal::edit(${company.id})"></th:block>
+<th:block th:replace="companies/modal::confirm(${company.id})"></th:block>
 <th:block th:replace="companies/modal::delete(${company.id})"></th:block>
 <th:block th:replace="companies/modal::assignManagementUser(${company.id})"></th:block>
 <th:block th:replace="companies/modal::addGroup(${company.id})"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
+<th:block th:if="${success}">
+  <div th:replace="parts/toast::success('page.toast.success.update')"></div>
+</th:block>
+<th:block th:if="${message}">
+  <div th:replace="parts/toast::danger(${message}, ${messageArgs})"></div>
+</th:block>
 <script type="text/javascript" th:inline="javascript">
-    $('button.edit').on('click', function () {
+</script>
+<script th:inline="javascript" th:if="${editModal}">
+    $(function () {
+        $('#edit').modal('show')
     });
-
-    function cancel() {
-        $('.confirm button').disabled = false;
-        $('.update').disabled = true;
-
-        $('.edit > form').find('input').each((i, e) => {
-            let v = e.dataset.before;
-            if (v === undefined) {
-                return true;
-            }
-            if (e.type === 'checkbox') {
-                e.checked = JSON.parse(v);
-                e.disabled = false;
-            } else {
-                e.value = v;
-                e.disabled = false;
-            }
-        });
-        let url = $('.edit > form').attr('action').replace('update', 'edit');
-        $('.edit > form').attr('action', url);
-        $('div.card.detail').show();
-        $('div.card.edit').hide();
-    }
+</script>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#confirm').modal('show')
+    });
+    $('#confirm').on('hidden.bs.modal', function (e) {
+        cancel();
+    });
 </script>
 </body>
 </html>

@@ -62,8 +62,7 @@
         <div class="form-group row m-1">
           <label class="col-2 form-label" for="gender" th:text="#{page.label.user.gender}">性別</label>
           <div class="col-9">
-            <select class="
-            " id="gender" name="gender" th:disabled="${readOnly}"
+            <select class="form-control" id="gender" name="gender" th:disabled="${readOnly}"
                     th:classappend="${#fields.hasErrors('gender')}?'is-invalid'"
                     th:styleappend="${readOnly}?'pointer-events: none;'" th:with="g=*{gender}">
               <option></option>

@@ -33,9 +33,9 @@ public class OAuthClientLogic {
     private final CryptoLogic cryptoLogic;
 
     public OAuthClientLogic(final CryptoLogic cryptoLogic, final OAuthClientRepository oauthClientRepository,
-            final OAuthClientGrantTypeRepository oauthClientGrantTypeRepository,
-            final OAuthClientScopeRepository oauthClientScopeRepository,
-            final OAuthClientManagementRepository oauthClientManagementRepository) {
+        final OAuthClientGrantTypeRepository oauthClientGrantTypeRepository,
+        final OAuthClientScopeRepository oauthClientScopeRepository,
+        final OAuthClientManagementRepository oauthClientManagementRepository) {
         this.cryptoLogic = cryptoLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.oauthClientGrantTypeRepository = oauthClientGrantTypeRepository;
@@ -57,8 +57,8 @@ public class OAuthClientLogic {
     public String create(final String name, final List<String> scopes, final String operationUserId) {
 
         final var entryOAuthClient = generateOAuthClient(name, operationUserId);
-        final int insertCount = oauthClientRepository.insert(entryOAuthClient);
-        if (insertCount < 1) {
+        final var result = oauthClientRepository.insert(entryOAuthClient);
+        if (result < 1) {
             log.error("OAuthクライアントの登録に失敗しました。");
             return null;
         }
@@ -112,7 +112,7 @@ public class OAuthClientLogic {
      * @return true:閲覧可能 false:閲覧不可
      */
     public boolean canAccessibleClient(final String id, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
+        final String operationUserId) {
 
         if (permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT)) {
             return true;
@@ -133,7 +133,7 @@ public class OAuthClientLogic {
      * @return true:編集可能 false:編集不可
      */
     public boolean canEditableClient(final String id, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
+        final String operationUserId) {
         if (permissionEnumList.contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
             return true;
         }

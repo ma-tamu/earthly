@@ -142,7 +142,7 @@
             <div class="col-9">
               <input type="text" class="form-control" id="name"
                      th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
-                     th:field="*{name}">
+                     th:field="*{name}" oninput="activeSubmitButton()">
               <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
                 会社名は必須です。
               </div>
@@ -152,7 +152,7 @@
             <div class="col-3" th:text="#{page.label.company.country}">所属国</div>
             <div class="col-9">
               <select class="form-control" id="country" name="country"
-                      th:classappend="${#fields.hasErrors('country')}?'is-invalid'">
+                      th:classappend="${#fields.hasErrors('country')}?'is-invalid'" onchange="activeSubmitButton()">
                 <option th:each="country : ${countryList}" th:text="${country.getName}" th:value="${country.getId}"
                         th:selected="${country.getId == companyEditForm.country}">国名
                 </option>
@@ -244,37 +244,40 @@
 <div th:fragment="assignManagementUser(id)" class="modal" id="assignManagementUser" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
-      <div class="modal-header" th:text="#{page.modal.title.user.search}">
-        ユーザー検索
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{page.modal.title.user.search}">ユーザー検索</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
-        <form method="get" name="managementUserSearch" onsubmit="return false;"
-              th:action="@{/companies/__${id}__/managementUsers}">
+        <form method="get" name="searchUnassignedManagementUser" onsubmit="return false;"
+              th:action="@{/companies/__${id}__/management-users/not-assigns}">
           <div class="card">
+            <div class="card-header">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+            </div>
             <div class="card-body">
-              <h5 th:text="#{page.modal.title.search}">検索条件</h5>
               <div class="row m-1">
                 <div class="col-6">
-                  <label for="userId" style="margin-bottom: .1rem"
-                         th:text="#{page.label.user.loginId}">ログインID</label>
-                  <input type="text" class="form-control" id="userId" name="userId">
+                  <label th:text="#{page.label.user.loginId}" style="margin-bottom: .1rem">ログインID</label>
+                  <input type="text" class="form-control form-control-sm" name="loginId">
                 </div>
                 <div class="col-6">
-                  <label for="userName" style="margin-bottom: .1rem"
-                         th:text="#{page.label.user.name}">ユーザー名</label>
-                  <input type="text" class="form-control" id="userName" name="userName">
+                  <label th:text="#{page.label.user.name}" style="margin-bottom: .1rem">ユーザー名</label>
+                  <input type="text" class="form-control form-control-sm" name="name">
                 </div>
               </div>
               <div class="row m-1">
                 <div class="col-6">
-                  <label for="company" th:text="#{page.label.user.company}">所属会社</label>
-                  <input type="text" class="form-control" id="company" name="company">
+                  <label th:text="#{page.label.user.company}" style="margin-bottom: .1rem">所属会社</label>
+                  <input type="text" class="form-control form-control-sm" name="companyName">
                 </div>
               </div>
-              <div class="row text-center m-1">
+              <div class="row text-center">
                 <div class="col-12">
-                  <button class="btn btn-primary rounded-pill on-search" type="button">
-                    <i class="ri-search-2-line"></i>
+                  <button class="btn btn-primary search-unassigned-management-user" type="button">
+                    <i class="fas fa-search"></i>
                     <th:block th:text="#{page.button.search}">検索</th:block>
                   </button>
                 </div>
@@ -282,41 +285,51 @@
             </div>
           </div>
         </form>
-        <form method="post" name="assignManagementUser" th:action="@{/companies/__${id}__/managementUsers/assigns}">
-          <div class="card role-list">
-            <div class="card-body" th:fragment="managementUserSearchResult"
-                 th:if="${!unassignedManagementUserPage.isEmpty()}">
-              <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
-              <table class="table table-striped table-borderless">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.user.name}">ユーザー名</th>
-                  <th>&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="managementUser:${unassignedManagementUserPage.content}">
-                  <td>
-                    <a th:href="@{/users/__${managementUser.userId}__}"
-                       th:text="${managementUser.userName}">ユーザー名</a>
-                  </td>
-                  <td class="text-end">
-                    <input type="checkbox" class="form-check-input" name="userId" th:value="${managementUser.id}">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
-            </div>
+        <form name="assignManagementUser" method="post" th:action="@{/companies/__${id}__/management-users/assigns}">
+          <div id="unassignedManagementUser">
+            <th:block th:fragment="unassignedManagementUserPage">
+              <th:block th:if="${!unassignedManagementUserPage.isEmpty()}">
+                <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
+                <table class="table table-sm table-striped">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.user.loginId}">ログインID</th>
+                    <th th:text="#{page.label.user.name}">ユーザー名</th>
+                    <th th:tel="#{page.label.user.company}">所属会社</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="managementUser:${unassignedManagementUserPage.content}">
+                    <td th:text="${managementUser.loginId}">
+                        ログインID
+                    </td>
+                    <td>
+                      <a th:href="@{/users/__${managementUser.id}__}" th:text="${managementUser.name}">
+                        ユーザー名
+                      </a>
+                    </td>
+                    <td>
+                      <a th:href="@{/companies/__${managementUser.company.id}__}" th:text="${managementUser.company.name}">
+                        所属会社
+                      </a>
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input assign-management-user" name="userId"
+                             th:value="${managementUser.id}" onclick="activeManagementUserAssignButton()" >
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
+              </th:block>
+            </th:block>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal" th:text="#{page.button.cancel}">
-          キャンセル
-        </button>
-        <button type="button" class="btn btn-primary management-user-assign" th:text="#{page.button.assign}">割り当て
-        </button>
+        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary assign-management-user" disabled="disabled">割り当て</button>
       </div>
     </div>
   </div>
@@ -329,21 +342,21 @@
       <div class="modal-header" th:text="#{page.modal.title.company.group.add}">
         グループ追加
       </div>
-      <form method="post" name="logoutRedirectSearch" onsubmit="return false;"
-            th:action="@{/companies/__${id}__/groups/add}">
+      <form method="post" name="addGroup" th:action="@{/companies/__${id}__/groups/entries}"
+            th:object="${companyGroupEntryForm}">
         <div class="modal-body">
           <div class="row m-1">
             <div class="col-12">
               <label for="groupName" th:text="#{page.label.user.group.name}">グループ名</label>
-              <input type="text" class="form-control" id="groupName" name="groupName">
+              <input type="text" class="form-control" th:field="*{groupName}" oninput="activeSubmitButton()">
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary cancel" data-dismiss="modal" th:text="#{page.button.cancel}">
+          <button type="button" class="btn btn-secondary cancel-group" data-dismiss="modal" th:text="#{page.button.cancel}">
             キャンセル
           </button>
-          <button type="submit" class="btn btn-primary group-add" th:text="#{page.button.add}">追加
+          <button type="submit" class="btn btn-primary group-add" th:text="#{page.button.add}" disabled>追加
           </button>
         </div>
       </form>

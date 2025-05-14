@@ -91,3 +91,16 @@ function hideRemoveCard(checkboxName, formName) {
     $('input[name=isRemoveMode]').val(false);
 
 }
+
+function activeSubmitButton() {
+    let isDisabled = false;
+    $('.modal.show .modal-content > form').find('input[type=text], select').each((i, e)=>{
+        if(e.type === 'text' && e.value === '') {
+            isDisabled = true;
+        }
+        if(e.type === 'select-one' && e.selectedIndex === 0) {
+            isDisabled = true;
+        }
+    });
+    $('.modal.show .modal-content > form button[type=submit]').prop('disabled', isDisabled);
+}

@@ -79,6 +79,21 @@ public final class ErrorMessageKey {
     /** 編集する権限がありません。 */
     public static final String NOT_HAVE_PERMISSION_EDIT = "exception.not.have.permission.edit";
 
+    /** 既に割り当て済みのユーザーが存在しています。 */
+    public static final String COMPANY_ASSIGNED_MANAGEMENT_USER = "exception.company.assigned.management.user";
+
+    /** 未割り当てのユーザーが存在しています。 */
+    public static final String COMPANY_UNASSIGNED_MANAGEMENT_USER = "exception.company.unassigned.management.user";
+
+    /** 閲覧できないユーザーが含まれています。 */
+    public static final String ASSIGN_USER_ACCESS_DENIED = "exception.assign.user.access.denied";
+
+    /** グループ登録の権限がありません。 */
+    public static final String FORBIDDEN_ENTRY_GROUP = "exception.forbidden.entry.group";
+
+    /** 対象のグループは存在しません。 */
+    public static final String NOTFOUND_GROUP = "exception.notfound.group";
+
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";
 

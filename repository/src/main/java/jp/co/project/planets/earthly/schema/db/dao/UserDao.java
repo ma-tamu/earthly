@@ -11,6 +11,7 @@ import org.seasar.doma.jdbc.SelectOptions;
 import jp.co.project.planets.earthly.schema.db.dao.base.UserBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.model.entity.UserSimpleEntity;
+import jp.co.project.planets.earthly.schema.strategy.UserAggregateStrategy;
 
 /**
  * user dao
@@ -32,7 +33,24 @@ public interface UserDao extends UserBaseDao {
     List<UserSimpleEntity> selectByLoginIdAndNameAndCompany(String loginId, String name, String company,
         boolean hasViewAllCompany, String executionUserId, SelectOptions selectOptions);
 
-    @Select
-    List<User> selectCompanyManagerByName(String name, String companyId, boolean hasViewAllUser, String executionUserId,
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User> selectCompanyManagerByName(String loginId, String name,
+        String companyId, String companyName, boolean hasViewAllUser, String executionUserId,
         SelectOptions selectOptions);
+
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User> selectNotCompanyManagerByNameAndCompanyName(
+        String loginId, String name, String companyName, String companyId, boolean hasViewAllUser,
+        String executionUserId, SelectOptions selectOptions);
+
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User> selectBelongOrganizationByLikeLoginIdAndName(
+        String loginId, String name, String companyId, String organizationId, boolean hasViewAllUser,
+        String executionUserId,
+        SelectOptions selectOptions);
+
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User> selectNotBelongOrganizationByLikeLoginIdAndName(
+        String loginId, String name, String companyId, String organizationId, boolean hasViewAllUser,
+        String executionUserId, SelectOptions selectOptions);
 }

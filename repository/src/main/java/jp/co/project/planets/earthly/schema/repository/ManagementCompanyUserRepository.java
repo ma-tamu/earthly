@@ -42,6 +42,15 @@ public class ManagementCompanyUserRepository {
         }).fetchOptional();
     }
 
+    public List<ManagementCompanyUser> findByCompanyIdAndInUserId(final String companyId, final List<String> userIds) {
+        final var criteria = new ManagementCompanyUser_();
+        return queryDsl.from(criteria).where(where -> {
+            where.eq(criteria.companyId, companyId);
+            where.in(criteria.userId, userIds);
+        }).fetch();
+
+    }
+
     /**
      * 会社IDに紐づく会社管理者を取得
      * 
@@ -75,6 +84,14 @@ public class ManagementCompanyUserRepository {
     public int deleteByCompanyId(final String companyId) {
         final var criteria = new ManagementCompanyUser_();
         return queryDsl.delete(criteria).where(where -> where.eq(criteria.companyId, companyId)).execute();
+    }
+
+    public int deleteByCompanyIdAndInUserId(final String companyId, final List<String> userId) {
+        final var criteria = new ManagementCompanyUser_();
+        return queryDsl.delete(criteria).where(where -> {
+            where.eq(criteria.companyId, companyId);
+            where.in(criteria.userId, userId);
+        }).execute();
     }
 
 }

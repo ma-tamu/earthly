@@ -17,7 +17,7 @@ import jp.co.project.planets.earthly.schema.db.entity.Role;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.db.entity.User_;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.schema.model.dto.ManagementCompanyUserResultDto;
+import jp.co.project.planets.earthly.schema.model.dto.UserPageResultDto;
 import jp.co.project.planets.earthly.schema.model.dto.UserSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;
@@ -160,25 +160,57 @@ public class UserRepository {
 
     /**
      * 会社管理者のユーザーを取得
-     * 
+     *
+     * @param loginId
+     *            ログインID
      * @param name
      *            ユーザー名
      * @param companyId
      *            会社ID
-     * @param hasViewAllUser
-     *            すべてのユーザーが閲覧できるか
+     * @param companyName
+     *            会社名
      * @param pageable
      *            ページャー
+     * @param hasViewAllUser
+     *            すべてのユーザーが閲覧できるか
      * @param executionUserId
      *            実行ユーザーID
      * @return 会社管理者
      */
-    public ManagementCompanyUserResultDto findCompanyManagerByName(final String name, final String companyId,
-        final boolean hasViewAllUser, final Pageable pageable, final String executionUserId) {
+    public UserPageResultDto findCompanyManagerByLikeLoginIdAndNameAndCompanyName(final String loginId,
+        final String name, final String companyId, final String companyName, final Pageable pageable,
+        final boolean hasViewAllUser, final String executionUserId) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
-        final var userList = userDao.selectCompanyManagerByName(name, companyId, hasViewAllUser, executionUserId,
-                selectOptions);
-        return new ManagementCompanyUserResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+        final var userList = userDao.selectCompanyManagerByName(loginId, name, companyId, companyName,
+                hasViewAllUser, executionUserId, selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotCompanyManagerByNameAndCompanyName(final String loginId,
+        final String name, final String companyName, final String companyId, final boolean hasViewAllUser,
+        final Pageable pageable, final String executionUserId) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var userList = userDao.selectNotCompanyManagerByNameAndCompanyName(loginId, name, companyName, companyId,
+                hasViewAllUser, executionUserId, selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findBelongOrganizationByLikeLoginIdAndName(final String loginId, final String name,
+        final String companyId, final String organizationId, final boolean hasViewAllUser, final Pageable pageable,
+        final String executionUserId) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var userList = userDao.selectBelongOrganizationByLikeLoginIdAndName(loginId, name, companyId,
+                organizationId, hasViewAllUser, executionUserId, selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotBelongOrganizationByLikeLoginIdAndName(final String loginId, final String name,
+        final String companyId, final String organizationId, final boolean hasViewAllUser, final Pageable pageable,
+        final String executionUserId) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var userList = userDao.selectNotBelongOrganizationByLikeLoginIdAndName(loginId, name, companyId,
+                organizationId, hasViewAllUser, executionUserId, selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
     }
 
     /**

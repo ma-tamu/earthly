@@ -1,18 +1,26 @@
-//// JavaクラスとSQLファイルの出力先ディレクトリを同じにする
-//processResources.destinationDir = compileJava.destinationDir
-//// コンパイルより前にSQLファイルを出力先ディレクトリにコピーするために依存関係を逆転する
-//compileJava.dependsOn processResources
-//
-//[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
-//[compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+// JavaクラスとSQLファイルの出力先ディレクトリを同じにする
+processResources.destinationDir = compileJava.destinationDir
+// コンパイルより前にSQLファイルを出力先ディレクトリにコピーするために依存関係を逆転する
+compileJava.dependsOn processResources
+
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+[compileJava, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.seasar.doma.boot:doma-spring-boot-starter:2.1.0'
-    implementation 'org.seasar.doma:doma-core:3.5.0'
-    annotationProcessor 'org.seasar.doma:doma-processor:3.5.0'
+    implementation 'org.seasar.doma:doma-core:3.7.0'
+    annotationProcessor 'org.seasar.doma:doma-processor:3.7.0'
 
     implementation project(":core")
 }

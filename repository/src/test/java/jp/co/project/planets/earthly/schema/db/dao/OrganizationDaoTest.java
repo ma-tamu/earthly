@@ -16,7 +16,7 @@ import org.seasar.doma.jdbc.dialect.Dialect;
 /**
  * 
  */
-public class UserDaoTest {
+public class OrganizationDaoTest {
 
     /** */
     protected SqlFileRepository repository;
@@ -82,60 +82,7 @@ public class UserDaoTest {
     @Test
     public void testSelectAccessibleByPrimaryKey(final TestInfo testInfo) throws Exception {
         final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectAccessibleByPrimaryKey.sql",
-                dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectByLoginId(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectByLoginId.sql", dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectByLoginIdAndNameAndCompany(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectByLoginIdAndNameAndCompany.sql",
-                dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectByPrimaryKeysAccessibly(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectByPrimaryKeysAccessibly.sql",
-                dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectCompanyManagerByName(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectCompanyManagerByName.sql", dialect);
-        execute(sqlFile);
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testSelectNotCompanyManagerByNameAndCompanyName(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectNotCompanyManagerByNameAndCompanyName.sql",
+                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OrganizationDao/selectAccessibleByPrimaryKey.sql",
                 dialect);
         execute(sqlFile);
     }

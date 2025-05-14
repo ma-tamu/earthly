@@ -13,6 +13,8 @@ public enum PermissionEnum {
     ADD_USER("f212985ca90d11ec88720242ac120003"),
     /** 会社追加 */
     ADD_COMPANY("f212996aa90d11ec88720242ac120003"),
+    /** グループ追加 */
+    ADD_GROUP("1c4a0a592cb611f0a2d4c6a57441edb9"),
     /** 分室追加 */
     ADD_ALL_BRANCH("f2129a10a90d11ec88720242ac120003"),
     /** 所属会社の分室追加 */

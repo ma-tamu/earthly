@@ -61,7 +61,18 @@ public enum ErrorCode implements Code {
     EWA4XX024("EWA4XX024", NOT_FOUND_CUNTRY),
     /** 対象の会社は存在しません。 */
     EWA4XX025("EWA4XX025", NOT_FOUND_COMPANY),
+    /** 編集する権限がありません。 */
     EWA4XX026("EWA4XX026", NOT_HAVE_PERMISSION_EDIT),
+    /** 既に割り当て済みのユーザーが存在しています。 */
+    EWA4XX027("EWA4XX027", COMPANY_ASSIGNED_MANAGEMENT_USER),
+    /** 閲覧できないユーザーが含まれています。 */
+    EWA4XX028("EWA4XX028", ASSIGN_USER_ACCESS_DENIED),
+    /** 未割り当てのユーザーが存在しています。 */
+    EWA4XX029("EWA4XX029", COMPANY_UNASSIGNED_MANAGEMENT_USER),
+    /** グループ登録の権限がありません。 */
+    EWA4XX030("EWA4XX030", FORBIDDEN_ENTRY_GROUP),
+    /** 対象のグループは存在しません。 */
+    EWA4XX031("EWA4XX031", NOTFOUND_GROUP),
     /** {0}の登録に失敗しました。 */
     EWA5XX001("EWA5XX001", FAILED_INSERT),
     EWA5XX999("EWA5XX999", UNEXPECTED);

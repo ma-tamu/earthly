@@ -3,9 +3,8 @@ package jp.co.project.planets.earthly.webapp.controller;
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
 
-import java.util.Collections;
-
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.ServletRequest;
-import jp.co.project.planets.earthly.schema.db.entity.Organization;
-import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
 import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyEditForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyGroupEntryForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyGroupSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyManagementUserAssignForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyManagementUserSearchForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyManagementUserUnassignForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.CompanyNotAssignUserSearchForm;
+import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import jp.co.project.planets.earthly.webapp.service.CompanyGroupService;
 import jp.co.project.planets.earthly.webapp.service.CompanyService;
 
 /**
@@ -37,9 +41,11 @@ import jp.co.project.planets.earthly.webapp.service.CompanyService;
 public class CompanyDetailController {
 
     private final CompanyService companyService;
+    private final CompanyGroupService companyGroupService;
 
-    public CompanyDetailController(final CompanyService companyService) {
+    public CompanyDetailController(final CompanyService companyService, final CompanyGroupService companyGroupService) {
         this.companyService = companyService;
+        this.companyGroupService = companyGroupService;
     }
 
     /**
@@ -55,17 +61,21 @@ public class CompanyDetailController {
      */
     @GetMapping
     public ModelAndView index(@PathVariable("id") final String id, final Model model,
-        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto, final ServletRequest servletRequest) {
-        final var companyDetailDto = companyService.findDetail(id, userInfoDto);
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var companyDetailDto = companyService.detail(id, userInfoDto);
         final var company = companyDetailDto.company();
         final var companyEditForm = new CompanyEditForm(company.getName(), company.getCountryId());
+        final var companyManagementUserSearchForm = new CompanyManagementUserSearchForm(null, null, null, false);
+        final var companyGroupEntryForm = new CompanyGroupEntryForm(null);
         return new ModelAndView("companies/detail")
                 .addObject(company)
                 .addObject("countryList", companyDetailDto.countryList())
                 .addObject(companyEditForm)
-                .addObject("groupPage", new PageImpl<Organization>(Collections.emptyList()))
+                .addObject(companyManagementUserSearchForm)
+                .addObject(companyGroupEntryForm)
+                .addObject("groupPage", companyDetailDto.groupPage())
                 .addObject("managementUserPage", companyDetailDto.managementUserPage())
-                .addObject("unassignedManagementUserPage", new PageImpl<User>(Collections.emptyList()))
+                .addObject("unassignedManagementUserPage", companyDetailDto.notManagementUserPage())
                 .addAllObjects(model.asMap());
     }
 
@@ -178,4 +188,83 @@ public class CompanyDetailController {
 
         return new ModelAndView(REDIRECT_COMPANY_LIST);
     }
+
+    @GetMapping("management-users")
+    public ModelAndView searchManagementUser(@PathVariable("id") final String id,
+        final CompanyManagementUserSearchForm companyManagementUserSearchForm, @PageableDefault final Pageable pageable,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var managementUserPage = companyService.searchManagementUser(id, companyManagementUserSearchForm.toDto(),
+                pageable, userInfoDto);
+        return new ModelAndView("companies/detail::managementUserContent")//
+                .addObject("managementUserPage", managementUserPage);
+    }
+
+    @GetMapping("management-users/not-assigns")
+    public ModelAndView searchNotAssignManagementUser(@PathVariable("id") final String id,
+        final CompanyNotAssignUserSearchForm companyNotAssignUserSearchForm, @PageableDefault final Pageable pageable,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var unassignedManagementUserPage = companyService.searchNotAssignUserUser(id,
+                companyNotAssignUserSearchForm.toDto(), pageable, userInfoDto);
+        return new ModelAndView("companies/modal::unassignedManagementUserPage") //
+                .addObject("unassignedManagementUserPage", unassignedManagementUserPage);
+    }
+
+    @PostMapping("management-users/assigns")
+    public ModelAndView assignManagementUser(@PathVariable("id") final String id,
+        @ModelAttribute @Validated final CompanyManagementUserAssignForm companyManagementUserAssignForm,
+        final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
+        }
+
+        try {
+            companyService.assignManagementUser(id, companyManagementUserAssignForm.userId(), userInfoDto);
+            return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
+        } catch (final BadRequestException e) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
+                    .addObject(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
+    }
+
+    @PostMapping("management-users/unassigns")
+    public ModelAndView unassignManagementUser(@PathVariable("id") final String id,
+        @ModelAttribute @Validated final CompanyManagementUserUnassignForm companyManagementUserUnassignForm,
+        final BindingResult bindingResult, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
+        }
+
+        try {
+            companyService.unassignManagementUser(id, companyManagementUserUnassignForm.userId(), userInfoDto);
+            return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
+        } catch (final BadRequestException e) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
+                    .addObject(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
+    }
+
+    @GetMapping("groups")
+    public ModelAndView searchGroup(@PathVariable("id") final String id,
+        final CompanyGroupSearchForm companyGroupSearchForm, @PageableDefault final Pageable pageable,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var groupPage = companyService.searchGroup(id, companyGroupSearchForm.groupName(), pageable, userInfoDto);
+        return new ModelAndView("companies/detail::groupPage", "groupPage", groupPage);
+    }
+
+    @PostMapping("groups/entries")
+    public ModelAndView entryGroup(@PathVariable("id") final String id,
+        @ModelAttribute @Validated final CompanyGroupEntryForm companyGroupEntryForm, final BindingResult bindingResult,
+        final RedirectAttributes redirectAttributes, final Model model,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        model.asMap().forEach(redirectAttributes::addFlashAttribute);
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("redirect:/companies/%s".formatted(id));
+        }
+        final var groupId = companyGroupService.entry(id, companyGroupEntryForm.groupName(), userInfoDto);
+        return new ModelAndView("redirect:/companies/%s/groups/%s".formatted(id, groupId));
+    }
+
 }

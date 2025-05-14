@@ -1,10 +1,16 @@
 package jp.co.project.planets.earthly.schema.repository;
 
+import java.util.Optional;
+
+import org.seasar.doma.boot.Pageables;
 import org.seasar.doma.jdbc.criteria.QueryDsl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.OrganizationDao;
+import jp.co.project.planets.earthly.schema.db.entity.Organization;
 import jp.co.project.planets.earthly.schema.db.entity.Organization_;
+import jp.co.project.planets.earthly.schema.model.dto.GroupPageResultDto;
 
 /**
  * 組織リポジトリ
@@ -20,6 +26,34 @@ public class OrganizationRepository {
         this.queryDsl = queryDsl;
     }
 
+    public Optional<jp.co.project.planets.earthly.schema.model.entity.Organization>
+            findAccessibleByPrimaryKey(final String id, final boolean hasViewAllCompany, final String operatorUserId) {
+        return organizationDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, operatorUserId);
+    }
+
+    public Optional<Organization> findByCompanyIdAndName(final String companyId, final String name) {
+        final var criteria = new Organization_();
+        return queryDsl.from(criteria).where(where -> {
+            where.eq(criteria.companyId, companyId);
+            where.eq(criteria.name, name);
+        }).orderBy(order -> order.desc(criteria.createdAt)).fetchOptional();
+    }
+
+    public GroupPageResultDto findByCompanyIdAndLikeName(final String companyId, final String name,
+        final Pageable pageable) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var list = organizationDao.selectByCompanyIdAndLikeName(companyId, name, selectOptions);
+        return new GroupPageResultDto(list, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public int insert(final Organization organization) {
+        return organizationDao.insert(organization);
+    }
+
+    public int update(final Organization organization) {
+        return organizationDao.update(organization);
+    }
+
     /**
      * 会社IDで組織を削除
      * 
@@ -29,6 +63,13 @@ public class OrganizationRepository {
      */
     public int deleteByCompanyId(final String companyId) {
         final var criteria = new Organization_();
-        return queryDsl.delete(criteria).where(where -> where.eq(criteria.companyId, companyId)).execute();
+        return queryDsl.update(criteria).set(set -> set.value(criteria.isDeleted, true))
+                .where(where -> where.eq(criteria.companyId, companyId)).execute();
+    }
+
+    public int delete(final String id) {
+        final var criteria = new Organization_();
+        return queryDsl.update(criteria).set(set -> set.value(criteria.isDeleted, true))
+                .where(where -> where.eq(criteria.id, id)).execute();
     }
 }

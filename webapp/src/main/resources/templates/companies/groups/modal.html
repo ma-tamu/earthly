@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- グループ編集 -->
+<div class="modal" id="edit" tabindex="-1" th:fragment="edit(compnayId, id)">
+  <div class="modal-dialog modal-dialog-centered modal-lg edit-modal">
+    <div class="modal-content">
+      <form method="post" th:action="@{/companies/__${compnayId}__/groups/__${id}__/edit}"
+            th:object="${groupEditForm}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{page.modal.title.company.group.edit}">グループ編集</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body edit">
+          <div class="row mb-3">
+            <div class="col-3" th:text="#{page.label.company.group.name}">グループ名</div>
+            <div class="col-9">
+              <input type="text" class="form-control" id="name"
+                     th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                     th:field="*{name}" oninput="activeSubmitButton()">
+              <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+                グループ名は必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary entry-cancel" data-dismiss="modal"
+                  th:text="#{page.button.cancel}">キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.confirm}">確認</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- グループ編集確認 -->
+<div class="modal" id="confirm" tabindex="-1" th:fragment="confirm(companyId, id)">
+  <div class="modal-dialog modal-dialog-centered modal-lg entry-confirm-modal">
+    <div class="modal-content">
+      <form method="post" th:action="@{/companies/__${companyId}__/groups/__${id}__/update}"
+            th:object="${groupEditForm}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{page.modal.title.company.group.confirm.edit}">グループ編集確認</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.company.group.name}">グループ名</label>
+            <div class="col-sm-9">
+              <input type="hidden" class="form-control" name="name" th:value="*{name}">
+              <th:block th:text="*{name}"></th:block>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary entry-cancel" data-dismiss="modal"
+                  th:text="#{page.button.cancel}">キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.update}">更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- グループ削除 -->
+<div class="modal" id="delete" tabindex="-1" th:fragment="delete(companyId, id)">
+  <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
+    <div class="modal-content">
+      <form method="post" th:action="@{/companies/__${companyId}__/groups/__${id}__/delete}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{page.modal.title.company.group.delete}">グループ削除</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>削除しますか?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{page.button.cancel}">
+            キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 所属ユーザー割り当て -->
+<div th:fragment="assignBelongUser(companyId, id)" class="modal" id="assignBelongUser" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{page.modal.title.user.search}">ユーザー検索</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="get" name="searchNotBelongUser" onsubmit="return false;"
+              th:action="@{/companies/__${id}__/groups/__${id}__/users/not-belongs}">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+            </div>
+            <div class="card-body">
+              <div class="row m-1">
+                <div class="col-6">
+                  <label th:text="#{page.label.user.loginId}" style="margin-bottom: .1rem">ログインID</label>
+                  <input type="text" class="form-control form-control-sm" name="loginId">
+                </div>
+                <div class="col-6">
+                  <label th:text="#{page.label.user.name}" style="margin-bottom: .1rem">ユーザー名</label>
+                  <input type="text" class="form-control form-control-sm" name="name">
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-12">
+                  <button class="btn btn-primary search-not-belong-user" type="button">
+                    <i class="fas fa-search"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form name="assignBelongUser" method="post" th:action="@{/companies/__${companyId}__/groups/__${id}__/users/belongs}">
+          <div id="notBelongUser">
+            <th:block th:fragment="notBelongUserPage">
+              <th:block th:if="${!notBelongUserPage.isEmpty()}">
+                <th:block th:replace="parts/pagination::pagination(${notBelongUserPage})"/>
+                <table class="table table-sm table-striped">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.user.loginId}">ログインID</th>
+                    <th th:text="#{page.label.user.name}">ユーザー名</th>
+                    <th th:tel="#{page.label.user.company}">所属会社</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="user:${notBelongUserPage.content}">
+                    <td th:text="${user.loginId}">
+                        ログインID
+                    </td>
+                    <td>
+                      <a th:href="@{/users/__${user.id}__}" th:text="${user.name}">
+                        ユーザー名
+                      </a>
+                    </td>
+                    <td>
+                      <a th:href="@{/companies/__${user.company.id}__}" th:text="${user.company.name}">
+                        所属会社
+                      </a>
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input assign-belong-user" name="userId"
+                             th:value="${user.id}" onclick="activeBelongUserAssignButton()" >
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <th:block th:replace="parts/pagination::pagination(${notBelongUserPage})"/>
+              </th:block>
+            </th:block>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary assign-belong-user" disabled="disabled">割り当て</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.jilt.Builder;
 
-import jp.co.project.planets.earthly.schema.db.entity.User;
+import jp.co.project.planets.earthly.schema.model.entity.User;
 
 /**
- * 会社管理社結果DTO
+ * ユーザーページDTO
  * 
  * @param userList
  *            ユーザーリスト
@@ -17,5 +17,5 @@ import jp.co.project.planets.earthly.schema.db.entity.User;
  *            総件数
  */
 @Builder(factoryMethod = "builder")
-public record ManagementCompanyUserResultDto(List<User> userList, long offset, long total) {
+public record UserPageResultDto(List<User> userList, long offset, long total) {
 }

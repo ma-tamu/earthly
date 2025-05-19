@@ -7,9 +7,11 @@ import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.OrganizationDao;
 import jp.co.project.planets.earthly.schema.db.entity.Organization;
 import jp.co.project.planets.earthly.schema.db.entity.Organization_;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.GroupPageResultDto;
 
 /**
@@ -27,8 +29,9 @@ public class OrganizationRepository {
     }
 
     public Optional<jp.co.project.planets.earthly.schema.model.entity.Organization>
-            findAccessibleByPrimaryKey(final String id, final boolean hasViewAllCompany, final String operatorUserId) {
-        return organizationDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, operatorUserId);
+            findAccessibleByPrimaryKey(final String id, final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        return organizationDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, account.id());
     }
 
     public Optional<Organization> findByCompanyIdAndName(final String companyId, final String name) {

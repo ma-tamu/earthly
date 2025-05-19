@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ import jp.co.project.planets.earthly.common.logic.RoleLogic;
 import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
 import jp.co.project.planets.earthly.schema.db.entity.UserRole;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
@@ -89,6 +91,7 @@ public class UserService {
      * @param cryptoLogic
      *            crypto logic
      * @param totpLogic
+     *            Time-based One-Time Password logic
      */
     public UserService(final UserLogic userLogic, final UserRepository userRepository,
         final CompanyRepository companyRepository, final RoleRepository roleRepository,
@@ -112,24 +115,35 @@ public class UserService {
      *
      * @param id
      *            ユーザーID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return UserEntity
      */
     @Transactional
-    public UserDetailDto getById(final String id, final EarthlyUserInfoDto userInfoDto) {
-        validateAccessible(id, userInfoDto);
-        final var userEntity = userLogic.getAccessibleEntity(id, userInfoDto.permissionEnumList(), userInfoDto.id())
+    public UserDetailDto getDetail(final String id, final Account account) {
+        validateAccessible(id, account);
+        final var user = userLogic.getAccessibleEntity(id, account)
                 .orElseThrow(() -> new NotFoundException(String.format("not found user user=%s.", id), EWA4XX002));
-        final var unassignedRoleDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, null,
-                PageRequest.of(0, 10), userInfoDto.id(), userInfoDto.permissionEnumList());
-        final var unassignedRolePage = new PageImpl<>(unassignedRoleDto.roleList());
 
-        if (!userEntity.isMfa()) {
-            return new UserDetailDto(userEntity, null, unassignedRolePage);
+        final var pageRequest = PageRequest.of(0, 10);
+        final var roleSearchResultDto = roleRepository.findAssignedRoleByUserIdAndLikeName(id, null, pageRequest,
+                account);
+        final var grantRolePage = new PageImpl<>(roleSearchResultDto.roleList(), pageRequest,
+                roleSearchResultDto.total());
+
+        final var unassignedRoleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, null,
+                pageRequest, account);
+        final var unassignedRolePage = new PageImpl<>(unassignedRoleSearchResultDto.roleList(), pageRequest,
+                unassignedRoleSearchResultDto.total());
+
+        final var companyList = companyRepository.findByUserId(id, pageRequest, account);
+        final var managementCompanyPage = new PageImpl<>(companyList.companyList(), pageRequest, companyList.total());
+
+        if (BooleanUtils.isFalse(user.getTwoFactorAuthentication())) {
+            return new UserDetailDto(user, null, grantRolePage, unassignedRolePage, managementCompanyPage);
         }
-        final var image = totpLogic.generateQrImage(userEntity.loginId(), userEntity.secret());
-        return new UserDetailDto(userEntity, image, unassignedRolePage);
+        final var image = totpLogic.generateQrImage(user.getLoginId(), user.getSecret());
+        return new UserDetailDto(user, image, grantRolePage, unassignedRolePage, managementCompanyPage);
     }
 
     /**
@@ -137,21 +151,21 @@ public class UserService {
      *
      * @param id
      *            ユーザーID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws ForbiddenException
      *             対象ユーザー閲覧できない場合に発生
      */
     @VisibleForTesting
-    void validateAccessible(final String id, final EarthlyUserInfoDto userInfoDto) {
+    void validateAccessible(final String id, final Account account) {
 
         // VIEW_ALL_USERを保持している場合は、すべてのユーザーを閲覧できるので検証処理を終了する
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER)) {
+        if (account.permissions().contains(PermissionEnum.VIEW_ALL_USER)) {
             return;
         }
 
         // 自分自身の場合は閲覧可能のため検証処理を終了する
-        if (StringUtils.equals(id, userInfoDto.id())) {
+        if (StringUtils.equals(id, account.id())) {
             return;
         }
 
@@ -165,41 +179,40 @@ public class UserService {
      *            ユーザー検索DTO
      * @param pageable
      *            ページャー
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 検索結果
      */
     @Transactional
     public PageImpl<UserSimpleEntity> search(final UserSearchDto userSearchDto, final Pageable pageable,
-        final EarthlyUserInfoDto userInfoDto) {
+        final Account account) {
 
         final var userSearchResultDto = userRepository.findByLoginIdAndNameAndCompany(userSearchDto.loginId(),
-                userSearchDto.name(), userSearchDto.company(), pageable, userInfoDto.permissionEnumList(),
-                userInfoDto.id());
+                userSearchDto.name(), userSearchDto.company(), pageable, account);
 
         return new PageImpl<>(userSearchResultDto.userSimpleEntityList(), pageable, userSearchResultDto.total());
     }
 
-    public void validateEntryOperation(final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
+    public void validateEntryOperation(final UserDto userDto, final Account account) {
 
-        validateUserAddOperationPermission(userInfoDto);
-        validateUserAddingCompany(userDto.company(), userInfoDto);
+        validateUserAddOperationPermission(account);
+        validateUserAddingCompany(userDto.company(), account);
 
     }
 
     /**
      * ユーザー追加操作可能か検証
      *
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      */
-    public void validateUserAddOperationPermission(final EarthlyUserInfoDto userInfoDto) {
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.ADD_USER)) {
+    public void validateUserAddOperationPermission(final Account account) {
+        if (account.permissions().contains(PermissionEnum.ADD_USER)) {
             return;
         }
 
-        final var companyList = companyRepository.findAccessibleByUserId(userInfoDto.id(), Optional.empty(),
-                userInfoDto.permissionEnumList());
+        final var companyList = companyRepository.findAccessibleByUserId(account.id(), Optional.empty(),
+                account);
         if (CollectionUtils.isEmpty(companyList)) {
             throw new ForbiddenException(EWA4XX004);
         }
@@ -210,14 +223,13 @@ public class UserService {
      *
      * @param companyId
      *            会社ID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws ForbiddenException
      *             ユーザーを追加できない会社の場合に発生
      */
-    void validateUserAddingCompany(final String companyId, final EarthlyUserInfoDto userInfoDto) {
-        final var companyOptional = companyRepository.findByAccessiblePrimaryKey(companyId,
-                userInfoDto.permissionEnumList(), userInfoDto.id());
+    void validateUserAddingCompany(final String companyId, final Account account) {
+        final var companyOptional = companyRepository.findByAccessiblePrimaryKey(companyId, account);
         if (companyOptional.isEmpty()) {
             throw new ForbiddenException(EWA4XX004);
         }
@@ -228,16 +240,16 @@ public class UserService {
      *
      * @param userDto
      *            user dto
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return ユーザーID
      */
     @Transactional
-    public String create(final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
+    public String create(final UserDto userDto, final Account account) {
 
-        validateEntryOperation(userDto, userInfoDto);
+        validateEntryOperation(userDto, account);
 
-        final var user = userLogic.create(userDto, userInfoDto.id()) //
+        final var user = userLogic.create(userDto, account.id()) //
                 .orElseThrow(() -> new NotFoundException(EWA4XX002));
         return user.getId();
     }
@@ -249,18 +261,18 @@ public class UserService {
      *            ユーザーID
      * @param userDto
      *            ユーザーDTO
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws ForbiddenException
      *             編集権限がないまたは、変更できない会社の場合に発生
      */
-    public void validateUpdating(final String id, final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
-        final boolean canOperatingEdit = hasEditPermission(id, userDto, userInfoDto);
+    public void validateUpdating(final String id, final UserDto userDto, final Account account) {
+        final boolean canOperatingEdit = hasEditPermission(id, userDto, account);
         if (!canOperatingEdit) {
             throw new ForbiddenException(EWA4XX005);
         }
 
-        final boolean canModifyBelongCompany = canModifyBelongCompany(userDto, userInfoDto);
+        final boolean canModifyBelongCompany = canModifyBelongCompany(userDto, account);
         if (!canModifyBelongCompany) {
             throw new ForbiddenException(EWA4XX006);
         }
@@ -273,25 +285,25 @@ public class UserService {
      *            id
      * @param userDto
      *            user dto
-     * @param userInfoDto
+     * @param account
      *            user info dto
      * @return true: 編集可能 false: 編集不可
      */
     @VisibleForTesting
-    boolean hasEditPermission(final String id, final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
+    boolean hasEditPermission(final String id, final UserDto userDto, final Account account) {
 
         // edit_userを持っている場合は、変更可能とする。
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_USER)) {
+        if (account.permissions().contains(PermissionEnum.EDIT_USER)) {
             return true;
         }
 
         // 同じ所属会社の場合は、変更可能とする。
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
-            return StringUtils.equals(userDto.company(), userInfoDto.company().id());
+        if (account.permissions().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
+            return StringUtils.equals(userDto.company(), account.belongCompany().id());
         }
 
         // 自分自身の場合は、変更可能とする。
-        return StringUtils.equals(id, userInfoDto.id());
+        return StringUtils.equals(id, account.id());
     }
 
     /**
@@ -299,26 +311,26 @@ public class UserService {
      *
      * @param userDto
      *            user dto
-     * @param userInfoDto
+     * @param account
      *            user info dto
      * @return true: 変更可能 false: 変更不可能
      */
     @VisibleForTesting
-    boolean canModifyBelongCompany(final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
+    boolean canModifyBelongCompany(final UserDto userDto, final Account account) {
 
         // すべての会社が閲覧できる場合は、変更可能とする。
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY)) {
+        if (account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY)) {
             return true;
         }
 
         // 操作ユーザーと同じ所属会社と同じ場合は、変更可能とする。
         final var afterCompanyId = userDto.company();
-        if (StringUtils.equals(afterCompanyId, userInfoDto.company().id())) {
+        if (StringUtils.equals(afterCompanyId, account.belongCompany().id())) {
             return true;
         }
 
         // 管理している会社の場合は、変更可能とする。
-        final var companyList = companyRepository.findManagementCompanyByUserId(userInfoDto.id());
+        final var companyList = companyRepository.findManagementCompanyByUserId(account.id());
         return CollectionUtils.containsAny(companyList, afterCompanyId);
     }
 
@@ -355,7 +367,7 @@ public class UserService {
         final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
         final var encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
-        user.setUpdatedBy(userInfoDto.id());
+        user.setUpdatedBy(userInfoDto.account().id());
         user.setUpdatedAt(LocalDateTime.now(Clock.systemUTC()));
         userRepository.update(user);
     }
@@ -406,16 +418,16 @@ public class UserService {
      *            ユーザーID
      * @param userDto
      *            ユーザーDTO
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 更新メッセージ
      */
     @Transactional
-    public String update(final String id, final UserDto userDto, final EarthlyUserInfoDto userInfoDto) {
+    public String update(final String id, final UserDto userDto, final Account account) {
 
-        validateUpdating(id, userDto, userInfoDto);
+        validateUpdating(id, userDto, account);
         final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
-        userLogic.update(user, userDto, userInfoDto.id());
+        userLogic.update(user, userDto, account.id());
         return messageSource.getMessage(MessageKey.UPDATE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
     }
 
@@ -424,15 +436,15 @@ public class UserService {
      *
      * @param id
      *            ユーザーID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 削除メッセージ
      */
-    public String delete(final String id, final EarthlyUserInfoDto userInfoDto) {
-        validateDeleteOperation(id, userInfoDto);
+    public String delete(final String id, final Account account) {
+        validateDeleteOperation(id, account);
 
         final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new BadRequestException(EWA4XX002));
-        user.setUpdatedBy(userInfoDto.id());
+        user.setUpdatedBy(account.id());
         user.setIsDeleted(true);
         userRepository.update(user);
         return messageSource.getMessage(MessageKey.DELETE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
@@ -443,17 +455,17 @@ public class UserService {
      *
      * @param id
      *            ユーザーID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws BadRequestException
      *             操作ユーザーと削除ユーザーが同じ場合に発生
      */
     @VisibleForTesting
-    void validateDeleteOperation(@Nonnull final String id, final EarthlyUserInfoDto userInfoDto) {
-        if (StringUtils.equals(id, userInfoDto.id())) {
+    void validateDeleteOperation(@Nonnull final String id, final Account account) {
+        if (StringUtils.equals(id, account.id())) {
             throw new BadRequestException(EWA4XX002);
         }
-        validateDeletePermission(id, userInfoDto);
+        validateDeletePermission(id, account);
     }
 
     /**
@@ -461,32 +473,32 @@ public class UserService {
      *
      * @param id
      *            ユーザーID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws ForbiddenException
      *             削除権限を保持していない場合に発生
      */
-    void validateDeletePermission(final String id, final EarthlyUserInfoDto userInfoDto) {
+    void validateDeletePermission(final String id, final Account account) {
 
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_USER)) {
+        if (account.permissions().contains(PermissionEnum.EDIT_USER)) {
             return;
         }
 
-        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
+        if (!account.permissions().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
             return;
         }
 
         final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
-        if (StringUtils.equals(user.getCompanyId(), userInfoDto.company().id())) {
+        if (StringUtils.equals(user.getCompanyId(), account.belongCompany().id())) {
             return;
         }
         throw new ForbiddenException(EWA4XX008);
     }
 
-    public Page<Role> findAssignedRole(final String id, final Optional<String> roleNameOptional,
-        final Pageable pageable, final EarthlyUserInfoDto userInfoDto) {
-        final var roleSearchResultDto = roleRepository.findAssignedRoleByUserIdAndLikeName(id, roleNameOptional,
-                pageable, userInfoDto.id(), userInfoDto.permissionEnumList());
+    public Page<Role> findAssignedRole(final String id, final String roleName, final Pageable pageable,
+        final Account account) {
+        final var roleSearchResultDto = roleRepository.findAssignedRoleByUserIdAndLikeName(id, roleName,
+                pageable, account);
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
     }
 
@@ -499,15 +511,15 @@ public class UserService {
      *            ロール名
      * @param pageable
      *            ページャー
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return ロールページ
      */
     @Transactional
     public PageImpl<Role> findUnassignedRole(final String id, final String roleName, final Pageable pageable,
-        final EarthlyUserInfoDto userInfoDto) {
+        final Account account) {
         final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, roleName, pageable,
-                userInfoDto.id(), userInfoDto.permissionEnumList());
+                account);
         return new PageImpl<>(roleSearchResultDto.roleList(), pageable, roleSearchResultDto.total());
     }
 
@@ -518,18 +530,18 @@ public class UserService {
      *            ユーザーID
      * @param assignRoleList
      *            割り当てるロールリスト
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      */
     @Transactional
-    public void assignRole(final String id, final List<String> assignRoleList, final EarthlyUserInfoDto userInfoDto) {
+    public void assignRole(final String id, final List<String> assignRoleList, final Account account) {
 
-        validateAccessible(id, userInfoDto);
-        validateAssignableRole(id, assignRoleList, userInfoDto);
+        validateAccessible(id, account);
+        validateAssignableRole(id, assignRoleList, account);
         validateGrantingRoleDuplication(id, assignRoleList);
 
         for (final var roleId : assignRoleList) {
-            final var userRole = new UserRole(null, id, roleId, LocalDateTime.now(ZoneOffset.UTC), userInfoDto.id());
+            final var userRole = new UserRole(null, id, roleId, LocalDateTime.now(ZoneOffset.UTC), account.id());
             userRoleRepository.insert(userRole);
         }
     }
@@ -541,16 +553,16 @@ public class UserService {
      *            ユーザーID
      * @param assignRoleList
      *            割り当てるロールリスト
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws ForbiddenException
      *             ロールを割り当てられない場合に発生
      */
     @VisibleForTesting
     void validateAssignableRole(final String id, final List<String> assignRoleList,
-        final EarthlyUserInfoDto userInfoDto) {
+        final Account account) {
         final var roleSearchResultDto = roleRepository.findUnassignedRoleByUserIdAndLikeName(id, StringUtils.EMPTY,
-                Pageable.ofSize(Integer.MAX_VALUE), userInfoDto.id(), userInfoDto.permissionEnumList());
+                Pageable.ofSize(Integer.MAX_VALUE), account);
         final var unassignedRoleIdList = roleSearchResultDto.roleList().stream().map(Role::getId).toList();
         final var accessDeniedUnassignedRole = assignRoleList.stream().filter(s -> !unassignedRoleIdList.contains(s))
                 .collect(Collectors.joining(", "));
@@ -579,9 +591,8 @@ public class UserService {
     }
 
     @Transactional
-    public void unassignedRole(final String id, final List<String> unassignedRoleList,
-        final EarthlyUserInfoDto userInfoDto) {
-        validateAccessible(id, userInfoDto);
+    public void unassignedRole(final String id, final List<String> unassignedRoleList, final Account account) {
+        validateAccessible(id, account);
         // validateAssignableRole(id, unassignedRoleList, userInfoDto);
 
         final var userRoleList = userRoleRepository.findByUserIdAndRoleId(id, unassignedRoleList);

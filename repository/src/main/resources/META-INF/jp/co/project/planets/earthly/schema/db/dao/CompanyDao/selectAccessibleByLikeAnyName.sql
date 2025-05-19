@@ -1,15 +1,7 @@
 SELECT
-  company.id as id,
-  company.name AS name,
-  country.id AS country_id,
-  country.name AS country_name,
-  company.created_at AS created_at,
-  company.created_by AS created_by,
-  company.updated_at AS updated_at,
-  company.is_deleted AS is_deleted
+  *
 FROM
   company
-  LEFT OUTER JOIN country ON company.country_id = country.id
 WHERE
   /*%if !hasViewAllCompany */
     company.id IN (

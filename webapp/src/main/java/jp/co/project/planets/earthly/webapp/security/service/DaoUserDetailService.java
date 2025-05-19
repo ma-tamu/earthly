@@ -6,10 +6,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
+import jp.co.project.planets.earthly.core.account.Account;
+import jp.co.project.planets.earthly.core.account.Company;
+import jp.co.project.planets.earthly.core.account.MultiFactor;
 import jp.co.project.planets.earthly.schema.repository.UserRepository;
 import jp.co.project.planets.earthly.webapp.logic.PermissionLogic;
-import jp.co.project.planets.earthly.webapp.security.dto.CompanyDto;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
@@ -19,13 +20,10 @@ import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 public class DaoUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final CompanyRepository companyRepository;
     private final PermissionLogic permissionLogic;
 
-    public DaoUserDetailService(final UserRepository userRepository, final CompanyRepository companyRepository,
-            final PermissionLogic permissionLogic) {
+    public DaoUserDetailService(final UserRepository userRepository, final PermissionLogic permissionLogic) {
         this.userRepository = userRepository;
-        this.companyRepository = companyRepository;
         this.permissionLogic = permissionLogic;
     }
 
@@ -37,13 +35,11 @@ public class DaoUserDetailService implements UserDetailsService {
         final var permissionEnumList = permissionLogic.findPermissionEnumListByUserId(user.getId());
         final var grantedAuthorities = permissionEnumList.stream().map(
                 it -> new SimpleGrantedAuthority(it.name())).toList();
-        final var company = companyRepository
-                .findByAccessiblePrimaryKey(user.getCompanyId(), permissionEnumList, user.getId())
-                .map(entity -> new CompanyDto(entity.getId(), entity.getName()))
-                .orElseThrow(() -> new UsernameNotFoundException("user not found."));
 
-        return new EarthlyUserInfoDto(user.getId(), user.getLoginId(), user.getName(), user.getPassword(),
-                user.getLockout(), user.getTwoFactorAuthentication(), false, user.getSecret(), company,
-                permissionEnumList, grantedAuthorities);
+        final var multiFactor = new MultiFactor(user.getTwoFactorAuthentication(), user.getSecret());
+        final var company = new Company(user.getCompany().getId(), user.getCompany().getName());
+        final var account = new Account(user.getId(), user.getLoginId(), user.getName(), user.getMail(),
+                user.getLockout(), multiFactor, company, permissionEnumList);
+        return new EarthlyUserInfoDto(account, user.getPassword(), grantedAuthorities);
     }
 }

@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.schema.model.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import org.seasar.doma.Association;
 import org.seasar.doma.Entity;
@@ -11,34 +12,60 @@ import org.seasar.doma.jdbc.entity.NamingType;
 public class User implements Serializable {
     @Serial
     private static final long serialVersionUID = 5625028873040538675L;
+
+    /** id */
     private String id;
+
+    /** ログインID */
     private String loginId;
+
+    /** ユーザー名 */
     private String name;
-    private String mail;
+
+    /** 性別 */
     private String gender;
+
+    /**  */
     private String language;
+
+    /**  */
     private String timezone;
+
+    /** メールアドレス */
+    private String mail;
+
+    /** パスワード */
+    private String password;
+
+    /** ロックアウト */
     private Boolean lockout;
+
+    /**  */
     private Boolean twoFactorAuthentication;
+
+    /**  */
+    private String secret;
+
+    /** 所属会社 */
+    private String companyId;
+
+    /** 作成日 */
+    private LocalDateTime createdAt;
+
+    /** 作成者 */
+    private String createdBy;
+
+    /** 更新日 */
+    private LocalDateTime updatedAt;
+
+    /** 更新者 */
+    private String updatedBy;
+
+    /** 削除フラグ */
+    private Boolean isDeleted;
+
     @Association
     private Company company;
-
-    public User() {
-    }
-
-    public User(final String id, final String loginId, final String name, final String mail, final String gender, final String language,
-                final String timezone, final Boolean lockout, final Boolean twoFactorAuthentication, final Company company) {
-        this.id = id;
-        this.loginId = loginId;
-        this.name = name;
-        this.mail = mail;
-        this.gender = gender;
-        this.language = language;
-        this.timezone = timezone;
-        this.lockout = lockout;
-        this.twoFactorAuthentication = twoFactorAuthentication;
-        this.company = company;
-    }
 
     public String getId() {
         return id;
@@ -62,14 +89,6 @@ public class User implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(final String mail) {
-        this.mail = mail;
     }
 
     public String getGender() {
@@ -96,6 +115,22 @@ public class User implements Serializable {
         this.timezone = timezone;
     }
 
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(final String mail) {
+        this.mail = mail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
     public Boolean getLockout() {
         return lockout;
     }
@@ -110,6 +145,62 @@ public class User implements Serializable {
 
     public void setTwoFactorAuthentication(final Boolean twoFactorAuthentication) {
         this.twoFactorAuthentication = twoFactorAuthentication;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(final String secret) {
+        this.secret = secret;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(final String companyId) {
+        this.companyId = companyId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(final LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(final String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(final LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(final String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(final Boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Company getCompany() {

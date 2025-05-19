@@ -216,7 +216,7 @@
               <div class="custom-control custom-switch">
                 <input type="checkbox" id="mfa" name="mfa" class="custom-control-input"
                        th:classappend="${#fields.hasErrors('mfa')}?'is-invalid'"
-                       th:checked="*{mfa}" th:data-before="${userEntity.mfa}" value="true">
+                       th:checked="*{mfa}" th:data-before="${userDetailDto.user.twoFactorAuthentication}" value="true">
                 <label class="custom-control-label" for="mfa">&nbsp;</label>
                 <div class="invalid-feedback" th:errors="*{mfa}" th:if="${#fields.hasErrors('mfa')}">
                   2要素認証は必須です。
@@ -398,7 +398,7 @@
         ロール検索
       </div>
       <div class="modal-body">
-        <form method="get" name="roleSearch" onsubmit="return false;" th:action="@{/users/__${id}__/roles}">
+        <form method="get" name="searchUnassignRole" onsubmit="return false;" th:action="@{/users/__${id}__/roles}">
           <div class="card">
             <div class="card-body">
               <h5 th:text="#{page.modal.title.search}">検索条件</h5>
@@ -410,7 +410,7 @@
               </div>
               <div class="row text-center m-1">
                 <div class="col-12">
-                  <button class="btn btn-primary on-search" type="button">
+                  <button class="btn btn-primary search-unassign-role" type="button">
                     <i class="fas fa-search"></i>
                     <th:block th:text="#{page.button.search}">検索</th:block>
                   </button>
@@ -421,34 +421,38 @@
         </form>
         <form method="post" name="assignRole" th:action="@{/users/__${id}__/roles/assigns}">
           <div class="card role-list">
-            <div class="card-body" th:fragment="searchResult" th:if="${!unassignedRolePage.isEmpty()}">
-              <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
-              <table class="table table-striped">
-                <thead>
-                <tr>
-                  <th th:text="#{page.label.user.role.name}">ロール名</th>
-                  <th>&nbsp;</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="role:${unassignedRolePage.content}">
-                  <td>
-                    <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名1</a>
-                  </td>
-                  <td class="text-right">
-                    <input class="form-check-input" name="assign" th:value="${role.id}" type="checkbox">
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-              <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
+            <div class="card-body card-default">
+              <div id="unassignRoleContent">
+                <th:block th:fragment="searchResult">
+                  <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
+                  <table class="table table-sm table-striped"  th:if="${!unassignedRolePage.isEmpty()}">
+                    <thead>
+                    <tr>
+                      <th th:text="#{page.label.user.role.name}">ロール名</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="role:${unassignedRolePage.content}">
+                      <td>
+                        <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名1</a>
+                      </td>
+                      <td class="text-right">
+                        <input class="form-check-input" name="assign" th:value="${role.id}" type="checkbox">
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <th:block th:replace="parts/pagination::pagination(${unassignedRolePage})"/>
+                </th:block>
+              </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary cancel" data-dismiss="modal" type="button">キャンセル</button>
-        <button class="btn btn-primary role assign" type="button">割り当て</button>
+        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal" th:text="#{page.button.cancel}">キャンセル</button>
+        <button type="button" class="btn btn-primary assign-role" th:text="#{page.button.assign}">割り当て</button>
       </div>
     </div>
   </div>

@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
-import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
  * suggest service
@@ -33,14 +33,13 @@ public class SuggestService {
      *
      * @param keywordOptional
      *            検索キーワード
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 会社リスト
      */
     @Transactional
     public List<Company> searchAccessibleCompanyByUserId(final Optional<String> keywordOptional,
-            final EarthlyUserInfoDto userInfoDto) {
-        return companyRepository.findAccessibleByUserId(userInfoDto.id(), keywordOptional,
-                userInfoDto.permissionEnumList());
+        final Account account) {
+        return companyRepository.findAccessibleByUserId(account.id(), keywordOptional, account);
     }
 }

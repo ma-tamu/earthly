@@ -2,9 +2,9 @@ package jp.co.project.planets.earthly.webapp.logic;
 
 import org.springframework.stereotype.Component;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.repository.ManagementCompanyUserRepository;
-import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 @Component
 public class CompanyLogic {
@@ -15,12 +15,12 @@ public class CompanyLogic {
         this.managementCompanyUserRepository = managementCompanyUserRepository;
     }
 
-    public boolean canEditable(final String id, final EarthlyUserInfoDto userInfoDto) {
+    public boolean canEditable(final String id, final Account account) {
 
-        if (userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_COMPANY)) {
+        if (account.permissions().contains(PermissionEnum.EDIT_COMPANY)) {
             return true;
         }
-        return managementCompanyUserRepository.findByUniqueKey(id, userInfoDto.id()).isPresent();
+        return managementCompanyUserRepository.findByUniqueKey(id, account).isPresent();
     }
 
 }

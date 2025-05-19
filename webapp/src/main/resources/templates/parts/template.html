@@ -61,12 +61,12 @@
     </li>
 
     <li class="nav-item dropdown">
-      <a class="nav-link" data-toggle="dropdown" href="#" th:text="${#authentication.getPrincipal().name}">
+      <a class="nav-link" data-toggle="dropdown" href="#" th:text="${#authentication.getPrincipal().account.name}">
         user name
       </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" th:href="@{/users/__${#authentication.getPrincipal().id}__}">
+        <a class="dropdown-item" th:href="@{/users/__${#authentication.getPrincipal().account.id}__}">
           <i class="fas fa-user mr-2"></i> マイページ
         </a>
         <div class="dropdown-divider"></div>

@@ -3,7 +3,6 @@ package jp.co.project.planets.earthly.common.logic;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -13,11 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.entity.PasswordToken;
 import jp.co.project.planets.earthly.schema.db.entity.RecoveryCode;
 import jp.co.project.planets.earthly.schema.db.entity.User;
-import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.schema.model.entity.UserEntity;
 import jp.co.project.planets.earthly.schema.repository.PasswordTokenRepository;
 import jp.co.project.planets.earthly.schema.repository.RecoveryCodeRepository;
 import jp.co.project.planets.earthly.schema.repository.UserRepository;
@@ -57,15 +55,13 @@ public class UserLogic {
      *
      * @param id
      *            ユーザーID
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operationUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @return UserEntity
      */
-    public Optional<UserEntity> getAccessibleEntity(final String id, final List<PermissionEnum> permissionEnumList,
-        final String operationUserId) {
-        return userRepository.findAccessibleByPrimaryKey(id, permissionEnumList, operationUserId);
+    public Optional<jp.co.project.planets.earthly.schema.model.entity.User> getAccessibleEntity(final String id,
+        final Account account) {
+        return userRepository.findAccessibleByPrimaryKey(id, account);
     }
 
     /**
@@ -77,7 +73,8 @@ public class UserLogic {
      *            操作ユーザーID
      * @return User
      */
-    public Optional<User> create(final UserDto userDto, final String operationUserId) {
+    public Optional<jp.co.project.planets.earthly.schema.model.entity.User> create(final UserDto userDto,
+        final String operationUserId) {
         final var user = generateUser(userDto, operationUserId);
         final int result = userRepository.insert(user);
         if (result < 1) {

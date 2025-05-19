@@ -6,26 +6,17 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.core.account.Account;
 
 /**
  * ユーザー情報DTO
  *
- * @param id
- *            ユーザーID
- * @param loginId
- *            ログインID
- * @param name
- *            ユーザー名
+ * @param account
+ *            アカウント
  * @param password
  *            パスワード
- * @param lockout
- *            ロックアウト
- * @param permissionEnumList
- *            パーミッションリスト
  */
-public record EarthlyUserInfoDto(String id, String loginId, String name, String password, boolean lockout, boolean mfa,
-        boolean tfaSuccessful, String secret, CompanyDto company, List<PermissionEnum> permissionEnumList,
+public record EarthlyUserInfoDto(Account account, String password,
         List<? extends GrantedAuthority> grantedAuthorities) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -39,26 +30,12 @@ public record EarthlyUserInfoDto(String id, String loginId, String name, String 
 
     @Override
     public String getUsername() {
-        return name;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+        return account.loginId();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !lockout;
+        return !account.lockout();
     }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

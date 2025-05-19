@@ -47,7 +47,7 @@ public class CompanyEntryController {
      */
     @GetMapping("entries")
     public ModelAndView index(final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        companyService.validateEntryPermission(userInfoDto);
+        companyService.validateEntryPermission(userInfoDto.account());
         final var countryList = countryService.findAll();
         return new ModelAndView("companies/entry")
                 .addObject("countryList", countryList)
@@ -67,7 +67,7 @@ public class CompanyEntryController {
             return modelAndView;
         }
 
-        companyService.validateEntryPermission(userInfoDto);
+        companyService.validateEntryPermission(userInfoDto.account());
         redirectAttributes.addFlashAttribute(ModelKey.READ_ONLY, true);
         return modelAndView;
     }
@@ -83,7 +83,7 @@ public class CompanyEntryController {
             return new ModelAndView(REDIRECT_COMPANY_ENTRY);
         }
 
-        final var id = companyService.create(companyEntryForm.toDto(), userInfoDto);
+        final var id = companyService.create(companyEntryForm.toDto(), userInfoDto.account());
 
         return new ModelAndView("redirect:/companies/%s".formatted(id));
     }

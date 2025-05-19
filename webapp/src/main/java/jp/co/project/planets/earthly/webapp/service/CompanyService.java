@@ -17,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.CompanyEntryDto;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.db.entity.ManagementCompanyUser;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
-import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;
 import jp.co.project.planets.earthly.schema.model.entity.Organization;
 import jp.co.project.planets.earthly.schema.model.entity.User;
 import jp.co.project.planets.earthly.schema.repository.CompanyRepository;
@@ -75,16 +75,14 @@ public class CompanyService {
      *            会社名
      * @param pageable
      *            ページャー
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 検索結果
      */
     @Transactional
-    public Page<CompanyEntity> search(final String name, final Pageable pageable,
-        final EarthlyUserInfoDto userInfoDto) {
-        final var companySearchResultDto = companyRepository.findByLikeAnyName(name, userInfoDto.id(),
-                userInfoDto.permissionEnumList(), pageable);
-        return new PageImpl<>(companySearchResultDto.companyEntityList(), pageable, companySearchResultDto.total());
+    public Page<Company> search(final String name, final Pageable pageable, final Account account) {
+        final var companySearchResultDto = companyRepository.findByLikeAnyName(name, pageable, account);
+        return new PageImpl<>(companySearchResultDto.companyList(), pageable, companySearchResultDto.total());
     }
 
     /**
@@ -94,17 +92,15 @@ public class CompanyService {
      * have the ADD_COMPANY
      * permission.
      *
-     * @param userInfoDto
+     * @param account
      *            the user information containing the user's permissions and
      *            other details
      * @throws ForbiddenException
      *             if the user lacks the ADD_COMPANY permission
      */
     @Transactional
-    public void validateEntryPermission(final EarthlyUserInfoDto userInfoDto) {
-
-        final var permissionEnumList = userInfoDto.permissionEnumList();
-        if (!permissionEnumList.contains(PermissionEnum.ADD_COMPANY)) {
+    public void validateEntryPermission(final Account account) {
+        if (!account.permissions().contains(PermissionEnum.ADD_COMPANY)) {
             throw new ForbiddenException(ErrorCode.EWA4XX020);
         }
     }
@@ -114,23 +110,23 @@ public class CompanyService {
      * 
      * @param companyEntryDto
      *            会社登録DTO
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 登録した会社のID
      * @throws NotFoundException
      *             所属国が存在しない場合に発生
      */
     @Transactional
-    public String create(final CompanyEntryDto companyEntryDto, final EarthlyUserInfoDto userInfoDto) {
+    public String create(final CompanyEntryDto companyEntryDto, final Account account) {
 
-        validateEntryPermission(userInfoDto);
+        validateEntryPermission(account);
 
         final var country = countryRepository.findByPrimaryKey(companyEntryDto.country())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX024));
 
         final var currentDateTime = LocalDateTime.now();
         final var company = new Company(null, companyEntryDto.name(), country.getId(), currentDateTime,
-                userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+                account.id(), currentDateTime, account.id(), false);
         companyRepository.insert(company);
         final var createdCompany = companyRepository.findByName(company.getName())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX002));
@@ -138,10 +134,10 @@ public class CompanyService {
         final var userDto = new UserDto(companyEntryDto.firstLoginId(), companyEntryDto.firstUserName(),
                 companyEntryDto.mail(), companyEntryDto.gender(), companyEntryDto.language(),
                 companyEntryDto.timezone(), createdCompany.getId(), createdCompany.getName(), false, false);
-        final var user = userLogic.create(userDto, userInfoDto.id()).orElseThrow();
+        final var user = userLogic.create(userDto, account.id()).orElseThrow();
 
         final var managementCompanyUser = new ManagementCompanyUser(null, createdCompany.getId(), user.getId(),
-                currentDateTime, userInfoDto.id(), currentDateTime, userInfoDto.id(), false);
+                currentDateTime, account.id(), currentDateTime, account.id(), false);
         managementCompanyUserRepository.insert(managementCompanyUser);
         return company.getId();
     }
@@ -151,27 +147,25 @@ public class CompanyService {
      * 
      * @param id
      *            会社ID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return 会社詳細
      */
     @Transactional
-    public CompanyDetailDto detail(final String id, final EarthlyUserInfoDto userInfoDto) {
+    public CompanyDetailDto detail(final String id, final Account account) {
 
-        final boolean hasViewAllCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
-        final var company = companyRepository.findAccessibleByPrimaryKey(id, hasViewAllCompany, userInfoDto.id())
+        final var company = companyRepository.findAccessibleByPrimaryKey(id, account)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
         final var countryList = countryRepository.findAll();
 
-        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
         final var pageable = PageRequest.of(0, 10);
         final var managementCompanyUserResultDto = userRepository.findCompanyManagerByLikeLoginIdAndNameAndCompanyName(
-                null, null, id, null, pageable, hasViewAllUser, userInfoDto.id());
+                null, null, id, null, pageable, account);
         final var managementUserPage = new PageImpl<>(managementCompanyUserResultDto.userList(), pageable,
                 managementCompanyUserResultDto.total());
 
         final var notManagementCompanyUserResultDto = userRepository.findNotCompanyManagerByNameAndCompanyName(null,
-                null, null, id, hasViewAllUser, pageable, userInfoDto.id());
+                null, null, id, pageable, account);
         final var notManagementUserPage = new PageImpl<>(notManagementCompanyUserResultDto.userList(), pageable,
                 notManagementCompanyUserResultDto.total());
 
@@ -183,10 +177,9 @@ public class CompanyService {
     }
 
     @Transactional
-    public void validateEdit(final String id, final CompanyEditDto companyEditDto,
-        final EarthlyUserInfoDto userInfoDto) {
+    public void validateEdit(final String id, final CompanyEditDto companyEditDto, final Account account) {
 
-        validateEditPermission(id, userInfoDto);
+        validateEditPermission(id, account);
         companyRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
 
         countryRepository.findByPrimaryKey(companyEditDto.country())
@@ -194,9 +187,9 @@ public class CompanyService {
 
     }
 
-    private void validateEditPermission(final String id, final EarthlyUserInfoDto userInfoDto) {
-        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_COMPANY)) {
-            managementCompanyUserRepository.findByUniqueKey(id, userInfoDto.id())
+    private void validateEditPermission(final String id, final Account account) {
+        if (!account.permissions().contains(PermissionEnum.EDIT_COMPANY)) {
+            managementCompanyUserRepository.findByUniqueKey(id, account)
                     .orElseThrow(() -> new BadRequestException(ErrorCode.EWA4XX026));
         }
     }
@@ -208,16 +201,16 @@ public class CompanyService {
      *            会社ID
      * @param companyEditDto
      *            会社編集DTO
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return メッセージ
      */
     @Transactional
-    public String update(final String id, final CompanyEditDto companyEditDto, final EarthlyUserInfoDto userInfoDto) {
-        validateEdit(id, companyEditDto, userInfoDto);
+    public String update(final String id, final CompanyEditDto companyEditDto, final Account account) {
+        validateEdit(id, companyEditDto, account);
 
         final var company = new Company(id, companyEditDto.name(), companyEditDto.country(), null, null,
-                LocalDateTime.now(), userInfoDto.id(), null);
+                LocalDateTime.now(), account.id(), null);
         companyRepository.update(company);
         return messageSource.getMessage(MessageKey.UPDATE_SUCCESS, ArrayUtils.EMPTY_OBJECT_ARRAY, Locale.JAPAN);
     }
@@ -227,16 +220,16 @@ public class CompanyService {
      * 
      * @param id
      *            会社ID
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @throws BadRequestException
      *             削除操作ができない場合に発生
      */
     @Transactional
-    public void delete(final String id, final EarthlyUserInfoDto userInfoDto) {
+    public void delete(final String id, final Account account) {
 
-        if (!userInfoDto.permissionEnumList().contains(PermissionEnum.EDIT_COMPANY)) {
-            managementCompanyUserRepository.findByUniqueKey(id, userInfoDto.id())
+        if (!account.permissions().contains(PermissionEnum.EDIT_COMPANY)) {
+            managementCompanyUserRepository.findByUniqueKey(id, account)
                     .orElseThrow(() -> new BadRequestException(ErrorCode.EWA4XX026));
         }
 
@@ -252,11 +245,10 @@ public class CompanyService {
     @Transactional
     public Page<User> searchManagementUser(final String id,
         final CompanyManagementUserSearchDto companyManagementUserSearchDto, final Pageable pageable,
-        final EarthlyUserInfoDto userInfoDto) {
-        final var hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
+        final Account account) {
         final var managementCompanyUserResultDto = userRepository.findCompanyManagerByLikeLoginIdAndNameAndCompanyName(
                 companyManagementUserSearchDto.loginId(), companyManagementUserSearchDto.name(), id,
-                companyManagementUserSearchDto.companyName(), pageable, hasViewAllUser, userInfoDto.id());
+                companyManagementUserSearchDto.companyName(), pageable, account);
         return new PageImpl<>(managementCompanyUserResultDto.userList(), pageable,
                 managementCompanyUserResultDto.total());
     }
@@ -264,27 +256,25 @@ public class CompanyService {
     @Transactional
     public Page<User> searchNotAssignUserUser(final String id,
         final CompanyManagementUserSearchDto companyManagementUserSearchDto, final Pageable pageable,
-        final EarthlyUserInfoDto userInfoDto) {
-        final var hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
+        final Account account) {
         final var managementCompanyUserResultDto = userRepository.findNotCompanyManagerByNameAndCompanyName(
                 companyManagementUserSearchDto.loginId(), companyManagementUserSearchDto.name(),
-                companyManagementUserSearchDto.companyName(), id, hasViewAllUser, pageable, userInfoDto.id());
+                companyManagementUserSearchDto.companyName(), id, pageable, account);
         return new PageImpl<>(managementCompanyUserResultDto.userList(), pageable,
                 managementCompanyUserResultDto.total());
     }
 
     @Transactional
     public void assignManagementUser(final String id, final List<String> userIdList,
-        final EarthlyUserInfoDto userInfoDto) {
+        final Account account) {
 
-        validateEditPermission(id, userInfoDto);
+        validateEditPermission(id, account);
 
-        final boolean hasViewAllCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
-        final var company = companyRepository.findAccessibleByPrimaryKey(id, hasViewAllCompany, userInfoDto.id())
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var company = companyRepository.findAccessibleByPrimaryKey(id, account)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
 
-        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
-        final var userList = userRepository.findByPrimaryKeysAccessibly(userIdList, hasViewAllUser, userInfoDto.id());
+        final var userList = userRepository.findByPrimaryKeysAccessibly(userIdList, account);
         if (userIdList.size() != userList.size()) {
             throw new BadRequestException(ErrorCode.EWA4XX028);
         }
@@ -297,23 +287,20 @@ public class CompanyService {
 
         userList.forEach(user -> {
             final var managementCompanyUser = new ManagementCompanyUser(null, company.getId(), user.getId(),
-                    LocalDateTime.now(), userInfoDto.id(), LocalDateTime.now(), userInfoDto.id(), false);
+                    LocalDateTime.now(), account.id(), LocalDateTime.now(), account.id(), false);
             managementCompanyUserRepository.insert(managementCompanyUser);
         });
     }
 
     @Transactional
-    public void unassignManagementUser(final String id, final List<String> userIdList,
-        final EarthlyUserInfoDto userInfoDto) {
+    public void unassignManagementUser(final String id, final List<String> userIdList, final Account account) {
 
-        validateEditPermission(id, userInfoDto);
+        validateEditPermission(id, account);
 
-        final boolean hasViewAllCompany = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_COMPANY);
-        final var company = companyRepository.findAccessibleByPrimaryKey(id, hasViewAllCompany, userInfoDto.id())
+        companyRepository.findAccessibleByPrimaryKey(id, account)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
 
-        final boolean hasViewAllUser = userInfoDto.permissionEnumList().contains(PermissionEnum.VIEW_ALL_USER);
-        final var userList = userRepository.findByPrimaryKeysAccessibly(userIdList, hasViewAllUser, userInfoDto.id());
+        final var userList = userRepository.findByPrimaryKeysAccessibly(userIdList, account);
         if (userIdList.size() != userList.size()) {
             throw new BadRequestException(ErrorCode.EWA4XX028);
         }

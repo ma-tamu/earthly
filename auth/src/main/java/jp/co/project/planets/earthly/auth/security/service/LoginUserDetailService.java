@@ -31,6 +31,6 @@ public class LoginUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("not found user"));
 
         return new UserInfoDto(user.getId(), user.getLoginId(), user.getPassword(), user.getName(), user.getLockout(),
-                user.getIsDeleted());
+                false);
     }
 }

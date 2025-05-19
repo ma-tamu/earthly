@@ -23,11 +23,12 @@ public interface UserDao extends UserBaseDao {
     @Select
     List<User> selectByPrimaryKeysAccessibly(List<String> ids, boolean hasViewAllCompany, String executionUserId);
 
-    @Select
-    Optional<User> selectByLoginId(String loginId);
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    Optional<jp.co.project.planets.earthly.schema.model.entity.User> selectByLoginId(String loginId);
 
-    @Select
-    Optional<User> selectAccessibleByPrimaryKey(String id, boolean hasViewAllCompany, String executionUserId);
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    Optional<jp.co.project.planets.earthly.schema.model.entity.User> selectAccessibleByPrimaryKey(String id,
+        boolean hasViewAllCompany, String executionUserId);
 
     @Select
     List<UserSimpleEntity> selectByLoginIdAndNameAndCompany(String loginId, String name, String company,

@@ -45,7 +45,7 @@ public class OAuthClientEntryController {
      */
     @GetMapping("entries")
     public ModelAndView entry(final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        oauthClientService.validateEntryPermission(userInfoDto);
+        oauthClientService.validateEntryPermission(userInfoDto.account());
 
         final var modelAndView = new ModelAndView("clients/entry");
         modelAndView.addObject(new OAuthClientEntryForm(null, Collections.emptyList()));
@@ -80,7 +80,7 @@ public class OAuthClientEntryController {
             return modelAndView;
         }
 
-        oauthClientService.validateEntryOperation(oauthClientEntryForm.toDto(), userInfoDto);
+        oauthClientService.validateEntryOperation(oauthClientEntryForm.toDto(), userInfoDto.account());
         redirectAttributes.addFlashAttribute(READ_ONLY, true);
         return modelAndView;
     }
@@ -110,7 +110,7 @@ public class OAuthClientEntryController {
             return modelAndView;
         }
 
-        final var id = oauthClientService.create(oauthClientEntryForm.toDto(), userInfoDto);
+        final var id = oauthClientService.create(oauthClientEntryForm.toDto(), userInfoDto.account());
         return new ModelAndView(ViewName.REDIRECT_CLIENT_DETAIL.formatted(id));
     }
 

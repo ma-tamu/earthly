@@ -43,7 +43,7 @@ public class UserListController {
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var userSearchDto = new UserSearchDto(userSearchForm.loginId(), userSearchForm.name(),
                 userSearchForm.company(), pageable.getOffset(), pageable.getPageSize(), pageable.getSort());
-        final var userSearchResultDto = userService.search(userSearchDto, pageable, userInfoDto);
+        final var userSearchResultDto = userService.search(userSearchDto, pageable, userInfoDto.account());
         final var modelAndView = new ModelAndView("users/index");
         modelAndView.addObject(userSearchResultDto);
         return modelAndView;

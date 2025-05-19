@@ -1,7 +1,10 @@
 package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
+import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.constant.MessageKey;
+import jp.co.project.planets.earthly.webapp.controller.form.company.GroupBelongForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.GroupBelongUserSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.company.GroupEditForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.GroupNotBelongForm;
+import jp.co.project.planets.earthly.webapp.controller.form.company.GroupNotBelongUserSearchForm;
+import jp.co.project.planets.earthly.webapp.emuns.ErrorCode;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.exception.NotFoundException;
@@ -36,10 +44,11 @@ public class CompanyGroupDetailController {
     @GetMapping
     public ModelAndView index(@PathVariable("companyId") final String companyId, @PathVariable("id") final String id,
         final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var detail = companyGroupService.detail(id, companyId, userInfoDto);
+        final var detail = companyGroupService.detail(id, companyId, userInfoDto.account());
         final var groupEditForm = new GroupEditForm(detail.organization().getName());
+        final var groupBelongUserSearchForm = new GroupBelongUserSearchForm(null, null, false);
         return new ModelAndView("companies/groups/detail") //
-                .addObject(groupEditForm)
+                .addObject(groupEditForm).addObject(groupBelongUserSearchForm)
                 .addObject("group", detail.organization()) //
                 .addObject("belongUserPage", detail.belongUserPage()) //
                 .addObject("notBelongUserPage", detail.notBelongUserPage()) //
@@ -75,7 +84,7 @@ public class CompanyGroupDetailController {
         }
 
         try {
-            final var message = companyGroupService.update(id, companyId, groupEditForm.name(), userInfoDto);
+            final var message = companyGroupService.update(id, companyId, groupEditForm.name(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, message);
         } catch (final ForbiddenException | NotFoundException e) {
             redirectAttributes.addFlashAttribute(MESSAGE, e.getErrorCode().getMessageKey())
@@ -90,7 +99,7 @@ public class CompanyGroupDetailController {
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         try {
-            companyGroupService.delete(id, companyId, userInfoDto);
+            companyGroupService.delete(id, companyId, userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, MessageKey.DELETE_SUCCESS);
             return new ModelAndView("redirect:/companies/%s".formatted(companyId));
         } catch (final BadRequestException | ForbiddenException e) {
@@ -99,4 +108,58 @@ public class CompanyGroupDetailController {
         }
     }
 
+    @GetMapping("users")
+    public ModelAndView searchBelongUser(@PathVariable("companyId") final String companyId,
+        @PathVariable("id") final String id, final GroupBelongUserSearchForm groupBelongUserSearchForm,
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        final var belongUserPage = companyGroupService.searchBelongUser(id, companyId,
+                groupBelongUserSearchForm.toDto(), pageable, userInfoDto.account());
+        return new ModelAndView("companies/groups/detail::belongUserContent", "belongUserPage", belongUserPage);
+    }
+
+    @GetMapping("users/not-belongs")
+    public ModelAndView searchNotBelongUser(@PathVariable("companyId") final String companyId,
+        @PathVariable("id") final String id, final GroupNotBelongUserSearchForm groupNotBelongUserSearchForm,
+        @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        final var notBelongUserPage = companyGroupService.searchNotBelongUser(id, companyId,
+                groupNotBelongUserSearchForm.toDto(), pageable, userInfoDto.account());
+
+        return new ModelAndView("companies/groups/modal::notBelongUserPage", "notBelongUserPage", notBelongUserPage);
+    }
+
+    @PostMapping("users/belongs")
+    public ModelAndView assign(@PathVariable("companyId") final String companyId, @PathVariable("id") final String id,
+        @ModelAttribute @Validated final GroupBelongForm groupBelongForm, final BindingResult bindingResult,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
+        }
+
+        try {
+            companyGroupService.assign(id, companyId, groupBelongForm.userId(), userInfoDto.account());
+            return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.ASSIGN_SUCCESS);
+        } catch (final BadRequestException e) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
+                    .addObject(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
+    }
+
+    @PostMapping("users/not-belong")
+    public ModelAndView unassign(@PathVariable("companyId") final String companyId, @PathVariable("id") final String id,
+        @ModelAttribute @Validated final GroupNotBelongForm groupNotBelongForm, final BindingResult bindingResult,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
+        }
+
+        try {
+            companyGroupService.unassign(id, companyId, groupNotBelongForm.userId(), userInfoDto.account());
+            return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
+        } catch (final BadRequestException e) {
+            return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
+                    .addObject(MESSAGE_ARGS, e.getMessageKeyArgs());
+        }
+    }
 }

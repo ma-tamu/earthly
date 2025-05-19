@@ -7,9 +7,11 @@ import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.LogoutRedirectUrlDao;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.LogoutRedirectUrl_;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientLogoutRedirectUriSearchResultDto;
 
 /**
@@ -33,20 +35,18 @@ public class LogoutRedirectRepository {
      *            OAuthクライアントID
      * @param logoutRedirectUrl
      *            ログアウトリダイレクトURL
-     * @param hasViewAllClient
-     *            view_all_clientを保持しているか
-     * @param operatorUserId
-     *            操作ユーザーID
      * @param pageable
      *            ページャー
+     * @param account
+     *            操作ユーザーID
      * @return OAuthクライアントリダイレクトURL
      */
     public OAuthClientLogoutRedirectUriSearchResultDto findByClientRedirectUrl(final String clientId,
-        final String logoutRedirectUrl, final boolean hasViewAllClient, final String operatorUserId,
-        final Pageable pageable) {
+        final String logoutRedirectUrl, final Pageable pageable, final Account account) {
         final var selectOptions = Pageables.toSelectOptions(pageable);
+        final boolean hasViewAllClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var logoutRedirectUrlList = logoutRedirectUrlDao.selectByClientLogoutRedirectUrl(clientId,
-                logoutRedirectUrl, hasViewAllClient, operatorUserId, selectOptions);
+                logoutRedirectUrl, hasViewAllClient, account.id(), selectOptions);
         return new OAuthClientLogoutRedirectUriSearchResultDto(logoutRedirectUrlList, pageable.getOffset(),
                 selectOptions.getCount());
     }
@@ -58,16 +58,15 @@ public class LogoutRedirectRepository {
      *            OAuthクライアントID
      * @param redirectUriIdList
      *            ログアウトリダイレクトURL IDリスト
-     * @param hasViewAllOAuthClient
-     *            view_all_clientを保持しているか
-     * @param operatorUserId
+     * @param account
      *            操作ユーザー
      * @return OAuthクライアントログアウトURIリスト
      */
     public List<LogoutRedirectUrl> findByClientIdAndRedirectUris(final String clientId,
-        final List<String> redirectUriIdList, final boolean hasViewAllOAuthClient, final String operatorUserId) {
+        final List<String> redirectUriIdList, final Account account) {
+        final boolean hasViewAllOAuthClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         return logoutRedirectUrlDao.selectByClientIdAndRedirectUris(clientId, redirectUriIdList, hasViewAllOAuthClient,
-                operatorUserId);
+                account.id());
     }
 
     /**

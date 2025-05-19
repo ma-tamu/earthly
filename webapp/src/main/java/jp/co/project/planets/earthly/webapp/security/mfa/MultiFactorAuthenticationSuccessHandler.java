@@ -32,7 +32,7 @@ public class MultiFactorAuthenticationSuccessHandler implements AuthenticationSu
         final Authentication authentication) throws IOException, ServletException {
         final var userInfoDto = (EarthlyUserInfoDto) authentication.getPrincipal();
 
-        if (userInfoDto.mfa()) {
+        if (userInfoDto.account().multiFactor().enabled()) {
             SecurityContextHolder.getContext().setAuthentication(new MultiFactorAuthentication(authentication));
             this.secondarySuccessHandler.onAuthenticationSuccess(request, response, authentication);
         } else {

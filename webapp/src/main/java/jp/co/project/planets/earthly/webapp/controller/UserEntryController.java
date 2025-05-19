@@ -41,7 +41,7 @@ public class UserEntryController {
      */
     @GetMapping("entries")
     public ModelAndView index(final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        userService.validateUserAddOperationPermission(userInfoDto);
+        userService.validateUserAddOperationPermission(userInfoDto.account());
 
         final var modelAndView = new ModelAndView("users/entry");
         modelAndView.addObject(UserEntryForm.EMPTY);
@@ -75,7 +75,7 @@ public class UserEntryController {
             return modelAndView;
         }
         try {
-            userService.validateEntryOperation(userEntryForm.toDto(), userInfoDto);
+            userService.validateEntryOperation(userEntryForm.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(READ_ONLY, true);
             return modelAndView;
         } catch (final ForbiddenException e) {
@@ -110,7 +110,7 @@ public class UserEntryController {
             return new ModelAndView("redirect:/users/entry");
         }
         try {
-            final var userId = userService.create(userEntryForm.toDto(), userInfoDto);
+            final var userId = userService.create(userEntryForm.toDto(), userInfoDto.account());
             return new ModelAndView(REDIRECT_USER_DETAIL.formatted(userId));
         } catch (final ForbiddenException e) {
             model.asMap().forEach(redirectAttributes::addFlashAttribute);

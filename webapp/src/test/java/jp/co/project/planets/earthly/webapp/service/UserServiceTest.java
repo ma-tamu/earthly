@@ -73,7 +73,7 @@ class UserServiceTest {
                 Optional.of(userEntity));
 
         // test
-        final var actual = userService.getById("USER_ID_02", userInfoDto);
+        final var actual = userService.getDetail("USER_ID_02", userInfoDto);
 
         // verify
         final var expected = new UserDetailDto(userEntity, null, unassignedRolePage);
@@ -104,7 +104,7 @@ class UserServiceTest {
 
         // test & verify
         final var expected = new NotFoundException("not found user user=USER_ID_02.", EWA4XX002);
-        assertThatThrownBy(() -> userService.getById("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
+        assertThatThrownBy(() -> userService.getDetail("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
                 NotFoundException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
 

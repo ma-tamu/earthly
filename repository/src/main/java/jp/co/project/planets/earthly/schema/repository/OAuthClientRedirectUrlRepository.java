@@ -8,9 +8,11 @@ import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.RedirectUriDao;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientRedirectUrl_;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientRedirectUriSearchResultDto;
 
 /**
@@ -34,21 +36,18 @@ public class OAuthClientRedirectUrlRepository {
      *            OAuthクライアントID
      * @param redirectUrl
      *            リダイレクトURL
-     * @param hasViewAllClient
-     *            view_all_clientを保持しているか
-     * @param operatorUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @param pageable
      *            ページャー
      * @return OAuthクライアントリダイレクトURL
      */
     public OAuthClientRedirectUriSearchResultDto findByClientRedirectUrl(final String clientId,
-        final String redirectUrl, final boolean hasViewAllClient, final String operatorUserId,
-        final Pageable pageable) {
+        final String redirectUrl, final Pageable pageable, final Account account) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         final var oauthClientRedirectUrlList = redirectUriDao.selectByClientRedirectUrl(clientId, redirectUrl,
-                hasViewAllClient, operatorUserId,
-                selectOptions);
+                hasViewAllClient, account.id(), selectOptions);
         return new OAuthClientRedirectUriSearchResultDto(oauthClientRedirectUrlList, pageable.getOffset(),
                 selectOptions.getCount());
     }
@@ -60,15 +59,15 @@ public class OAuthClientRedirectUrlRepository {
      *            OAuthクライアントID
      * @param redirectUriIdList
      *            リダイレクトURL IDリスト
-     * @param hasViewAllClient
-     *            view_all_clientを保持しているか
-     * @param operatorUserId
-     *            操作ユーザーID * @return
+     * @param account
+     *            操作ユーザー
+     * @return リダイレクトURIリスト
      */
     public List<OauthClientRedirectUrl> findByClientIdAndRedirectUris(final String clientId,
-        final List<String> redirectUriIdList, final boolean hasViewAllClient, final String operatorUserId) {
+        final List<String> redirectUriIdList, final Account account) {
+        final boolean hasViewAllClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
         return redirectUriDao.selectByClientIdAndRedirectUris(clientId, redirectUriIdList, hasViewAllClient,
-                operatorUserId, SelectOptions.get().forUpdate());
+                account.id(), SelectOptions.get().forUpdate());
     }
 
     /**

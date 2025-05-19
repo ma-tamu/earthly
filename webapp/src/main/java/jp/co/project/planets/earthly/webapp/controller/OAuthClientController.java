@@ -43,7 +43,8 @@ public class OAuthClientController {
         @PageableDefault final Pageable pageable, final Model model,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
-        final var oauthClients = oauthClientService.search(oauthClientSearchForm.name(), pageable, userInfoDto);
+        final var oauthClients = oauthClientService.search(oauthClientSearchForm.name(), pageable,
+                userInfoDto.account());
         final var modelAndView = new ModelAndView("clients/index").addAllObjects(model.asMap());
         modelAndView.addObject(oauthClients);
         return modelAndView;

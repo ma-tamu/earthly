@@ -47,7 +47,7 @@ public class MultiFactorAuthenticationController {
     @PostMapping
     public void verify(final String code, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto,
         final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        final boolean successful = mfaService.verify(code, userInfoDto);
+        final boolean successful = mfaService.verify(code, userInfoDto.account());
         if (successful) {
             mfaService.updateSecurityContext(userInfoDto);
             successHandler.onAuthenticationSuccess(request, response,

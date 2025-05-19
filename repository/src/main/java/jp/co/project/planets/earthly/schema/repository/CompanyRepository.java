@@ -8,6 +8,7 @@ import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.schema.db.entity.Company;
 import jp.co.project.planets.earthly.schema.db.entity.Company_;
@@ -46,22 +47,20 @@ public class CompanyRepository {
     }
 
     /**
-     * Finds an accessible company by its primary key based on user permissions
-     * and access controls.
+     * Finds an accessible company by its primary key, considering the user's
+     * permissions.
      *
      * @param id
-     *            the primary key of the company to find
-     * @param hasViewAllCompany
-     *            a flag indicating if the user has permission to view all
-     *            companies
-     * @param executionUserId
-     *            the ID of the user executing the operation
-     * @return an {@code Optional} containing the accessible {@code Company} if
-     *             found, otherwise an empty {@code Optional}
+     *            the unique identifier of the company
+     * @param account
+     *            the account of the user performing the operation
+     * @return an {@link Optional} containing the accessible {@link Company}, or
+     *             an empty {@link Optional}
+     *             if no accessible company is found
      */
-    public Optional<Company> findAccessibleByPrimaryKey(final String id, final boolean hasViewAllCompany,
-        final String executionUserId) {
-        return companyDao.selectAccessibleByPrimaryKey(id, executionUserId, hasViewAllCompany);
+    public Optional<Company> findAccessibleByPrimaryKey(final String id, final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        return companyDao.selectAccessibleByPrimaryKey(id, account.id(), hasViewAllCompany);
     }
 
     /**
@@ -86,16 +85,13 @@ public class CompanyRepository {
      *
      * @param id
      *            会社ID
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param executionUserId
-     *            実行ユーザーID
+     * @param account
+     *            実行ユーザー
      * @return 会社
      */
-    public Optional<Company> findByAccessiblePrimaryKey(final String id, final List<PermissionEnum> permissionEnumList,
-        final String executionUserId) {
-        final var hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
-        return companyDao.selectAccessibleByPrimaryKey(id, executionUserId, hasViewAllCompany);
+    public Optional<Company> findByAccessiblePrimaryKey(final String id, final Account account) {
+        final var hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        return companyDao.selectAccessibleByPrimaryKey(id, account.id(), hasViewAllCompany);
     }
 
     /**
@@ -105,13 +101,13 @@ public class CompanyRepository {
      *            ユーザーID
      * @param keywordOptional
      *            キーワード
-     * @param permissionEnumList
-     *            パーミッションリスト
+     * @param account
+     *            実行ユーザー
      * @return 会社一覧
      */
     public List<Company> findAccessibleByUserId(final String userId, final Optional<String> keywordOptional,
-        final List<PermissionEnum> permissionEnumList) {
-        final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
         return companyDao.selectAccessibleByUserId(userId, keywordOptional, hasViewAllCompany);
     }
 
@@ -131,21 +127,26 @@ public class CompanyRepository {
      *
      * @param name
      *            会社名
-     * @param userId
-     *            操作ユーザーID
-     * @param permissionList
-     *            パーミッションリスト
      * @param pageable
      *            ページャー
+     * @param account
+     *            ユーザー情報
      * @return 会社検索結果
      */
-    public CompanySearchResultDto findByLikeAnyName(final String name, final String userId,
-        final List<PermissionEnum> permissionList, final Pageable pageable) {
-        final boolean hasViewAllCompany = permissionList.contains(PermissionEnum.VIEW_ALL_COMPANY);
+    public CompanySearchResultDto findByLikeAnyName(final String name,
+        final Pageable pageable, final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
         final var options = Pageables.toSelectOptions(pageable).count();
-        final var companyEntityList = companyDao.selectAccessibleByLikeAnyName(name, userId, hasViewAllCompany,
+        final var companyList = companyDao.selectAccessibleByLikeAnyName(name, account.id(), hasViewAllCompany,
                 options);
-        return new CompanySearchResultDto(companyEntityList, options.getCount());
+        return new CompanySearchResultDto(companyList, pageable.getOffset(), options.getCount());
+    }
+
+    public CompanySearchResultDto findByUserId(final String userId, final Pageable pageable, final Account account) {
+        final var options = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var companies = companyDao.selectByUserId(userId, hasViewAllCompany, account.id(), options);
+        return new CompanySearchResultDto(companies, pageable.getOffset(), options.getCount());
     }
 
     /**

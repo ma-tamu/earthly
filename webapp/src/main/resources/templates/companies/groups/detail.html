@@ -98,22 +98,23 @@
           </form>
         </div>
         <form method="post" name="removeUser" onsubmit="return false;"
-              th:action="@{/companies/__${company.id}__/belong-users/unassigns}"
-              th:if="${!#lists.isEmpty(belongUserPage.content)}">
+              th:action="@{/companies/__${group.company.id}__/groups/__${group.id}__/users/not-belong}">
           <div class="card-body card-default">
             <div id="belongUserContent">
-              <th:block th:fragment="belongUserContent">
+              <th:block th:if="${!#lists.isEmpty(belongUserPage.content)}" th:fragment="belongUserContent">
                 <th:block th:replace="parts/pagination::pagination(${belongUserPage})"/>
                 <table class="table table-striped table-sm assign-belong-user-list"
                        th:fragment="belongUserList">
                   <thead>
                   <tr>
+                    <th th:text="#{page.label.user.loginId}">ログインID</th>
                     <th th:text="#{page.label.user.name}">ユーザー名</th>
                     <th>&nbsp;</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr th:each="user : ${belongUserPage.content}">
+                    <td th:text="${user.loginId}">ログインID</td>
                     <td>
                       <a th:href="@{/users/__${user.id}__}" th:text="${user.name}">ユーザー名</a>
                     </td>
@@ -128,7 +129,7 @@
               </th:block>
             </div>
           </div>
-          <div class="card-footer  row-unassigned" style="display: none">
+          <div class="card-footer row-unassigned" style="display: none">
             <div class="row">
               <div class="col-8" th:text="#{page.panel.unassigned.message}">
                 解除対象を選択してください。
@@ -186,15 +187,15 @@
     });
 
     $('.remove-belong-user').on('click', () => {
-        showRemoveCard('userId', 'removeBelongUser');
+        showRemoveCard('userId', 'removeUser');
     });
 
     $('.remove-belong-user-cancel').on('click', () => {
-        hideRemoveCard('userId', 'removeBelongUser');
+        hideRemoveCard('userId', 'removeUser');
     });
 
     $('.btn.btn-primary.remove-belong-user').on('click', () => {
-        const form = $('form[name=removeBelongUser]');
+        const form = $('form[name=removeUser]');
         const body = form.serialize();
         const url = form.attr('action');
         const token = form.find('input[name=_csrf]').val();

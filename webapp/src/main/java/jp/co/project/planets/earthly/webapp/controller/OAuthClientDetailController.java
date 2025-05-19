@@ -69,7 +69,7 @@ public class OAuthClientDetailController {
     @GetMapping
     public ModelAndView index(@PathVariable("id") final String id, final Model model,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var oauthClientDetailDto = oauthClientService.get(id, userInfoDto);
+        final var oauthClientDetailDto = oauthClientService.get(id, userInfoDto.account());
         final var modelAndView = new ModelAndView("clients/detail");
         final var oauthClientDetailEntity = oauthClientDetailDto.oauthClientDetailEntity();
         modelAndView.addObject(oauthClientDetailEntity);
@@ -123,7 +123,7 @@ public class OAuthClientDetailController {
         }
 
         try {
-            oauthClientService.validateEditPermission(id, userInfoDto);
+            oauthClientService.validateEditPermission(id, userInfoDto.account());
             redirectAttributes.addFlashAttribute(READ_ONLY, true);
         } catch (final ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -147,7 +147,7 @@ public class OAuthClientDetailController {
         }
 
         try {
-            final var message = oauthClientService.update(id, oauthClientEditForm.toDto(), userInfoDto);
+            final var message = oauthClientService.update(id, oauthClientEditForm.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, message);
         } catch (final ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -175,7 +175,7 @@ public class OAuthClientDetailController {
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var oauthClientRedirectUrlPage = oauthClientService.searchRedirectUrl(id,
-                oauthClientRedirectUrlSearchForm.redirectUri(), pageable, userInfoDto);
+                oauthClientRedirectUrlSearchForm.redirectUri(), pageable, userInfoDto.account());
         return new ModelAndView(CLIENT_DETAIL_REDIRECT_URL_PAGE)
                 .addObject(REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
     }
@@ -210,7 +210,7 @@ public class OAuthClientDetailController {
             redirectAttributes.addFlashAttribute("isAddRedirectUri", true);
             return modelAndView;
         }
-        oauthClientService.addRedirectUrl(id, oauthClientRedirectUrlAddForm.redirectUri(), userInfoDto);
+        oauthClientService.addRedirectUrl(id, oauthClientRedirectUrlAddForm.redirectUri(), userInfoDto.account());
         return modelAndView;
     }
 
@@ -235,7 +235,8 @@ public class OAuthClientDetailController {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
         }
         try {
-            oauthClientService.removeRedirectUri(id, oauthClientRedirectUriRemoveForm.redirectUriIds(), userInfoDto);
+            oauthClientService.removeRedirectUri(id, oauthClientRedirectUriRemoveForm.redirectUriIds(),
+                    userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.DELETE_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
@@ -262,7 +263,7 @@ public class OAuthClientDetailController {
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         final var oauthClientRedirectUrlPage = oauthClientService.searchLogoutRedirectUrl(id,
-                oauthClientLogoutRedirectUrlSearchForm.logoutRedirectUrl(), pageable, userInfoDto);
+                oauthClientLogoutRedirectUrlSearchForm.logoutRedirectUrl(), pageable, userInfoDto.account());
         return new ModelAndView(CLIENT_DETAIL_LOGOUT_REDIRECT_URL_PAGE)
                 .addObject(LOGOUT_REDIRECT_URL_PAGE, oauthClientRedirectUrlPage);
     }
@@ -297,7 +298,8 @@ public class OAuthClientDetailController {
             redirectAttributes.addFlashAttribute("isAddLogoutRedirectUri", true);
             return modelAndView;
         }
-        oauthClientService.addLogoutRedirectUrl(id, oauthClientLogoutRedirectUrlAddForm.redirectUri(), userInfoDto);
+        oauthClientService.addLogoutRedirectUrl(id, oauthClientLogoutRedirectUrlAddForm.redirectUri(),
+                userInfoDto.account());
         return modelAndView;
     }
 
@@ -324,7 +326,7 @@ public class OAuthClientDetailController {
         try {
             oauthClientService.removeLogoutRedirectUri(id,
                     oauthClientLogoutRedirectUriRemoveForm.logoutRedirectUriIds(),
-                    userInfoDto);
+                    userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.DELETE_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
@@ -351,7 +353,7 @@ public class OAuthClientDetailController {
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var oauthClientManagementList = oauthClientService.searchManagementUser(id,
                 oauthClientManagementUserSearchForm.userName(), oauthClientManagementUserSearchForm.companyName(),
-                pageable, userInfoDto);
+                pageable, userInfoDto.account());
         return new ModelAndView(CLIENT_DETAIL_MANAGEMENT_USER_PAGE).addObject(MANAGEMENT_USER_PAGE,
                 oauthClientManagementList);
     }
@@ -375,7 +377,7 @@ public class OAuthClientDetailController {
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var oauthClientManagementUserEntityPage = oauthClientService.searchNotAssignUserUser(id,
                 oauthClientNotAssignUserSearchForm.loginId(), oauthClientNotAssignUserSearchForm.userName(),
-                oauthClientNotAssignUserSearchForm.companyName(), pageable, userInfoDto);
+                oauthClientNotAssignUserSearchForm.companyName(), pageable, userInfoDto.account());
         return new ModelAndView(CLIENT_DETAIL_UNASSIGNED_MANAGEMENT_USER_PAGE) //
                 .addObject(UNASSIGNED_MANAGEMENT_USER_PAGE, oauthClientManagementUserEntityPage);
     }
@@ -401,7 +403,7 @@ public class OAuthClientDetailController {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
         }
         try {
-            oauthClientService.assignUser(id, oauthClientManagementUserAssignForm.userId(), userInfoDto);
+            oauthClientService.assignUser(id, oauthClientManagementUserAssignForm.userId(), userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.ASSIGN_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
@@ -431,7 +433,7 @@ public class OAuthClientDetailController {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, ErrorCode.EWA5XX999.getMessageKey());
         }
         try {
-            oauthClientService.unassignUser(id, oauthClientManagementUserUnassignForm.userId(), userInfoDto);
+            oauthClientService.unassignUser(id, oauthClientManagementUserUnassignForm.userId(), userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())

@@ -9,9 +9,11 @@ import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.OAuthClientManagementDao;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientManagement_;
+import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientManagementUserSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 
@@ -57,40 +59,39 @@ public class OAuthClientManagementRepository {
      *            ユーザー名
      * @param companyName
      *            会社名
-     * @param hasViewAllClient
-     *            view_all_clientを保持しているか
-     * @param hasViewAllUser
-     *            view_all_userを保持しているか
-     * @param operatorUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @param pageable
      *            ページャー
      * @return OAuthクライアント管理者リスト
      */
     public List<OAuthClientManagementUserEntity> findByAccessibleClientIdAndUserId(final String clientId,
-        final String userName, final String companyName, final boolean hasViewAllClient, final boolean hasViewAllUser,
-        final String operatorUserId, final Pageable pageable) {
+        final String userName, final String companyName, final Pageable pageable, final Account account) {
         final var options = Pageables.toSelectOptions(pageable);
+        final boolean hasViewAllClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
         return oauthClientManagementDao.selectByAccessibleClientIdAndUserName(clientId, userName, companyName,
-                hasViewAllClient, hasViewAllUser, operatorUserId, options);
+                hasViewAllClient, hasViewAllUser, account.id(), options);
     }
 
     public OAuthClientManagementUserSearchResultDto findAccessibleUnassignedUserByAnyKeyword(final String clientId,
-        final String loginId, final String userName, final String companyName, final boolean hasViewAllClient,
-        final boolean hasViewAllUser, final String operatorUserId, final Pageable pageable) {
+        final String loginId, final String userName, final String companyName, final Pageable pageable,
+        final Account account) {
         final var options = Pageables.toSelectOptions(pageable);
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
         final var oauthClientManagementUserEntityList = oauthClientManagementDao
                 .selectAccessibleUnassignedUserByAnyKeyword(clientId, loginId, userName, companyName,
-                        hasViewAllUser, operatorUserId, options);
+                        hasViewAllUser, account.id(), options);
         return new OAuthClientManagementUserSearchResultDto(oauthClientManagementUserEntityList, pageable.getOffset(),
                 options.getCount());
     }
 
     public List<OauthClientManagement> findAccessibleByClientIdAndInUserId(final String clientId,
-        final List<String> userIdList, final boolean hasViewAllClient, final boolean hasViewAllUser,
-        final String operatorUserId) {
+        final List<String> userIdList, final Account account) {
+        final boolean hasViewAllClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
         return oauthClientManagementDao.selectAccessibleByClientIdAndInUserId(clientId, userIdList, hasViewAllClient,
-                hasViewAllUser, operatorUserId);
+                hasViewAllUser, account.id());
     }
 
     public List<OauthClientManagement> findByUniqueKey(final String clientId, final List<String> userIdList) {

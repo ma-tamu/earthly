@@ -12,7 +12,6 @@ import org.springframework.web.servlet.ModelAndView;
 import jp.co.project.planets.earthly.webapp.controller.form.company.CompanySearchForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import jp.co.project.planets.earthly.webapp.service.CompanyService;
-import jp.co.project.planets.earthly.webapp.service.CountryService;
 
 /**
  * 会社コントローラー
@@ -22,11 +21,9 @@ import jp.co.project.planets.earthly.webapp.service.CountryService;
 public class CompanyController {
 
     private final CompanyService companyService;
-    private final CountryService countryService;
 
-    public CompanyController(final CompanyService companyService, final CountryService countryService) {
+    public CompanyController(final CompanyService companyService) {
         this.companyService = companyService;
-        this.countryService = countryService;
     }
 
     /**
@@ -43,7 +40,7 @@ public class CompanyController {
     @GetMapping
     public ModelAndView search(@ModelAttribute final CompanySearchForm companySearchForm,
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var companyEntityPage = companyService.search(companySearchForm.name(), pageable, userInfoDto);
+        final var companyEntityPage = companyService.search(companySearchForm.name(), pageable, userInfoDto.account());
         return new ModelAndView("companies/index").addObject(companyEntityPage);
     }
 

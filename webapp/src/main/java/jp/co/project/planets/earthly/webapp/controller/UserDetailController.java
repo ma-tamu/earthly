@@ -5,9 +5,6 @@ import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
 import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
 
-import java.util.Optional;
-
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,13 +17,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
 import jp.co.project.planets.earthly.webapp.controller.form.user.PasswordEditForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
+import jp.co.project.planets.earthly.webapp.controller.form.user.UserRoleSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
 import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
@@ -60,18 +57,18 @@ public class UserDetailController {
     @GetMapping
     public ModelAndView index(@PathVariable("userId") final String id, final Model model,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var userDetailDto = userService.getById(id, userInfoDto);
+        final var userDetailDto = userService.getDetail(id, userInfoDto.account());
         final var modelAndView = new ModelAndView("users/detail");
-        final var userEntity = userDetailDto.userEntity();
-        final var userUpdateForm = new UserUpdateForm(userEntity.name(), userEntity.mail(), userEntity.language(),
-                userEntity.timezone(), userEntity.company().name(), userEntity.company().id(), userEntity.lockout(),
-                userEntity.isMfa());
-        modelAndView.addObject(userUpdateForm);
-        modelAndView.addObject(userDetailDto);
-        modelAndView.addObject(ROLE_PAGE, new PageImpl<>(userEntity.roleList()));
-        modelAndView.addObject(UNASSIGNED_ROLE_PAGE, userDetailDto.unassignedRolePage());
-        modelAndView.addAllObjects(model.asMap());
-        return modelAndView;
+        final var user = userDetailDto.user();
+        final var userUpdateForm = new UserUpdateForm(user.getName(), user.getMail(), user.getLanguage(),
+                user.getTimezone(), user.getCompany().getName(), user.getCompany().getId(), user.getLockout(),
+                user.getTwoFactorAuthentication());
+        final var userRoleSearchForm = new UserRoleSearchForm(null, false);
+        return modelAndView.addObject(userUpdateForm).addObject(userDetailDto).addObject(userRoleSearchForm)
+                .addObject(ROLE_PAGE, userDetailDto.rolePage())
+                .addObject(UNASSIGNED_ROLE_PAGE, userDetailDto.unassignedRolePage())
+                .addObject("managementCompanyPage", userDetailDto.managementCompanyPage())
+                .addAllObjects(model.asMap());
     }
 
     /**
@@ -105,7 +102,7 @@ public class UserDetailController {
         }
 
         try {
-            userService.validateUpdating(id, form.toDto(), userInfoDto);
+            userService.validateUpdating(id, form.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(READ_ONLY, true);
         } catch (final ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -145,7 +142,7 @@ public class UserDetailController {
         }
 
         try {
-            final var message = userService.update(id, form.toDto(), userInfoDto);
+            final var message = userService.update(id, form.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, message);
         } catch (final ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -170,7 +167,7 @@ public class UserDetailController {
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         try {
-            final var message = userService.delete(id, userInfoDto);
+            final var message = userService.delete(id, userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, message);
             return new ModelAndView("redirect:/users");
         } catch (final BadRequestException | ForbiddenException e) {
@@ -183,8 +180,8 @@ public class UserDetailController {
      *
      * @param id
      *            ユーザーID
-     * @param roleNameOptional
-     *            検索キーワード（ロール名）
+     * @param userRoleSearchForm
+     *            検索キーワード
      * @param pageable
      *            ページャー
      * @param userInfoDto
@@ -193,10 +190,10 @@ public class UserDetailController {
      */
     @GetMapping("roles/assigns")
     public ModelAndView searchAssignedRole(@PathVariable("userId") final String id,
-        @RequestParam("roleName") final Optional<String> roleNameOptional,
-        @PageableDefault final Pageable pageable,
+        final UserRoleSearchForm userRoleSearchForm, @PageableDefault final Pageable pageable,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var rolePage = userService.findAssignedRole(id, roleNameOptional, pageable, userInfoDto);
+        final var rolePage = userService.findAssignedRole(id, userRoleSearchForm.roleName(), pageable,
+                userInfoDto.account());
         return new ModelAndView("users/detail::roleContent", ROLE_PAGE, rolePage);
     }
 
@@ -217,7 +214,7 @@ public class UserDetailController {
     public ModelAndView searchUnassignedRole(@PathVariable("userId") final String id,
         final UserUnassignedRoleSearchForm form, @PageableDefault final Pageable pageable,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var rolePage = userService.findUnassignedRole(id, form.roleName(), pageable, userInfoDto);
+        final var rolePage = userService.findUnassignedRole(id, form.roleName(), pageable, userInfoDto.account());
         final var modelAndView = new ModelAndView("users/modal::searchResult");
         modelAndView.addObject(UNASSIGNED_ROLE_PAGE, rolePage);
         return modelAndView;
@@ -244,7 +241,7 @@ public class UserDetailController {
         }
 
         try {
-            userService.assignRole(id, form.assign(), userInfoDto);
+            userService.assignRole(id, form.assign(), userInfoDto.account());
             return new ModelAndView(ViewName.TOAST_SUCCESS, MESSAGE, ASSIGN_SUCCESS);
         } catch (final ForbiddenException e) {
             return new ModelAndView(ViewName.TOAST_DANGER, MESSAGE, e.getErrorCode().getMessageKey());
@@ -272,8 +269,8 @@ public class UserDetailController {
             return new ModelAndView(ViewName.TOAST_DANGER, MESSAGE, NOT_SELECTION_ASSIGN_ROLE);
         }
         try {
-            userService.unassignedRole(id, form.unassigns(), userInfoDto);
-            return new ModelAndView(ViewName.TOAST_SUCCESS, MESSAGE, ASSIGN_SUCCESS);
+            userService.unassignedRole(id, form.roleId(), userInfoDto.account());
+            return new ModelAndView(ViewName.TOAST_SUCCESS, MESSAGE, UNASSIGN_SUCCESS);
         } catch (final ForbiddenException e) {
             return new ModelAndView(ViewName.TOAST_DANGER, MESSAGE, e.getErrorCode().getMessageKey());
         }

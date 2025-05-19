@@ -4,10 +4,12 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
+import jp.co.project.planets.earthly.core.enums.Authority;
+
 /**
  * permission enum
  */
-public enum PermissionEnum {
+public enum PermissionEnum implements Authority {
 
     /** ユーザー追加 */
     ADD_USER("f212985ca90d11ec88720242ac120003"),
@@ -85,6 +87,7 @@ public enum PermissionEnum {
      *
      * @return id
      */
+    @Override
     public String getId() {
         return id;
     }

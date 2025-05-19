@@ -45,6 +45,10 @@ public interface CompanyDao extends CompanyBaseDao {
      * @return 会社リスト
      */
     @Select
-    List<CompanyEntity> selectAccessibleByLikeAnyName(String name, String userId, boolean hasViewAllCompany,
+    List<Company> selectAccessibleByLikeAnyName(String name, String userId, boolean hasViewAllCompany,
+        SelectOptions options);
+
+    @Select
+    List<Company> selectByUserId(String userId, boolean hasViewAllCompany, String executionUserId,
         SelectOptions options);
 }

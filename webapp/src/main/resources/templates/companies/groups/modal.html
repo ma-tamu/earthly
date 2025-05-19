@@ -106,7 +106,7 @@
       </div>
       <div class="modal-body">
         <form method="get" name="searchNotBelongUser" onsubmit="return false;"
-              th:action="@{/companies/__${id}__/groups/__${id}__/users/not-belongs}">
+              th:action="@{/companies/__${companyId}__/groups/__${id}__/users/not-belongs}">
           <div class="card">
             <div class="card-header">
               <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>

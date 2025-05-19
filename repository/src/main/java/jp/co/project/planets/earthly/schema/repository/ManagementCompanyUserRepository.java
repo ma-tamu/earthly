@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.ManagementCompanyUserDao;
 import jp.co.project.planets.earthly.schema.db.entity.ManagementCompanyUser;
 import jp.co.project.planets.earthly.schema.db.entity.ManagementCompanyUser_;
@@ -30,15 +31,15 @@ public class ManagementCompanyUserRepository {
      * 
      * @param companyId
      *            会社ID
-     * @param userId
-     *            ユーザーID
+     * @param account
+     *            ユーザー情報
      * @return 会社管理者
      */
-    public Optional<ManagementCompanyUser> findByUniqueKey(final String companyId, final String userId) {
+    public Optional<ManagementCompanyUser> findByUniqueKey(final String companyId, final Account account) {
         final var criteria = new ManagementCompanyUser_();
         return queryDsl.from(criteria).where(where -> {
             where.eq(criteria.companyId, companyId);
-            where.eq(criteria.userId, userId);
+            where.eq(criteria.userId, account.id());
         }).fetchOptional();
     }
 

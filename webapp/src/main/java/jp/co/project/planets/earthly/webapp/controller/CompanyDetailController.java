@@ -62,7 +62,7 @@ public class CompanyDetailController {
     @GetMapping
     public ModelAndView index(@PathVariable("id") final String id, final Model model,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        final var companyDetailDto = companyService.detail(id, userInfoDto);
+        final var companyDetailDto = companyService.detail(id, userInfoDto.account());
         final var company = companyDetailDto.company();
         final var companyEditForm = new CompanyEditForm(company.getName(), company.getCountryId());
         final var companyManagementUserSearchForm = new CompanyManagementUserSearchForm(null, null, null, false);
@@ -110,7 +110,7 @@ public class CompanyDetailController {
             return modelAndView;
         }
         try {
-            companyService.validateEdit(id, companyEditForm.toDto(), userInfoDto);
+            companyService.validateEdit(id, companyEditForm.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(READ_ONLY, true);
         } catch (final BadRequestException | ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -151,7 +151,7 @@ public class CompanyDetailController {
         }
 
         try {
-            final var message = companyService.update(id, companyEditForm.toDto(), userInfoDto);
+            final var message = companyService.update(id, companyEditForm.toDto(), userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, message);
         } catch (final BadRequestException | ForbiddenException e) {
             model.addAttribute(MESSAGE, e.getErrorCode().getMessageKey());
@@ -179,7 +179,7 @@ public class CompanyDetailController {
         final Model model, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
 
         try {
-            companyService.delete(id, userInfoDto);
+            companyService.delete(id, userInfoDto.account());
             redirectAttributes.addFlashAttribute(SUCCESS, MessageKey.DELETE_SUCCESS);
         } catch (final BadRequestException | ForbiddenException e) {
             model.asMap().forEach(redirectAttributes::addFlashAttribute);
@@ -194,7 +194,7 @@ public class CompanyDetailController {
         final CompanyManagementUserSearchForm companyManagementUserSearchForm, @PageableDefault final Pageable pageable,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var managementUserPage = companyService.searchManagementUser(id, companyManagementUserSearchForm.toDto(),
-                pageable, userInfoDto);
+                pageable, userInfoDto.account());
         return new ModelAndView("companies/detail::managementUserContent")//
                 .addObject("managementUserPage", managementUserPage);
     }
@@ -204,7 +204,7 @@ public class CompanyDetailController {
         final CompanyNotAssignUserSearchForm companyNotAssignUserSearchForm, @PageableDefault final Pageable pageable,
         @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
         final var unassignedManagementUserPage = companyService.searchNotAssignUserUser(id,
-                companyNotAssignUserSearchForm.toDto(), pageable, userInfoDto);
+                companyNotAssignUserSearchForm.toDto(), pageable, userInfoDto.account());
         return new ModelAndView("companies/modal::unassignedManagementUserPage") //
                 .addObject("unassignedManagementUserPage", unassignedManagementUserPage);
     }
@@ -219,7 +219,7 @@ public class CompanyDetailController {
         }
 
         try {
-            companyService.assignManagementUser(id, companyManagementUserAssignForm.userId(), userInfoDto);
+            companyService.assignManagementUser(id, companyManagementUserAssignForm.userId(), userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
@@ -237,7 +237,8 @@ public class CompanyDetailController {
         }
 
         try {
-            companyService.unassignManagementUser(id, companyManagementUserUnassignForm.userId(), userInfoDto);
+            companyService.unassignManagementUser(id, companyManagementUserUnassignForm.userId(),
+                    userInfoDto.account());
             return new ModelAndView(TOAST_SUCCESS).addObject(MESSAGE, MessageKey.UNASSIGN_SUCCESS);
         } catch (final BadRequestException e) {
             return new ModelAndView(TOAST_DANGER).addObject(MESSAGE, e.getErrorCode().getMessageKey())
@@ -263,7 +264,7 @@ public class CompanyDetailController {
         if (bindingResult.hasErrors()) {
             return new ModelAndView("redirect:/companies/%s".formatted(id));
         }
-        final var groupId = companyGroupService.entry(id, companyGroupEntryForm.groupName(), userInfoDto);
+        final var groupId = companyGroupService.entry(id, companyGroupEntryForm.groupName(), userInfoDto.account());
         return new ModelAndView("redirect:/companies/%s/groups/%s".formatted(id, groupId));
     }
 

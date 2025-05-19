@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jp.co.project.planets.earthly.common.logic.TotpLogic;
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 
 /**
@@ -24,12 +25,12 @@ public class MfaService {
      *
      * @param code
      *            mfa code
-     * @param userInfoDto
+     * @param account
      *            ユーザー情報
      * @return true: 検証OK false: 検証失敗
      */
-    public boolean verify(final String code, final EarthlyUserInfoDto userInfoDto) {
-        return totpLogic.verifyCode(code, userInfoDto.secret());
+    public boolean verify(final String code, final Account account) {
+        return totpLogic.verifyCode(code, account.multiFactor().secret());
     }
 
     /**
@@ -40,9 +41,7 @@ public class MfaService {
      */
     public void updateSecurityContext(final EarthlyUserInfoDto userInfoDto) {
 
-        final var earthlyUserInfoDto = new EarthlyUserInfoDto(userInfoDto.id(), userInfoDto.loginId(),
-                userInfoDto.name(), userInfoDto.password(), userInfoDto.lockout(), userInfoDto.mfa(), true,
-                userInfoDto.secret(), userInfoDto.company(), userInfoDto.permissionEnumList(),
+        final var earthlyUserInfoDto = new EarthlyUserInfoDto(userInfoDto.account(), userInfoDto.password(),
                 userInfoDto.grantedAuthorities());
         final var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(earthlyUserInfoDto,
                 userInfoDto.getPassword(), userInfoDto.getAuthorities());

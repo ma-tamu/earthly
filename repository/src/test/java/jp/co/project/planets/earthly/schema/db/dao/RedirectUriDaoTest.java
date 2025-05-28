@@ -8,6 +8,7 @@ import java.sql.Statement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+
 import org.seasar.doma.jdbc.NoCacheSqlFileRepository;
 import org.seasar.doma.jdbc.SqlFile;
 import org.seasar.doma.jdbc.SqlFileRepository;
@@ -46,14 +47,15 @@ public class RedirectUriDaoTest {
     }
 
     /**
+     * 
      * @param sqlFile
      * @throws Exception
      */
-    protected void execute(final SqlFile sqlFile) throws Exception {
-        final Connection connection = getConnection();
+    protected void execute(SqlFile sqlFile) throws Exception {
+        Connection connection = getConnection();
         try {
             connection.setAutoCommit(false);
-            final Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();
             try {
                 statement.execute(sqlFile.getSql());
             } finally {
@@ -69,6 +71,7 @@ public class RedirectUriDaoTest {
     }
 
     /**
+     * 
      * @return
      * @throws Exception
      */
@@ -77,34 +80,32 @@ public class RedirectUriDaoTest {
     }
 
     /**
+     * 
      * @throws Exception
      */
     @Test
-    public void testSelectByClientId(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientId.sql", dialect);
+    public void testSelectByClientId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientId.sql", dialect);
         execute(sqlFile);
     }
 
     /**
+     * 
      * @throws Exception
      */
     @Test
-    public void testSelectByClientIdAndRedirectUris(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientIdAndRedirectUris.sql",
-                dialect);
+    public void testSelectByClientIdAndRedirectUris(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientIdAndRedirectUris.sql", dialect);
         execute(sqlFile);
     }
 
     /**
+     * 
      * @throws Exception
      */
     @Test
-    public void testSelectByClientRedirectUrl(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientRedirectUrl.sql",
-                dialect);
+    public void testSelectByClientRedirectUrl(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/RedirectUriDao/selectByClientRedirectUrl.sql", dialect);
         execute(sqlFile);
     }
 

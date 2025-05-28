@@ -32,6 +32,9 @@ function execute(url, method, contentType, csrfToken, param) {
     }).then(
         function (data, response, status) {
             deferred.resolve(data, response, status);
+            if (1 < data.indexOf("login")) {
+                window.location.replace(window.location.href);
+            }
         },
         function (data, response, status) {
             deferred.resolve(data, response, status);

@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * ロールに紐づくパーミッション
- */
+    * ロールに紐づくパーミッション
+*/
 @Entity(listener = RolePermissionListener.class, metamodel = @Metamodel)
 @Table(name = "role_permission")
 public class RolePermission extends AbstractRolePermission implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -39,31 +39,29 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     @Column(name = "created_by")
     String createdBy;
 
-    public RolePermission() {
-    }
-
+public RolePermission() {
+}
     /**
      * new instance
-     * 
      * @param id
-     *            id
+     *         id
      * @param roleId
-     *            id
+     *         id
      * @param permissionId
-     *            id
+     *         id
      * @param createdAt
-     *            作成日
+     *         作成日
      * @param createdBy
-     *            作成者
+     *         作成者
      */
-    public RolePermission(final String id, final String roleId, final String permissionId,
-        final LocalDateTime createdAt, final String createdBy) {
+    public RolePermission(final String id,final String roleId,final String permissionId,final LocalDateTime createdAt,final String createdBy) {
         this.id = id;
         this.roleId = roleId;
         this.permissionId = permissionId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
     }
+
 
     /**
      * Returns the id.
@@ -77,10 +75,9 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -96,10 +93,9 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * Sets the roleId.
      *
-     * @param roleId
-     *            the roleId
+     * @param roleId the roleId
      */
-    public void setRoleId(final String roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 
@@ -115,10 +111,9 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * Sets the permissionId.
      *
-     * @param permissionId
-     *            the permissionId
+     * @param permissionId the permissionId
      */
-    public void setPermissionId(final String permissionId) {
+    public void setPermissionId(String permissionId) {
         this.permissionId = permissionId;
     }
 
@@ -134,10 +129,9 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -153,10 +147,9 @@ public class RolePermission extends AbstractRolePermission implements java.io.Se
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 }

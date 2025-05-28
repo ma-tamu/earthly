@@ -10,7 +10,8 @@
         </button>
       </li>
       <li class="page-item"
-          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}">
+          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}"
+          th:classappend="${#pagination.isCurrent(page,i)} ? 'active':''">
         <button class="page-link" name="page" value="1" th:value="${i}" th:text="${i + 1}">1</button>
       </li>
       <li class="page-item" th:classappend="${#pagination.isLast(page)} ? 'disabled':''">

@@ -54,4 +54,15 @@ public interface UserDao extends UserBaseDao {
     List<jp.co.project.planets.earthly.schema.model.entity.User> selectNotBelongOrganizationByLikeLoginIdAndName(
         String loginId, String name, String companyId, String organizationId, boolean hasViewAllUser,
         String executionUserId, SelectOptions selectOptions);
+
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User>
+            selectAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(String roleId, String loginId, String name,
+                String companyName, boolean hasViewAllCompany, String executionUserId, SelectOptions selectOptions);
+
+    @Select(aggregateStrategy = UserAggregateStrategy.class)
+    List<jp.co.project.planets.earthly.schema.model.entity.User>
+            selectNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(String roleId, String loginId,
+                String name, String companyName, boolean hasViewAllCompany, String executionUserId,
+                SelectOptions selectOptions);
 }

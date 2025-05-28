@@ -251,7 +251,7 @@
 </th:block>
 <script type="text/javascript" th:inline="javascript">
     $('.search-unassigned-management-user').on('click', () => postSearch('searchUnassignedManagementUser', 'unassignedManagementUser'));
-    $('.search-management-user').on('click', () => postSearch('searchManagementUser', 'managementUserContent'));
+    $('.search-management-user').on('click', () => postSearch('searchGrantedUser', 'managementUserContent'));
     $('.search-group').on('click', () => postSearch('searchGroup', 'groupContent'));
 
     $('.btn.btn-primary.assign-management-user').on('click', () => {
@@ -324,6 +324,10 @@
             }
         });
     }
+
+    $('#assignRole').on('show.bs.modal', () => {
+      $('.btn.btn-primary.assign-role').prop('disabled', true);
+    });
 </script>
 <script th:inline="javascript" th:if="${editModal}">
     $(function () {

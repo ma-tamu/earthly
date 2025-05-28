@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * 組織
- */
+    * 組織
+*/
 @Entity(listener = OrganizationListener.class, metamodel = @Metamodel)
 @Table(name = "organization")
 public class Organization extends AbstractOrganization implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** グループID */
     @Id
@@ -51,31 +51,28 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public Organization() {
-    }
-
+public Organization() {
+}
     /**
      * new instance
-     * 
      * @param id
-     *            グループID
+     *         グループID
      * @param companyId
-     *            会社ID
+     *         会社ID
      * @param name
-     *            グループ名
+     *         グループ名
      * @param createdAt
-     *            作成日
+     *         作成日
      * @param createdBy
-     *            作成者
+     *         作成者
      * @param updatedAt
-     *            更新日
+     *         更新日
      * @param updatedBy
-     *            更新者
+     *         更新者
      * @param isDeleted
-     *            削除フラグ
+     *         削除フラグ
      */
-    public Organization(final String id, final String companyId, final String name, final LocalDateTime createdAt,
-        final String createdBy, final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+    public Organization(final String id,final String companyId,final String name,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.companyId = companyId;
         this.name = name;
@@ -85,6 +82,7 @@ public class Organization extends AbstractOrganization implements java.io.Serial
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -98,10 +96,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -117,10 +114,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the companyId.
      *
-     * @param companyId
-     *            the companyId
+     * @param companyId the companyId
      */
-    public void setCompanyId(final String companyId) {
+    public void setCompanyId(String companyId) {
         this.companyId = companyId;
     }
 
@@ -136,10 +132,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -155,10 +150,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -174,10 +168,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -193,10 +186,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -212,10 +204,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -231,10 +222,9 @@ public class Organization extends AbstractOrganization implements java.io.Serial
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

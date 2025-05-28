@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.RoleDao;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
+import jp.co.project.planets.earthly.schema.db.entity.Role_;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.RoleSearchResultDto;
 
@@ -20,9 +22,11 @@ import jp.co.project.planets.earthly.schema.model.dto.RoleSearchResultDto;
 public class RoleRepository {
 
     private final RoleDao roleDao;
+    private final QueryDsl queryDsl;
 
-    public RoleRepository(final RoleDao roleDao) {
+    public RoleRepository(final RoleDao roleDao, final QueryDsl queryDsl) {
         this.roleDao = roleDao;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -90,4 +94,33 @@ public class RoleRepository {
     public List<Role> findByAssignedRoleByUserId(final String userId) {
         return roleDao.selectByAssignedRoleByUserId(userId);
     }
+
+    public RoleSearchResultDto findByName(final String name, final Pageable pageable, final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllRole = account.permissions().contains(PermissionEnum.VIEW_ALL_ROLE);
+        final var roleList = roleDao.selectByName(name, hasViewAllRole, account.id(), selectOptions);
+        return new RoleSearchResultDto(roleList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public Optional<Role> findAccessibleByPrimaryKey(final String id, final Account account) {
+        final boolean hasViewAllRole = account.permissions().contains(PermissionEnum.VIEW_ALL_ROLE);
+        return roleDao.selectAccessibleByPrimaryKey(id, hasViewAllRole, account.id());
+    }
+
+    public Optional<Role> findByNameAndDescription(final String name, final String description) {
+        final var criteria = new Role_();
+        return queryDsl.from(criteria).where(where -> {
+            where.eq(criteria.name, name);
+            where.eq(criteria.description, description);
+        }).fetchOptional();
+    }
+
+    public int insert(final Role role) {
+        return roleDao.insert(role);
+    }
+
+    public int update(final Role role) {
+        return roleDao.update(role);
+    }
+
 }

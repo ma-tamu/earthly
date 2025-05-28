@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * パーミッション
- */
+    * パーミッション
+*/
 @Entity(listener = PermissionListener.class, metamodel = @Metamodel)
 @Table(name = "permission")
 public class Permission extends AbstractPermission implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -47,29 +47,26 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public Permission() {
-    }
-
+public Permission() {
+}
     /**
      * new instance
-     * 
      * @param id
-     *            id
+     *         id
      * @param name
-     *            パーミッション名
+     *         パーミッション名
      * @param createdAt
-     *            作成日
+     *         作成日
      * @param createdBy
-     *            作成者
+     *         作成者
      * @param updatedAt
-     *            更新日
+     *         更新日
      * @param updatedBy
-     *            更新者
+     *         更新者
      * @param isDeleted
-     *            削除フラグ
+     *         削除フラグ
      */
-    public Permission(final String id, final String name, final LocalDateTime createdAt, final String createdBy,
-        final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+    public Permission(final String id,final String name,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
@@ -78,6 +75,7 @@ public class Permission extends AbstractPermission implements java.io.Serializab
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -91,10 +89,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -110,10 +107,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -129,10 +125,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -148,10 +143,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -167,10 +161,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -186,10 +179,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -205,10 +197,9 @@ public class Permission extends AbstractPermission implements java.io.Serializab
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

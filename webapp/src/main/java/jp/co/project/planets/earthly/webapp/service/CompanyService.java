@@ -270,7 +270,6 @@ public class CompanyService {
 
         validateEditPermission(id, account);
 
-        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
         final var company = companyRepository.findAccessibleByPrimaryKey(id, account)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.EWA4XX025));
 

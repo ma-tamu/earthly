@@ -1,13 +1,12 @@
 package jp.co.project.planets.earthly.schema.db.dao.base;
 
+import jp.co.project.planets.earthly.schema.db.entity.RecoveryCode;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
 import org.seasar.doma.boot.ConfigAutowireable;
-
-import jp.co.project.planets.earthly.schema.db.entity.RecoveryCode;
 
 /**
  */

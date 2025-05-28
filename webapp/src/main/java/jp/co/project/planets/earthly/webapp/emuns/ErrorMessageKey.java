@@ -94,6 +94,22 @@ public final class ErrorMessageKey {
     /** 対象のグループは存在しません。 */
     public static final String NOTFOUND_GROUP = "exception.notfound.group";
 
+    /** 対象のロールは存在しません。 */
+    public static final String NOTFOUND_ROLE = "exception.notfound.role";
+    /** ロール登録の権限がありません。 */
+    public static final String FORBIDDEN_ENTRY_ROLE = "exception.forbidden.entry.role";
+    /** ロール編集の権限がありません。 */
+    public static final String FORBIDDEN_EDIT_ROLE = "exception.forbidden.edit.role";
+    /** ロール削除の権限がありません。 */
+    public static final String FORBIDDEN_DELETE_ROLE = "exception.forbidden.delete.role";
+    /** 割り当てできないパーミッションがあります。 */
+    public static final String ROLE_ASSIGN_PERMISSION_MISMATCH = "exception.role.assign.permission.mismatch";
+    /** 既に割り当て済みのパーミッションが含まれています。 */
+    public static final String ROLE_ASSIGN_PERMISSION_ALREADY = "exception.role.assign.permission.already";
+    /** 存在しないパーミッションが含まれています。 */
+    public static final String ROLE_UNASSIGN_PERMISSION_NOT_FOUND = "exception.role.unassign.permission.notfound";
+    /** 割り当てられていないパーミッションがあります。 */
+    public static final String ROLE_UNASSIGN_PERMISSION_MISMATCH = "exception.role.unassign.permission.mismatch";
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";
 

@@ -1,6 +1,7 @@
 package jp.co.project.planets.earthly.schema.db.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.seasar.doma.Dao;
 import org.seasar.doma.Select;
@@ -33,7 +34,7 @@ public interface RoleDao extends RoleBaseDao {
 
     @Select
     List<Role> selectAssignedRoleByUserIdAndLikeName(String userId, String name, boolean hasViewAllRole,
-            String executionUserId, SelectOptions options);
+        String executionUserId, SelectOptions options);
 
     /**
      * 対象ユーザーの未割りてのロール一覧を取得
@@ -52,7 +53,7 @@ public interface RoleDao extends RoleBaseDao {
      */
     @Select
     List<Role> selectUnassignedRoleByUserIdAndLikeName(String userId, String name,
-            boolean hasViewAllRole, String executionUserId, SelectOptions options);
+        boolean hasViewAllRole, String executionUserId, SelectOptions options);
 
     /**
      * 対象ユーザーに割り当てられているロールを取得
@@ -63,4 +64,10 @@ public interface RoleDao extends RoleBaseDao {
      */
     @Select
     List<Role> selectByAssignedRoleByUserId(String userId);
+
+    @Select
+    List<Role> selectByName(String name, boolean hasViewAllRole, String executionUserId, SelectOptions selectOptions);
+
+    @Select
+    Optional<Role> selectAccessibleByPrimaryKey(String id, boolean hasViewAllRole, String executionUserId);
 }

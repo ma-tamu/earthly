@@ -1,10 +1,10 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
     * 
@@ -13,8 +13,9 @@ import org.seasar.doma.Table;
 @Table(name = "oauth2_authorization_consent")
 public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConsent implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /**  */
     @Id
@@ -33,24 +34,26 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     @Column(name = "authorities")
     String authorities;
 
-    public Oauth2AuthorizationConsent() {
-    }
-
+public Oauth2AuthorizationConsent() {
+}
     /**
      * new instance
-     * 
      * @param id
+     *         
      * @param registeredClientId
+     *         
      * @param principalName
+     *         
      * @param authorities
+     *         
      */
-    public Oauth2AuthorizationConsent(final String id, final String registeredClientId, final String principalName,
-        final String authorities) {
+    public Oauth2AuthorizationConsent(final String id,final String registeredClientId,final String principalName,final String authorities) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;
         this.authorities = authorities;
     }
+
 
     /**
      * Returns the id.
@@ -64,10 +67,9 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -83,10 +85,9 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     /**
      * Sets the registeredClientId.
      *
-     * @param registeredClientId
-     *            the registeredClientId
+     * @param registeredClientId the registeredClientId
      */
-    public void setRegisteredClientId(final String registeredClientId) {
+    public void setRegisteredClientId(String registeredClientId) {
         this.registeredClientId = registeredClientId;
     }
 
@@ -102,10 +103,9 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     /**
      * Sets the principalName.
      *
-     * @param principalName
-     *            the principalName
+     * @param principalName the principalName
      */
-    public void setPrincipalName(final String principalName) {
+    public void setPrincipalName(String principalName) {
         this.principalName = principalName;
     }
 
@@ -121,10 +121,9 @@ public class Oauth2AuthorizationConsent extends AbstractOauth2AuthorizationConse
     /**
      * Sets the authorities.
      *
-     * @param authorities
-     *            the authorities
+     * @param authorities the authorities
      */
-    public void setAuthorities(final String authorities) {
+    public void setAuthorities(String authorities) {
         this.authorities = authorities;
     }
 }

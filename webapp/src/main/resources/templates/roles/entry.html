@@ -2,81 +2,111 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Earthly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{page.header.title}">Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
 </head>
-<body>
-<th:block th:replace="parts/template::header"></th:block>
-<th:block th:replace="parts/template::navigation"></th:block>
-<main class="main" id="main">
-  <div class="pagetitle">
-    <div class="row">
-      <div class="col-9">
-        <h1 th:text="#{page.title.role.entry}">ロール登録</h1>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.role.entry}">ロール登録</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/roles}" th:text="#{page.title.role.list}">ロールリスト</a>
+              </li>
+              <li class="breadcrumb-item active" th:text="#{page.title.role.entry}">ロール登録</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="alert alert-danger alert-dismissible fade show" th:if="${errorCode}">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        <th:block th:text="${#messages.msgOrNullWithParams(errorCode.messageKey, messageArgs)}">エラーメッセージ</th:block>
       </div>
-    </div>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a th:href="@{/}" th:text="#{page.title.home}">Home</a>
-        </li>
-        <li class="breadcrumb-item active" th:text="#{page.title.role.entry}">
-          ロール登録
-        </li>
-      </ol>
-    </nav>
-  </div>
-  <div class="container">
-    <form method="post" th:action="@{/roles/entry}" th:object="${roleEntryForm}">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-6">
-            <label class="form-label" for="name" th:text="#{page.label.role.name}">ロール名</label>
-            <input  type="text" class="form-control" id="name" th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
-                   th:field="*{name}"  th:readonly="${readOnly}">
+      <form method="post" class="form-horizontal entry" th:action="@{/roles/entries}" th:object="${roleEntryForm}">
+        <div class="form-group row m-1">
+          <label class="col-sm-2 col-form-label" for="name" th:text="#{page.label.role.name}">ロール名</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                   th:field="*{name}" th:readonly="${readOnly}" type="text">
             <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
               ロール名は必須です。
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-6">
-            <label class="form-label" for="name" th:text="#{page.label.role.description}">概要</label>
-            <input  type="text" class="form-control" id="description" th:classappend="${#fields.hasErrors('description')}?'is-invalid'"
-                    th:field="*{description}"  th:readonly="${readOnly}">
+        <div class="form-group row m-1">
+          <label class="col-sm-2 form-label" for="description" th:text="#{page.label.role.description}">概要</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('description')}?'is-invalid'"
+                   th:field="*{description}" th:readonly="${readOnly}" type="text">
             <div class="invalid-feedback" th:errors="*{description}" th:if="${#fields.hasErrors('description')}">
               概要は必須です。
             </div>
           </div>
         </div>
-      </div>
-      <div class="row text-center">
-        <div class="col-6">
-          <button type="button" class="btn btn-secondary rounded-pill" data-bs-target="#cancelModal"
-                  data-bs-toggle="modal"
-                  th:text="#{page.button.back}">戻る
-          </button>
-          <div th:replace="roles/modal::cancel"></div>
-          <button type="submit" class="btn btn-primary rounded-pill" th:text="#{page.button.confirm}">確認
-          </button>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="grantable" th:text="#{page.label.role.grantable}">付与有無</label>
+          <div class="col-6">
+            <div class="form-check">
+              <input type="radio" class="form-check-input" name="grantable"
+                     th:classappend="${#fields.hasErrors('grantable')}?'is-invalid'" value="true"
+                     th:checked="${#bools.isTrue(roleEntryForm.grantable)}" onclick="activeSubmitButton()">
+              <label class="form-check-label" th:text="#{page.label.possible}"></label>
+            </div>
+            <div class="form-check">
+              <input type="radio" class="form-check-input" name="grantable"
+                     th:classappend="${#fields.hasErrors('grantable')}?'is-invalid'" value="false"
+                     th:checked="${#bools.isFalse(roleEntryForm.grantable)}"
+                     onclick="activeSubmitButton()">
+              <label class="form-check-label" th:text="#{page.label.impossible}"></label>
+            </div>
+            <div class="invalid-feedback" th:errors="*{grantable}" th:if="${#fields.hasErrors('grantable')}">
+              付与可能有無は必須です。
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+        <div class="row m-1 text-center justify-content-end">
+          <button type="button" class="btn btn-secondary mr-1" data-target="#cancel"
+                  data-toggle="modal" th:text="#{page.button.back}">戻る
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.confirm}">確認</button>
+        </div>
+      </form>
+    </section>
+
   </div>
-</main>
+</div>
 </body>
-<th:block th:replace="roles/modal::entryConfirm"></th:block>
+<th:block th:replace="roles/modal::entry"></th:block>
 <th:block th:replace="roles/modal::cancel"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
-<script th:inline="javascript">
-    [# th:if="${readOnly}"]
+<script th:inline="javascript" th:if="${readOnly}">
     $(function () {
-        $('#entryConfirm').modal('show')
+        $('#entry').modal('show')
     });
-    [/]
-    $('.entry-cancel').on('click', function () {
-        $('input[type=text]').removeProp('readonly');
+    $('#entry').on('hidden.bs.modal', function (e) {
+        const form = $('form.entry');
+        form.find('input').each((i, e) => {
+            e.readOnly = false;
+        });
+        form.find('select').each((i, e) => {
+            e.disabled = false;
+        });
     });
 </script>
 </html>

@@ -438,7 +438,8 @@
                         <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名1</a>
                       </td>
                       <td class="text-right">
-                        <input class="form-check-input" name="assign" th:value="${role.id}" type="checkbox">
+                        <input type="checkbox" class="form-check-input assign-role" name="assign" th:value="${role.id}"
+                         onchange="activeAssignButton()">
                       </td>
                     </tr>
                     </tbody>

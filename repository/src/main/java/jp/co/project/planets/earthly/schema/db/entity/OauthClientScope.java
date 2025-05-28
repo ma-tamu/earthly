@@ -1,20 +1,21 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * OAuthクライアントスコープ
- */
+    * OAuthクライアントスコープ
+*/
 @Entity(listener = OauthClientScopeListener.class, metamodel = @Metamodel)
 @Table(name = "oauth_client_scope")
 public class OauthClientScope extends AbstractOauthClientScope implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -29,24 +30,23 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     @Column(name = "scope_id")
     String scopeId;
 
-    public OauthClientScope() {
-    }
-
+public OauthClientScope() {
+}
     /**
      * new instance
-     * 
      * @param id
-     *            id
+     *         id
      * @param oauthClientId
-     *            OAuthクライアントid
+     *         OAuthクライアントid
      * @param scopeId
-     *            スコープid
+     *         スコープid
      */
-    public OauthClientScope(final String id, final String oauthClientId, final String scopeId) {
+    public OauthClientScope(final String id,final String oauthClientId,final String scopeId) {
         this.id = id;
         this.oauthClientId = oauthClientId;
         this.scopeId = scopeId;
     }
+
 
     /**
      * Returns the id.
@@ -60,10 +60,9 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -79,10 +78,9 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     /**
      * Sets the oauthClientId.
      *
-     * @param oauthClientId
-     *            the oauthClientId
+     * @param oauthClientId the oauthClientId
      */
-    public void setOauthClientId(final String oauthClientId) {
+    public void setOauthClientId(String oauthClientId) {
         this.oauthClientId = oauthClientId;
     }
 
@@ -98,10 +96,9 @@ public class OauthClientScope extends AbstractOauthClientScope implements java.i
     /**
      * Sets the scopeId.
      *
-     * @param scopeId
-     *            the scopeId
+     * @param scopeId the scopeId
      */
-    public void setScopeId(final String scopeId) {
+    public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
     }
 }

@@ -211,4 +211,24 @@ public class UserRepository {
         user.setIsDeleted(true);
         return userDao.update(user);
     }
+
+    public UserPageResultDto findGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(
+        final String roleId, final String loginId, final String name, final String companyName, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var users = userDao.selectAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(roleId, loginId, name,
+                companyName, hasViewAllCompany, account.id(), selectOptions);
+        return new UserPageResultDto(users, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(final String roleId,
+        final String loginId, final String name, final String companyName, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var users = userDao.selectNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(roleId,
+                loginId, name, companyName, hasViewAllCompany, account.id(), selectOptions);
+        return new UserPageResultDto(users, pageable.getOffset(), selectOptions.getCount());
+    }
 }

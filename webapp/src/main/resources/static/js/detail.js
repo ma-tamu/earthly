@@ -74,6 +74,7 @@ function showRemoveCard(checkboxName, formName) {
     form.find('.card-footer.row-unassigned').show();
     form.find('input[name=' + checkboxName + ']').show()
     $('input[name=isRemoveMode]').val(true);
+    form.find('.btn.btn-primary[class*=remove]').prop('disabled', true);
 }
 
 

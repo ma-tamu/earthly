@@ -180,8 +180,9 @@
                       <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名</a>
                     </td>
                     <td class="text-right">
-                      <input type="checkbox" class="form-check-input" name="roleId" th:value="${role.id}"
-                             th:styleappend="${#bools.isFalse(userRoleSearchForm.isRemoveMode)}?'display: none'">
+                      <input type="checkbox" class="form-check-input remove-role" name="roleId" th:value="${role.id}"
+                             th:styleappend="${#bools.isFalse(userRoleSearchForm.isRemoveMode)}?'display: none'"
+                              onchange="activeRemoveButton()">
                     </td>
                   </tr>
                   </tbody>
@@ -329,8 +330,27 @@
       });
   });
   $("#assignRole").on('show.bs.modal', function (e) {
+      $('.btn.btn-primary.assign-role').prop('disabled', true);
       $('.search-unassign-role').trigger('click');
   });
+
+  function activeAssignButton() {
+      $('.btn.btn-primary.assign-role').prop('disabled', true);
+      $('input[name=assign].assign-role').each((i, e) => {
+          if (e.checked) {
+              $('.btn.btn-primary.assign-role').prop('disabled', false);
+          }
+      });
+  }
+
+  function activeRemoveButton() {
+    $('.btn.btn-primary.remove-role').prop('disabled', true);
+    $('input[name=roleId].remove-role').each((i, e) => {
+        if (e.checked) {
+            $('.btn.btn-primary.remove-role').prop('disabled', false);
+        }
+    });
+  }
 </script>
 <script th:inline="javascript" th:if="${editModal}">
   $(function () {

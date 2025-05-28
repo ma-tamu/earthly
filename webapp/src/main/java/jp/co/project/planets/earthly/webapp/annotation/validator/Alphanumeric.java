@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Pattern;
 @Constraint(validatedBy = {})
 @Target({ TYPE, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Pattern(regexp = "\\p{Alnum}+", message = "{" + VALIDATION_ALPHANUMERIC + "}")
+@Pattern(regexp = "^[\\w-]*$", message = "{" + VALIDATION_ALPHANUMERIC + "}")
 public @interface Alphanumeric {
 
     @AliasFor(annotation = Pattern.class)

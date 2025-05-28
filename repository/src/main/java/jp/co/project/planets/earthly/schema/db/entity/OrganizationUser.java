@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * グループユーザー
- */
+    * グループユーザー
+*/
 @Entity(listener = OrganizationUserListener.class, metamodel = @Metamodel)
 @Table(name = "organization_user")
 public class OrganizationUser extends AbstractOrganizationUser implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** グループユーザーID */
     @Id
@@ -39,31 +39,29 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     @Column(name = "created_by")
     String createdBy;
 
-    public OrganizationUser() {
-    }
-
+public OrganizationUser() {
+}
     /**
      * new instance
-     * 
      * @param id
-     *            グループユーザーID
+     *         グループユーザーID
      * @param organizationId
-     *            グループID
+     *         グループID
      * @param userId
-     *            ユーザーID
+     *         ユーザーID
      * @param createdAt
-     *            作成日
+     *         作成日
      * @param createdBy
-     *            作成者
+     *         作成者
      */
-    public OrganizationUser(final String id, final String organizationId, final String userId,
-        final LocalDateTime createdAt, final String createdBy) {
+    public OrganizationUser(final String id,final String organizationId,final String userId,final LocalDateTime createdAt,final String createdBy) {
         this.id = id;
         this.organizationId = organizationId;
         this.userId = userId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
     }
+
 
     /**
      * Returns the id.
@@ -77,10 +75,9 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -96,10 +93,9 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     /**
      * Sets the organizationId.
      *
-     * @param organizationId
-     *            the organizationId
+     * @param organizationId the organizationId
      */
-    public void setOrganizationId(final String organizationId) {
+    public void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
     }
 
@@ -115,10 +111,9 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     /**
      * Sets the userId.
      *
-     * @param userId
-     *            the userId
+     * @param userId the userId
      */
-    public void setUserId(final String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -134,10 +129,9 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -153,10 +147,9 @@ public class OrganizationUser extends AbstractOrganizationUser implements java.i
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 }

@@ -413,7 +413,7 @@
 
     $('.search-logout-redirect-uri').on('click', () => postSearch('searchLogoutRedirectUri', 'logoutRedirectUriContent'));
     $('.search-unassigned-management-user').on('click', () => postSearch('searchUnassignedManagementUser', 'unassignedManagementUser'));
-    $('.search-management-user').on('click', () => postSearch('searchManagementUser', 'managementUserContent'));
+    $('.search-management-user').on('click', () => postSearch('searchGrantedUser', 'managementUserContent'));
 
     $('#addManagementUser').on('show.bs.modal', () => {
         $('.search-unassigned-management-user').trigger('click');

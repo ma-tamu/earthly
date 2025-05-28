@@ -96,7 +96,7 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a th:href="@{/users}" class="nav-link">
+          <a th:href="@{/users}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/users') ? 'active' : ''}">
             <i class="nav-icon fas fa-user"></i>
             <p>
               ユーザー管理
@@ -104,7 +104,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a th:href="@{/companies}" class="nav-link">
+          <a th:href="@{/companies}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/companies') ? 'active' : ''}">
             <i class="nav-icon fas fa-building"></i>
             <p>
               会社管理
@@ -112,7 +112,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a th:href="@{/clients}" class="nav-link">
+          <a th:href="@{/clients}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/clients') ? 'active' : ''}">
             <i class="nav-icon fas fa-robot"></i>
             <p>
               クライアント管理
@@ -120,14 +120,14 @@
           </a>
         </li>
         <li class="nav-item">
-          <a th:href="@{/roles}" class="nav-link">
+          <a th:href="@{/roles}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/roles') ? 'active' : ''}">
             <i class="nav-icon fas fa-toolbox"></i>
             <p>
               ロール管理
             </p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI(), 'permissions', 'notices')  ? 'menu-is-opening menu-open active' : ''}">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-cogs"></i>
             <p>
@@ -137,13 +137,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a th:href="@{/permissions}" class="nav-link">
+              <a th:href="@{/systems/permissions}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/permissions') ? 'active' : ''}">
                 <i class="fas fa-cog nav-icon"></i>
                 <p>パーミッション管理</p>
               </a>
             </li>
             <li class="nav-item">
-              <a th:href="@{/notices}" class="nav-link">
+              <a th:href="@{/systems/notices}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/notices') ? 'active' : ''}">
                 <i class="fas fa-comment-alt nav-icon"></i>
                 <p>お知らせ管理</p>
               </a>

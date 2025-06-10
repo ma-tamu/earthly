@@ -1,6 +1,7 @@
 package jp.co.project.planets.earthly.schema.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
 import org.seasar.doma.jdbc.criteria.QueryDsl;
@@ -25,6 +26,10 @@ public class PermissionRepository {
     public PermissionRepository(final PermissionDao permissionDao, final QueryDsl queryDsl) {
         this.permissionDao = permissionDao;
         this.queryDsl = queryDsl;
+    }
+
+    public Optional<Permission> findByPrimaryKey(String id) {
+        return Optional.ofNullable(permissionDao.selectById(id));
     }
 
     public List<Permission> findByPrimaryKeys(final List<String> permissionIdList) {
@@ -54,6 +59,12 @@ public class PermissionRepository {
         final Pageable pageable, final Account account) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
         final var permissions = permissionDao.selectRoleUnassignedByRoleIdAndAnyName(roleId, name, selectOptions);
+        return new PermissionSearchResultDto(permissions, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public PermissionSearchResultDto findByName(final String name, final Pageable pageable) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final var permissions = permissionDao.selectByName(name, selectOptions);
         return new PermissionSearchResultDto(permissions, pageable.getOffset(), selectOptions.getCount());
     }
 

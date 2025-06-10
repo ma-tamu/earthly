@@ -6,139 +6,262 @@
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
 </head>
-<body class="modal-open">
-<th:block th:replace="parts/template::header"></th:block>
-<th:block th:replace="parts/template::navigation"></th:block>
-<main id="main" class="main">
-  <div class="pagetitle">
-    <div class="row">
-      <div class="col-9">
-        <h1>パーミッション詳細</h1>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.permission.detail}">パーミッション詳細</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/roles}" th:text="#{page.title.permission.list}">パーミッションリスト</a>
+              </li>
+              <li class="breadcrumb-item active">
+                <th:block th:text="${permission.name}"/>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${permission.name}">ロール名</h3>
+        </div>
       </div>
-      <div class="col-3">
-        <div class="text-end">
-          <div class="btn-group">
-            <div data-bs-toggle="tooltip" data-bs-placement="top">
-              <button class="btn btn-info rounded-pill m-1" th:title="#{page.tooltip.delete}"
-                      data-bs-toggle="modal" data-bs-target="#delete">
-                <i class="bx bx-trash"></i>
+      <!-- /.card -->
+      <hr>
+
+      <!-- 紐づけロールリスト -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="#{page.label.permission.assigned.role}">ロールリスト</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary add-role"
+                    th:title="#{page.button.title.assign}" data-target="#assignRole" data-toggle="modal">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger remove-role"
+                    th:title="#{page.button.title.unassigned}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body card-default">
+          <form method="get" name="searchAssignedRole" onsubmit="return false;"
+                th:action="@{/systems/permissions/__${permission.id}__/assigned-permissions}">
+            <input type="hidden" name="isRemoveMode" value="false">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label th:text="#{page.label.role.name}" style="margin-bottom: .1rem">ロール名</label>
+                  <input type="text" class="form-control" name="roleName" th:placeholder="#{page.placeholder.role.name}">
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <button type="button" class="btn btn-primary search-assigned-role">
+                <i class="fas fa-search"></i>
+                <th:block th:text="#{page.button.search}">検索</th:block>
               </button>
             </div>
-          </div>
+          </form>
         </div>
-      </div>
-    </div>
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a th:href="@{/}" th:text="#{page.title.home}">Home</a>
-        </li>
-        <li class="breadcrumb-item">
-          <a th:href="@{/roles}" th:text="#{page.title.permission.list}">パーミッションリスト</a>
-        </li>
-        <li class="breadcrumb-item active">
-          <th:block>パーミッション名</th:block>
-        </li>
-      </ol>
-    </nav>
-  </div>
-  <section class="section profile">
-    <div class="card detail">
-      <div class="card-body">
-        <div class="card-title">パーミッション名</div>
-        <div class="profile-overview">
-          <div class="row">
-            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.permission.name}">パーミッション名</div>
-            <div class="col-lg-9 col-md-8">
-              <th:block>name</th:block>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
-      <div class="card">
-        <div class="card-body">
-          <div class="card-title">
-            <div class="row">
-              <div class="col-8">
-                <th:block>付与ロール</th:block>
-              </div>
-              <div class="col-4 text-end">
-                <button class="btn btn-info rounded-pill m-1 assign-role"
-                        data-bs-target="#assignRole" data-bs-toggle="modal">
-                  <i class="bx bx-add-to-queue"></i>
-                </button>
-                <button class="btn btn-info rounded-pill m-1 remove-role">
-                  <i class="bx bx-edit"></i>
-                </button>
-              </div>
-            </div>
-            <form method="get" name="searchAssignedRole" onsubmit="return false;">
-              <div class="row">
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" name="roleName" placeholder="ロール名">
-                </div>
-                <div class="col-sm-2">
-                  <button class="btn btn-primary assigned-role" type="button">検索</button>
-                </div>
-              </div>
-            </form>
-          </div>
-          <form method="post" name="role" onsubmit="return false;"
-                th:action="@{/roles/id/permissions/removes}"
-                th:if="${!#lists.isEmpty(assignRolePage.content)}">
-            <div id="assignRoleContent">
-              <th:block th:fragment="assignRolePage">
+        <form method="post" name="removeRole" onsubmit="return false;"
+              th:action="@{/systems/permissions/__${permission.id}__/unassign}">
+          <div class="card-body card-default">
+            <div id="assignedRoleContent">
+              <th:block th:fragment="assignedRoleContent" th:if="${!#lists.isEmpty(assignRolePage.content)}">
                 <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
-                <table class="table table-striped table-borderless assign-role-list"
-                       th:fragment="assignRoleList">
+                <table class="table table-striped table-sm assign-user-list"
+                       th:fragment="assignedRoleList">
                   <thead>
                   <tr>
-                    <th>ロール名</th>
+                    <th th:text="#{page.label.role.name}">ロール名</th>
+                    <th>&nbsp;</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr th:each="role : ${assignRolePage.content}">
                     <td>
-                      <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">パーミッション名</a>
+                      <a th:href="@{/roles/__${role.id}__}" th:text="${role.name}">ロール名</a>
                     </td>
-                    <td class="text-end">
-                      <input class="form-check-input" name="userIds" style="display: none"
-                             th:value="${role.id}"
-                             type="checkbox">
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input unassign-role" name="roleId" th:value="${role.id}"
+                             th:styleappend="${#bools.isFalse(permissionAssignedRoleSearchForm.isRemoveMode)}?'display: none'"
+                             onchange="activeRoleUnassignableButton()">
                     </td>
                   </tr>
                   </tbody>
                 </table>
-                <div class="row">
-                  <div class="col-12">
-                    <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
-                  </div>
-                </div>
+                <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
               </th:block>
             </div>
-            <div class="row row-unassigned" style="display: none">
-              <div class="col-8">
-                削除対象を選択してください。
+          </div>
+          <div class="card-footer  row-unassigned" style="display: none">
+            <div class="row">
+              <div class="col-8" th:text="#{page.panel.unassigned.message}">
+                解除対象を選択してください。
               </div>
-              <div class="col-4 text-end">
-                <button class="btn btn-primary unassigned-role" th:text="#{page.button.delete}" type="button">削除
+              <div class="col-4 text-right">
+                <button type="button" class="btn btn-primary remove-unassign-role" th:text="#{page.button.unassigned}">解除
                 </button>
-                <button class="btn btn-light unassigned-cancel" th:text="#{page.button.cancel}" type="button">キャンセル
+                <button type="button" class="btn btn-light btn-outline-dark remove-unassign-role-cancel"
+                        th:text="#{page.button.cancel}">キャンセル
                 </button>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-    </div>
-  </section>
-</main>
-<th:block th:replace="systems/permissions/modal::delete(${permission.id})"></th:block>
+    </section>
+  </div>
+</div>
+
 <th:block th:replace="systems/permissions/modal::assignRole(${permission.id})"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
+<th:block th:if="${success}">
+  <div th:replace="parts/toast::success('page.toast.success.update')"></div>
+</th:block>
+<th:block th:if="${message}">
+  <div th:replace="parts/toast::danger(${message}, ${messageArgs})"></div>
+</th:block>
+<script type="text/javascript" th:inline="javascript">
+    $('.search-assigned-role').on('click', () => postSearch('searchAssignedRole', 'assignedRoleContent'));
+    $('.search-unassigned-role').on('click', () => postSearch('searchUnassignedRole', 'unassignedRoleContent'));
 
+    $('.btn.btn-primary.grant').on('click', () => {
+        const form = $('form[name=grantUser]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            $('.search-not-grant-user').trigger('click');
+            $('.search-granted-user').trigger('click');
+            $('.btn.grant').prop('disabled', true);
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    });
+
+    $('.remove-role').on('click', () => {
+        showRemoveCard('roleId', 'removeRole');
+    });
+
+    $('.remove-unassign-role-cancel').on('click', () => {
+        hideRemoveCard('roleId', 'removeRole');
+    });
+
+    $('.btn.btn-primary.remove-unassign-role').on('click', () => {
+        const form = $('form[name=removeRole]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            const searchForm = $('form[name=searchAssignedRole]');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = false;
+            });
+            $('.search-assigned-role').trigger('click');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = true;
+            });
+        })
+    });
+
+    $('#assignRole').on('show.bs.modal', () => {
+      $('.btn.btn-primary.assign-role').prop('disabled', true);
+    });
+
+    function activeAssignableButton() {
+        $('.btn.assign-role').prop('disabled', true);
+        $('input[name=roleId].role').each((i, e) => {
+            if (e.checked) {
+                $('.btn.assign-role').prop('disabled', false);
+            }
+        });
+    }
+
+    $('.btn.btn-primary.assign-role').on('click', () => {
+        const form = $('form[name=assignRole]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            $('.search-unassigned-role').trigger('click');
+            $('.search-assigned-role').trigger('click');
+            $('.btn.assign-role').prop('disabled', true);
+        });
+        deferred.fail(function (data, response) {
+            console.error(data);
+            window.location.href = "/earthly/error";
+        });
+    });
+
+    $('.btn.btn-primary.remove-role').on('click', () => {
+        const form = $('form[name=removeRole]');
+        const body = form.serialize();
+        const url = form.attr('action');
+        const token = form.find('input[name=_csrf]').val();
+        let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+        deferred.done(function (data, response) {
+            $("body").append(data);
+            const searchForm = $('form[name=searchAssignedRole]');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = false;
+            });
+            $('.search-assigned-role').trigger('click');
+            searchForm.find('input').each((i, e) => {
+                e.disabled = true;
+            });
+        })
+    });
+
+    function activeRoleUnassignableButton() {
+        $('.btn.remove-unassign-role').prop('disabled', true);
+        $('input[name=roleId].unassign-role').each((i, e) => {
+            if (e.checked) {
+                $('.btn.remove-unassign-role').prop('disabled', false);
+            }
+        });
+    }
+
+</script>
+<script th:inline="javascript" th:if="${editModal}">
+    $(function () {
+        $('#edit').modal('show')
+    });
+</script>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#confirm').modal('show')
+    });
+    $('#confirm').on('hidden.bs.modal', function (e) {
+        cancel();
+    });
+</script>
 </body>
 </html>

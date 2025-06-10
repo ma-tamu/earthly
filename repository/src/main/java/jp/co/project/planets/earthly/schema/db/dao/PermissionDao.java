@@ -25,4 +25,7 @@ public interface PermissionDao extends PermissionBaseDao {
 
     @Select
     List<Permission> selectRoleUnassignedByRoleIdAndAnyName(String roleId, String name, SelectOptions selectOptions);
+
+    @Select
+    List<Permission> selectByName(String name, SelectOptions selectOptions);
 }

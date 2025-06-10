@@ -110,6 +110,16 @@ public final class ErrorMessageKey {
     public static final String ROLE_UNASSIGN_PERMISSION_NOT_FOUND = "exception.role.unassign.permission.notfound";
     /** 割り当てられていないパーミッションがあります。 */
     public static final String ROLE_UNASSIGN_PERMISSION_MISMATCH = "exception.role.unassign.permission.mismatch";
+    /** パーミッションリストを閲覧することはできません。 */
+    public static final String FORBIDDEN_PERMISSION_LIST = "exception.forbidden.permission.list";
+    /** 対象のパーミッションは存在しません。 */
+    public static final String NOTFOUND_PERMISSION = "exception.notfound.permission";
+    /** 割り当てられていないロールが含まれています。 */
+    public static final String PERMISSION_UNASSIGNED_ROLE = "exception.permission.unassigned.role";
+    /** 割り当てできないロールが含まれてます。 */
+    public static final String PERMISSION_ASSIGN_ROLE_MISMATCH = "exception.permission.assign.role.mismatch";
+    /** 既に割り当て済みのロールが含まれています。 */
+    public static final String PERMISSION_ASSIGN_ROLE_ALREADY = "exception.permission.assign.role.already";
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";
 

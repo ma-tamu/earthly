@@ -40,6 +40,11 @@ public class RoleRepository {
         return Optional.ofNullable(roleDao.selectById(id));
     }
 
+    public List<Role> findAccessibleByPrimaryKeys(final List<String> ids, final Account account) {
+        final boolean hasViewAllRole = account.permissions().contains(PermissionEnum.VIEW_ALL_ROLE);
+        return roleDao.selectAccessibleByPrimaryKeys(ids, hasViewAllRole, account);
+    }
+
     /**
      * 対象ユーザーの割り当て済みのロールを検索
      * 
@@ -121,6 +126,24 @@ public class RoleRepository {
 
     public int update(final Role role) {
         return roleDao.update(role);
+    }
+
+    public RoleSearchResultDto findAssignedRoleByPermissionId(final String permissionId, final String name,
+        final Pageable pageable, final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllRole = account.permissions().contains(PermissionEnum.VIEW_ALL_ROLE);
+        final var roles = roleDao.selectAssignedRoleByPermissionId(permissionId, name, hasViewAllRole, account,
+                selectOptions);
+        return new RoleSearchResultDto(roles, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public RoleSearchResultDto findUnassignedRoleByPermissionId(final String permissionId, final String name,
+        final Pageable pageable, final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllRole = account.permissions().contains(PermissionEnum.VIEW_ALL_ROLE);
+        final var roles = roleDao.selectUnassignedRoleByPermissionId(permissionId, name, hasViewAllRole, account,
+                selectOptions);
+        return new RoleSearchResultDto(roles, pageable.getOffset(), selectOptions.getCount());
     }
 
 }

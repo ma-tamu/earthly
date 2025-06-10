@@ -89,6 +89,16 @@ public enum ErrorCode implements Code {
     EWA4XX038(ROLE_UNASSIGN_PERMISSION_NOT_FOUND),
     /** 割り当てられていないパーミッションがあります。 */
     EWA4XX039(ROLE_UNASSIGN_PERMISSION_MISMATCH),
+    /** パーミッションリストを閲覧することはできません。 */
+    EWA4XX040(FORBIDDEN_PERMISSION_LIST),
+    /** 対象のパーミッションは存在しません。 */
+    EWA4XX041(NOTFOUND_PERMISSION),
+    /** 割り当てられていないロールが含まれています。 */
+    EWA4XX042(PERMISSION_UNASSIGNED_ROLE),
+    /** 割り当てできないロールが含まれてます。 */
+    EWA4XX043(PERMISSION_ASSIGN_ROLE_MISMATCH),
+    /** 既に割り当て済みのロールが含まれています。 */
+    EWA4XX044(PERMISSION_ASSIGN_ROLE_ALREADY),
     /** {0}の登録に失敗しました。 */
     EWA5XX001(FAILED_INSERT),
     EWA5XX999(UNEXPECTED);

@@ -28,6 +28,14 @@ public class RolePermissionRepository {
         }).fetch();
     }
 
+    public List<RolePermission> findByRoleIdsAndPermissionId(final List<String> roleIds, final String permissionId) {
+        final var criteria = new RolePermission_();
+        return queryDsl.from(criteria).where(where -> {
+            where.in(criteria.roleId, roleIds);
+            where.eq(criteria.permissionId, permissionId);
+        }).fetch();
+    }
+
     public int insert(final RolePermission rolePermission) {
         return rolePermissionDao.insert(rolePermission);
     }
@@ -42,6 +50,14 @@ public class RolePermissionRepository {
         return queryDsl.delete(criteria).where(where -> {
             where.eq(criteria.roleId, roleId);
             where.in(criteria.permissionId, permissionIds);
+        }).execute();
+    }
+
+    public int deleteByRoleIdsAndPermissionId(final List<String> roleIds, final String permissionId) {
+        final var criteria = new RolePermission_();
+        return queryDsl.delete(criteria).where(where -> {
+            where.in(criteria.roleId, roleIds);
+            where.eq(criteria.permissionId, permissionId);
         }).execute();
     }
 }

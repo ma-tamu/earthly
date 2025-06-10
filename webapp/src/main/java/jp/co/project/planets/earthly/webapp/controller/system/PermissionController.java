@@ -1,24 +1,17 @@
 package jp.co.project.planets.earthly.webapp.controller.system;
 
-import java.util.Collections;
-
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import jp.co.project.planets.earthly.schema.db.entity.Company;
-import jp.co.project.planets.earthly.schema.db.entity.Permission;
-import jp.co.project.planets.earthly.schema.db.entity.Role;
 import jp.co.project.planets.earthly.webapp.controller.form.system.permission.PermissionSearchForm;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import jp.co.project.planets.earthly.webapp.service.PermissionService;
 
 /**
  * パーミッションコントローラー
@@ -27,19 +20,17 @@ import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 @RequestMapping("systems/permissions")
 public class PermissionController {
 
+    private final PermissionService permissionService;
+
+    public PermissionController(final PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
+
     @GetMapping
     public ModelAndView search(@ModelAttribute final PermissionSearchForm permissionSearchForm,
         @PageableDefault final Pageable pageable, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        return new ModelAndView("systems/permissions/index").addObject(new PageImpl<Company>(Collections.emptyList()));
+        final var permissionPage = permissionService.search(permissionSearchForm.name(), pageable,
+                userInfoDto.account());
+        return new ModelAndView("systems/permissions/index").addObject(permissionPage);
     }
-
-    @GetMapping("{id}")
-    public ModelAndView detail(@PathVariable final String id, final Model model,
-        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
-        return new ModelAndView("systems/permissions/detail") //
-                .addObject(new Permission("1", "サンプルパーミッション", null, null, null, null, false))
-                .addObject("assignRolePage", new PageImpl<Role>(Collections.emptyList())) //
-                .addObject("unassignedRolePage", new PageImpl<Role>(Collections.emptyList()));
-    }
-
 }

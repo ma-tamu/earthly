@@ -14,7 +14,7 @@
   <div class="card">
     <div class="card-body login-card-body">
       <p class="login-box-msg">ログインIDとパスワードを入力してください。</p>
-      <div style="color: #dc3545" th:if="${session.exception}" th:text="#{exception.login.failed}">
+      <div style="color: #dc3545" th:if="${session.SPRING_SECURITY_LAST_EXCEPTION}" th:text="#{exception.login.failed}">
         ユーザーIDまたは、パスワードが誤っています。
       </div>
       <form th:action="@{/login}" method="post">

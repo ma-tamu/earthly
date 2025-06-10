@@ -8,6 +8,7 @@ import org.seasar.doma.Select;
 import org.seasar.doma.boot.ConfigAutowireable;
 import org.seasar.doma.jdbc.SelectOptions;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.base.RoleBaseDao;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
 
@@ -20,7 +21,7 @@ public interface RoleDao extends RoleBaseDao {
 
     /**
      * 対象ユーザーに割り当てられているロールを取得 ただし、実行ユーザーが閲覧できるものに限る
-     * 
+     *
      * @param userId
      *            ユーザーID
      * @param hasViewAllRole
@@ -70,4 +71,17 @@ public interface RoleDao extends RoleBaseDao {
 
     @Select
     Optional<Role> selectAccessibleByPrimaryKey(String id, boolean hasViewAllRole, String executionUserId);
+
+    @Select
+    List<Role> selectAssignedRoleByPermissionId(String permissionId, String name, boolean hasViewAllRole,
+        Account account,
+        SelectOptions selectOptions);
+
+    @Select
+    List<Role> selectUnassignedRoleByPermissionId(String permissionId, String name, boolean hasViewAllRole,
+        Account account,
+        SelectOptions selectOptions);
+
+    @Select
+    List<Role> selectAccessibleByPrimaryKeys(List<String> ids, boolean hasViewAllRole, Account account);
 }

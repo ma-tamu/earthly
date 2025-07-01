@@ -99,6 +99,10 @@ public enum ErrorCode implements Code {
     EWA4XX043(PERMISSION_ASSIGN_ROLE_MISMATCH),
     /** 既に割り当て済みのロールが含まれています。 */
     EWA4XX044(PERMISSION_ASSIGN_ROLE_ALREADY),
+    /** お知らせ登録の権限がありません。 */
+    EWA4XX045(FORBIDDEN_ENTRY_NOTICE),
+    /** 対象のお知らせは存在しません。 */
+    EWA4XX046(NOTFOUND_NOTICE),
     /** {0}の登録に失敗しました。 */
     EWA5XX001(FAILED_INSERT),
     EWA5XX999(UNEXPECTED);

@@ -84,8 +84,38 @@ public class PermissionDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectByName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/PermissionDao/selectByName.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
     public void testSelectGrantPermissionByUserId(TestInfo testInfo) throws Exception {
         SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/PermissionDao/selectGrantPermissionByUserId.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectRoleAssignedByRoleIdAndAnyName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/PermissionDao/selectRoleAssignedByRoleIdAndAnyName.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectRoleUnassignedByRoleIdAndAnyName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/PermissionDao/selectRoleUnassignedByRoleIdAndAnyName.sql", dialect);
         execute(sqlFile);
     }
 

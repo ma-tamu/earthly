@@ -120,6 +120,10 @@ public final class ErrorMessageKey {
     public static final String PERMISSION_ASSIGN_ROLE_MISMATCH = "exception.permission.assign.role.mismatch";
     /** 既に割り当て済みのロールが含まれています。 */
     public static final String PERMISSION_ASSIGN_ROLE_ALREADY = "exception.permission.assign.role.already";
+    /** お知らせ登録の権限がありません。 */
+    public static final String FORBIDDEN_ENTRY_NOTICE = "exception.forbidden.entry.notice";
+    /** 対象のお知らせは存在しません。 */
+    public static final String NOTFOUND_NOTICE = "exception.notfound.notice";
     /** 想定外のエラーが発生しました。 */
     public static final String UNEXPECTED = "exception.internal.unexpected";
 

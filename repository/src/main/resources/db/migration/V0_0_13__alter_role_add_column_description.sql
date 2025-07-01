@@ -1,1 +1,0 @@
-ALTER TABLE role ADD COLUMN description VARCHAR(255) NOT NULL AFTER name;

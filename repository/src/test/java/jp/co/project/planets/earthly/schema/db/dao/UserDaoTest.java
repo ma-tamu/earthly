@@ -94,6 +94,16 @@ public class UserDaoTest {
      * @throws Exception
      */
     @Test
+    public void testSelectAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
     public void testSelectBelongOrganizationByLikeLoginIdAndName(TestInfo testInfo) throws Exception {
         SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectBelongOrganizationByLikeLoginIdAndName.sql", dialect);
         execute(sqlFile);
@@ -156,6 +166,16 @@ public class UserDaoTest {
     @Test
     public void testSelectNotCompanyManagerByNameAndCompanyName(TestInfo testInfo) throws Exception {
         SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectNotCompanyManagerByNameAndCompanyName.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/UserDao/selectNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName.sql", dialect);
         execute(sqlFile);
     }
 

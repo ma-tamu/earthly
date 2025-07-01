@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.notice.detail}">お知らせ詳細</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/systems/notices}" th:text="#{page.title.notice.list}">お知らせリスト</a>
+              </li>
+              <li class="breadcrumb-item active">
+                <th:block th:text="${notice.title}"/>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title" th:text="${notice.title}">件名</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-sm btn-primary edit" th:title="#{page.button.title.edit}"
+                    data-target="#edit" data-toggle="modal">
+              <i class="fas fa-user-edit"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-danger delete" th:title="#{page.button.title.delete}"
+                    data-target="#delete" data-toggle="modal">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.notice.body}">本文</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:text="${notice.body}">本文</th:block>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.notice.date.start}">掲載開始日時</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:text="${notice.startAt}">掲載開始日時</th:block>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-lg-3 col-md-4 label" th:text="#{page.label.notice.date.end}">掲載終了日時</div>
+            <div class="col-lg-9 col-md-8">
+              <th:block th:text="${notice.endAt}">掲載終了日時</th:block>
+            </div>
+          </div>
+        </div>
+        <!-- /.card-footer-->
+      </div>
+      <!-- /.card -->
+    </section>
+  </div>
+</div>
+
+<th:block th:replace="roles/modal::edit(${notice.id})"></th:block>
+<th:block th:replace="roles/modal::confirm(${notice.id})"></th:block>
+<th:block th:replace="roles/modal::delete(${notice.id})"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script th:src="@{/js/detail.js}"></script>
+<th:block th:if="${success}">
+  <div th:replace="parts/toast::success('page.toast.success.update')"></div>
+</th:block>
+<th:block th:if="${message}">
+  <div th:replace="parts/toast::danger(${message}, ${messageArgs})"></div>
+</th:block>
+<script th:inline="javascript" th:if="${editModal}">
+    $(function () {
+        $('#edit').modal('show')
+    });
+</script>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#confirm').modal('show')
+    });
+    $('#confirm').on('hidden.bs.modal', function (e) {
+        cancel();
+    });
+</script>
+</body>
+</html>

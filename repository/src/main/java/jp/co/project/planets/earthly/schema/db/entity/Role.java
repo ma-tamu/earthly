@@ -27,11 +27,11 @@ private static final long serialVersionUID = 1L;
     @Column(name = "name")
     String name;
 
-    /**  */
+    /** 概要 */
     @Column(name = "description")
     String description;
 
-    /**  */
+    /** 不要可能 */
     @Column(name = "grantable")
     Boolean grantable;
 
@@ -64,9 +64,9 @@ public Role() {
      * @param name
      *         ロール名
      * @param description
-     *         
+     *         概要
      * @param grantable
-     *         
+     *         不要可能
      * @param createdAt
      *         作成日
      * @param createdBy

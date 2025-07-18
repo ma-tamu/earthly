@@ -54,7 +54,9 @@
           <div class="row mb-3">
             <div class="col-lg-3 col-md-4 label" th:text="#{page.label.notice.body}">本文</div>
             <div class="col-lg-9 col-md-8">
-              <th:block th:text="${notice.body}">本文</th:block>
+              <th:block th:each="body:${notice.body.split('\r\n|\r|\n', -1)}">
+                <th:block th:text="${body}">本文</th:block><br />
+              </th:block>
             </div>
           </div>
           <div class="row mb-3">
@@ -77,9 +79,9 @@
   </div>
 </div>
 
-<th:block th:replace="roles/modal::edit(${notice.id})"></th:block>
-<th:block th:replace="roles/modal::confirm(${notice.id})"></th:block>
-<th:block th:replace="roles/modal::delete(${notice.id})"></th:block>
+<th:block th:replace="systems/notices/modal::edit(${notice.id})"></th:block>
+<th:block th:replace="systems/notices/modal::confirm(${notice.id})"></th:block>
+<th:block th:replace="systems/notices/modal::delete(${notice.id})"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
@@ -102,6 +104,25 @@
     $('#confirm').on('hidden.bs.modal', function (e) {
         cancel();
     });
+</script>
+<script>
+  $(()=>{
+    $('#startAtDatetimepicker').datetimepicker({
+      format: 'YYYY/MM/DD HH:mm:ss',
+      locale: 'ja',
+      dayViewHeaderFormat: 'YYYY年 MM月',
+      showClose: true,
+      sideBySide: true
+    });
+    $('#endAtDatetimepicker').datetimepicker({
+      format: 'YYYY/MM/DD HH:mm:ss',
+      locale: 'ja',
+      dayViewHeaderFormat: 'YYYY年 MM月',
+      showClose: true,
+      sideBySide: true
+    });
+
+  })
 </script>
 </body>
 </html>

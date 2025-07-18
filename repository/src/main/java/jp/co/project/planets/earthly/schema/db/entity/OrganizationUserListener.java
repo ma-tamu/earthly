@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,30 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class OrganizationUserListener implements EntityListener<OrganizationUser> {
 
     @Override
-    public void preInsert(OrganizationUser entity, PreInsertContext<OrganizationUser> context) {
+    public void preInsert(final OrganizationUser entity, final PreInsertContext<OrganizationUser> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
     }
 
     @Override
-    public void preUpdate(OrganizationUser entity, PreUpdateContext<OrganizationUser> context) {
-        
-        
+    public void preUpdate(final OrganizationUser entity, final PreUpdateContext<OrganizationUser> context) {
+
     }
 
     @Override
-    public void preDelete(OrganizationUser entity, PreDeleteContext<OrganizationUser> context) {
+    public void preDelete(final OrganizationUser entity, final PreDeleteContext<OrganizationUser> context) {
     }
 
     @Override
-    public void postInsert(OrganizationUser entity, PostInsertContext<OrganizationUser> context) {
+    public void postInsert(final OrganizationUser entity, final PostInsertContext<OrganizationUser> context) {
     }
 
     @Override
-    public void postUpdate(OrganizationUser entity, PostUpdateContext<OrganizationUser> context) {
+    public void postUpdate(final OrganizationUser entity, final PostUpdateContext<OrganizationUser> context) {
     }
 
     @Override
-    public void postDelete(OrganizationUser entity, PostDeleteContext<OrganizationUser> context) {
+    public void postDelete(final OrganizationUser entity, final PostDeleteContext<OrganizationUser> context) {
     }
 }

@@ -1,13 +1,17 @@
 package jp.co.project.planets.earthly.schema.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.seasar.doma.boot.Pageables;
 import org.seasar.doma.jdbc.criteria.QueryDsl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.NoticeDao;
 import jp.co.project.planets.earthly.schema.db.entity.Notice;
 import jp.co.project.planets.earthly.schema.db.entity.Notice_;
+import jp.co.project.planets.earthly.schema.model.dto.NoticeSearchResultDto;
 
 @Repository
 public class NoticeRepository {
@@ -32,8 +36,18 @@ public class NoticeRepository {
         }).fetchOptional();
     }
 
+    public NoticeSearchResultDto findByTitleAndPublicationDate(final String title, final LocalDateTime startDate,
+        final LocalDateTime endDate, final Pageable pageable) {
+        final var options = Pageables.toSelectOptions(pageable).count();
+        final var notices = noticeDao.selectByTitleAndPublicationDate(title, startDate, endDate, options);
+        return new NoticeSearchResultDto(notices, pageable.getOffset(), pageable.getPageSize());
+    }
+
     public int insert(final Notice notice) {
         return noticeDao.insert(notice);
     }
 
+    public int update(final Notice notice) {
+        return noticeDao.update(notice);
+    }
 }

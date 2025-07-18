@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class ManagementCompanyUserListener implements EntityListener<ManagementCompanyUser> {
 
     @Override
-    public void preInsert(ManagementCompanyUser entity, PreInsertContext<ManagementCompanyUser> context) {
+    public void preInsert(final ManagementCompanyUser entity, final PreInsertContext<ManagementCompanyUser> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(ManagementCompanyUser entity, PreUpdateContext<ManagementCompanyUser> context) {
-        
-        
+    public void preUpdate(final ManagementCompanyUser entity, final PreUpdateContext<ManagementCompanyUser> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(ManagementCompanyUser entity, PreDeleteContext<ManagementCompanyUser> context) {
+    public void preDelete(final ManagementCompanyUser entity, final PreDeleteContext<ManagementCompanyUser> context) {
     }
 
     @Override
-    public void postInsert(ManagementCompanyUser entity, PostInsertContext<ManagementCompanyUser> context) {
+    public void postInsert(final ManagementCompanyUser entity, final PostInsertContext<ManagementCompanyUser> context) {
     }
 
     @Override
-    public void postUpdate(ManagementCompanyUser entity, PostUpdateContext<ManagementCompanyUser> context) {
+    public void postUpdate(final ManagementCompanyUser entity, final PostUpdateContext<ManagementCompanyUser> context) {
     }
 
     @Override
-    public void postDelete(ManagementCompanyUser entity, PostDeleteContext<ManagementCompanyUser> context) {
+    public void postDelete(final ManagementCompanyUser entity, final PostDeleteContext<ManagementCompanyUser> context) {
     }
 }

@@ -89,17 +89,17 @@
           <label class="col-2 form-label" for="emphasis" th:text="#{page.label.notice.emphasis}">強いお知らせか</label>
           <div class="col-6">
             <div class="form-check">
-              <input type="radio" class="form-check-input" name="emphasis"
+              <input type="radio" class="form-check-input" id="yes" name="emphasis"
                      th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="true"
                      th:checked="*{#bools.isTrue(emphasis)}" onclick="activeSubmitButton()">
-              <label class="form-check-label" th:text="#{page.label.yes}"></label>
+              <label class="form-check-label" for="yes" th:text="#{page.label.yes}"></label>
             </div>
             <div class="form-check">
-              <input type="radio" class="form-check-input" name="emphasis"
+              <input type="radio" class="form-check-input" id="no" name="emphasis"
                      th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="false"
                      th:checked="*{#bools.isFalse(emphasis)}"
                      onclick="activeSubmitButton()">
-              <label class="form-check-label" th:text="#{page.label.no}"></label>
+              <label class="form-check-label" for="no" th:text="#{page.label.no}"></label>
             </div>
             <div class="invalid-feedback" th:errors="*{emphasis}" th:if="${#fields.hasErrors('emphasis')}">
               強いお知らせかは必須です。
@@ -150,8 +150,8 @@
         form.find('input').each((i, e) => {
             e.readOnly = false;
         });
-        form.find('select').each((i, e) => {
-            e.disabled = false;
+        form.find('textarea').each((i, e) => {
+            e.readOnly = false;
         });
     });
 </script>

@@ -23,14 +23,14 @@ public class ${simpleName}<#if superclassSimpleName??> extends ${superclassSimpl
     @Override
     public void preInsert(<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if> entity, PreInsertContext<<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if>> context) {
         <#list entityDesc.idEntityPropertyDescs as property><#if property.columnName = "id">entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));</#if></#list>
-        <#list entityDesc.idEntityPropertyDescs as property><#if property.columnName = "created_at" || property.columnName = "updated_at">final var now = java.time.LocalDateTime.now()</#if></#list>
-        <#list entityDesc.idEntityPropertyDescs as property><#if property.columnName = "created_at" || property.columnName = "updated_at">entity.set${property.name?cap_first}(now)</#if></#list>
+        <#list entityDesc.ownEntityPropertyDescs as property><#if property.columnName = "created_at" || property.columnName = "updated_at">final var now = java.time.LocalDateTime.now();<#break></#if></#list>
+        <#list entityDesc.ownEntityPropertyDescs as property><#if property.columnName = "created_at" || property.columnName = "updated_at">entity.set${property.name?cap_first}(now);</#if></#list>
     }
 
     @Override
     public void preUpdate(<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if> entity, PreUpdateContext<<#if entityDesc.entityPrefix??>${entityDesc.entityPrefix}</#if>${entityClassSimpleName}<#if entityDesc.entitySuffix??>${entityDesc.entitySuffix}</#if>> context) {
-        <#list entityDesc.idEntityPropertyDescs as property><#if property.columnName = "updated_at">final var now = java.time.LocalDateTime.now()</#if></#list>
-        <#list entityDesc.idEntityPropertyDescs as property><#if property.columnName = "updated_at">entity.set${property.name?cap_first}(now)</#if></#list>
+        <#list entityDesc.ownEntityPropertyDescs as property><#if property.columnName = "updated_at">final var now = java.time.LocalDateTime.now();</#if></#list>
+        <#list entityDesc.ownEntityPropertyDescs as property><#if property.columnName = "updated_at">entity.set${property.name?cap_first}(now);</#if></#list>
     }
 
     @Override

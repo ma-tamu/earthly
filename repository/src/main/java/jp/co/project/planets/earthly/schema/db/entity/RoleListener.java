@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class RoleListener implements EntityListener<Role> {
 
     @Override
-    public void preInsert(Role entity, PreInsertContext<Role> context) {
+    public void preInsert(final Role entity, final PreInsertContext<Role> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Role entity, PreUpdateContext<Role> context) {
-        
-        
+    public void preUpdate(final Role entity, final PreUpdateContext<Role> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Role entity, PreDeleteContext<Role> context) {
+    public void preDelete(final Role entity, final PreDeleteContext<Role> context) {
     }
 
     @Override
-    public void postInsert(Role entity, PostInsertContext<Role> context) {
+    public void postInsert(final Role entity, final PostInsertContext<Role> context) {
     }
 
     @Override
-    public void postUpdate(Role entity, PostUpdateContext<Role> context) {
+    public void postUpdate(final Role entity, final PostUpdateContext<Role> context) {
     }
 
     @Override
-    public void postDelete(Role entity, PostDeleteContext<Role> context) {
+    public void postDelete(final Role entity, final PostDeleteContext<Role> context) {
     }
 }

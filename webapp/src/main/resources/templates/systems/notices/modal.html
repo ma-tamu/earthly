@@ -25,21 +25,31 @@
               <label class="col-sm-3 form-label" th:text="#{page.label.notice.body}">本文</label>
               <div class="col-sm-9">
                 <input type="hidden" class="form-control" th:field="*{body}">
-                <th:block th:text="*{body}"></th:block>
+                <th:block th:each="line:*{body.split('\r\n|\r|\n', -1)}">
+                  <th:block th:text="${line}">本文</th:block><br />
+                </th:block>
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-sm-3 form-label" th:text="#{page.label.notice.date.start}">掲載開始日</label>
-              <div class="col-sm-9">
-                <input type="hidden" class="form-control" name="startAt" th:value="*{startAt}">
-                <th:block th:field="*{startAt}">掲載開始日時</th:block>
+              <div class="col-sm-9" th:if="*{startAt != null}">
+                <input type="hidden" class="form-control" name="startAt" th:value="*{#temporals.format(startAt, 'yyyy/MM/dd HH:mm:ss')}">
+                <th:block th:text="*{#temporals.format(startAt, 'yyyy/MM/dd HH:mm:ss')}">掲載開始日時</th:block>
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-sm-3 form-label" th:text="#{page.label.notice.date.end}">掲載終了日</label>
+              <div class="col-sm-9" th:if="*{endAt != null}">
+                <input type="hidden" class="form-control" name="endAt" th:value="*{#temporals.format(endAt, 'yyyy/MM/dd HH:mm:ss')}">
+                <th:block th:text="*{#temporals.format(endAt, 'yyyy/MM/dd HH:mm:ss')}">掲載終了日時</th:block>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-3 form-label" th:text="#{page.label.notice.emphasis}">付与有無</label>
               <div class="col-sm-9">
-                <input type="hidden" class="form-control" name="endAt" th:value="*{endAt}">
-                <th:block th:field="*{endAt}">掲載終了日時</th:block>
+                <input type="hidden" class="form-control" name="emphasis" th:value="*{emphasis}">
+                <th:block th:if="*{#bools.isTrue(emphasis)}" th:text="#{page.label.yes}">可能</th:block>
+                <th:block th:if="*{#bools.isFalse(emphasis)}" th:text="#{page.label.no}">不可能</th:block>
               </div>
             </div>
           </div>
@@ -81,54 +91,80 @@
 <div class="modal" id="edit" tabindex="-1" th:fragment="edit(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg edit-modal">
     <div class="modal-content">
-      <form method="post" th:action="@{/roles/__${id}__/edit}" th:object="${roleEditForm}">
+      <form method="post" th:action="@{/systems/notices/__${id}__/edit}" th:object="${noticeEditForm}">
         <div class="modal-header">
-          <h5 class="modal-title" th:text="#{page.modal.title.role.edit}">ロール編集</h5>
+          <h5 class="modal-title" th:text="#{page.modal.title.notice.edit}">お知らせ編集</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body edit">
           <div class="row mb-3">
-            <div class="col-3" th:text="#{page.label.role.name}">ロール名</div>
+            <div class="col-3" th:text="#{page.label.notice.title}">件名</div>
             <div class="col-9">
-              <input type="text" class="form-control" id="name"
-                     th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
-                     th:field="*{name}" oninput="activeSubmitButton()">
-              <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
-                パーミッション名は必須です。
+              <input type="text" class="form-control" id="title"
+                     th:classappend="${#fields.hasErrors('title')}?'is-invalid'"
+                     th:field="*{title}" oninput="activeSubmitButton()">
+              <div class="invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+                件名は必須です。
               </div>
             </div>
           </div>
           <div class="row mb-3">
-            <div class="col-3" th:text="#{page.label.role.description}">概要</div>
+            <div class="col-3" th:text="#{page.label.notice.body}">本文</div>
             <div class="col-9">
-              <input type="text" class="form-control" id="description"
-                     th:classappend="${#fields.hasErrors('description')}?'is-invalid'"
-                     th:field="*{description}" oninput="activeSubmitButton()">
-              <div class="invalid-feedback" th:errors="*{description}" th:if="${#fields.hasErrors('description')}">
-                概要は必須です。
+              <textarea type="text" class="form-control" id="body"
+                     th:classappend="${#fields.hasErrors('body')}?'is-invalid'"
+                        th:field="*{body}" oninput="activeSubmitButton()"></textarea>
+              <div class="invalid-feedback" th:errors="*{body}" th:if="${#fields.hasErrors('body')}">
+                本文は必須です。
               </div>
             </div>
           </div>
           <div class="row mb-3">
-            <div class="col-3" th:text="#{page.label.role.grantable}">付与有無</div>
+            <div class="col-3" th:text="#{page.label.notice.date.start}">掲載開始日時</div>
+            <div class="col-9">
+              <div class="form-group date" id="startAtDatetimepicker" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#startAtDatetimepicker"
+                       data-toggle="datetimepicker" th:classappend="${#fields.hasErrors('startAt')}?'is-invalid'"
+                       th:field="*{startAt}" maxlength="19">
+                <div class="invalid-feedback" th:errors="*{startAt}" th:if="${#fields.hasErrors('startAt')}">
+                  掲載開始日時は必須です。
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3" th:text="#{page.label.notice.date.end}">掲載終了日時</div>
+            <div class="col-9">
+              <div class="form-group date" id="endAtDatetimepicker" data-target-input="nearest">
+                <input type="text" class="form-control datetimepicker-input" data-target="#endAtDatetimepicker"
+                       data-toggle="datetimepicker" th:classappend="${#fields.hasErrors('endAt')}?'is-invalid'"
+                       th:field="*{endAt}" maxlength="19">
+                <div class="invalid-feedback" th:errors="*{endAt}" th:if="${#fields.hasErrors('endAt')}">
+                  掲載終了日時は必須です。
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3" th:text="#{page.label.notice.emphasis}">強いお知らせか</div>
             <div class="col-9">
               <div class="form-check">
-                <input type="radio" class="form-check-input" name="grantable"
-                       th:classappend="${#fields.hasErrors('grantable')}?'is-invalid'" value="true"
-                       th:checked="${roleEditForm.grantable}" onclick="activeSubmitButton()">
-                <label class="form-check-label" th:text="#{page.label.possible}"></label>
+                <input type="radio" class="form-check-input" id="yes" name="emphasis"
+                       th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="true"
+                       th:checked="*{#bools.isTrue(emphasis)}" onclick="activeSubmitButton()">
+                <label class="form-check-label" for="yes" th:text="#{page.label.yes}"></label>
               </div>
               <div class="form-check">
-                <input type="radio" class="form-check-input" name="grantable"
-                       th:classappend="${#fields.hasErrors('grantable')}?'is-invalid'" value="false"
-                       th:checked="${!roleEditForm.grantable}"
+                <input type="radio" class="form-check-input" id="no" name="emphasis"
+                       th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="false"
+                       th:checked="*{#bools.isFalse(emphasis)}"
                        onclick="activeSubmitButton()">
-                <label class="form-check-label" th:text="#{page.label.impossible}"></label>
+                <label class="form-check-label" for="no" th:text="#{page.label.no}"></label>
               </div>
-              <div class="invalid-feedback" th:errors="*{grantable}" th:if="${#fields.hasErrors('grantable')}">
-                付与有無は必須です。
+              <div class="invalid-feedback" th:errors="*{emphasis}" th:if="${#fields.hasErrors('emphasis')}">
+                強いお知らせかは必須です。
               </div>
             </div>
           </div>
@@ -144,38 +180,54 @@
   </div>
 </div>
 
-<!-- 会社編集確認 -->
+<!-- お知らせ編集確認 -->
 <div class="modal" id="confirm" tabindex="-1" th:fragment="confirm(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg entry-confirm-modal">
     <div class="modal-content">
-      <form method="post" th:action="@{/roles/__${id}__/update}" th:object="${roleEditForm}">
+      <form method="post" th:action="@{/systems/notices/__${id}__/update}" th:object="${noticeEditForm}">
         <div class="modal-header">
-          <h5 class="modal-title" th:text="#{page.modal.title.role.confirm.edit}">会社編集確認</h5>
+          <h5 class="modal-title" th:text="#{page.modal.title.notice.confirm.edit}">お知らせ編集確認</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="row mb-3">
-            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.role.name}">ロール名</label>
+            <label class="col-sm-3 col-form-label" for="title" th:text="#{page.label.notice.title}">件名</label>
             <div class="col-sm-9">
-              <input type="hidden" class="form-control" name="name" th:value="*{name}">
-              <th:block th:text="*{name}"></th:block>
+              <input type="hidden" class="form-control" name="title" th:value="*{title}">
+              <th:block th:text="*{title}"></th:block>
             </div>
           </div>
           <div class="row mb-3">
-              <label class="col-sm-3 form-label" th:text="#{page.label.role.description}">概要</label>
+              <label class="col-sm-3 form-label" th:text="#{page.label.notice.body}">本文</label>
             <div class="col-sm-9">
-              <input type="hidden" class="form-control" name="description" th:value="*{description}">
-              <th:block th:text="*{description}"></th:block>
+              <input type="hidden" class="form-control" name="body" th:value="*{body}">
+              <th:block th:each="line:*{body.split('\r\n|\r|\n', -1)}">
+                <th:block th:text="${line}">本文</th:block><br />
+              </th:block>
             </div>
           </div>
           <div class="row mb-3">
-            <label class="col-sm-3 form-label" th:text="#{page.label.role.grantable}">付与有無</label>
+            <label class="col-sm-3 form-label" th:text="#{page.label.notice.date.start}">掲載開始日</label>
+            <div class="col-sm-9" th:if="*{startAt != null}">
+              <input type="hidden" class="form-control" name="startAt" th:value="*{#temporals.format(startAt, 'yyyy/MM/dd HH:mm:ss')}">
+              <th:block th:text="*{#temporals.format(startAt, 'yyyy/MM/dd HH:mm:ss')}">掲載開始日時</th:block>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 form-label" th:text="#{page.label.notice.date.end}">掲載終了日</label>
+            <div class="col-sm-9" th:if="*{endAt != null}">
+              <input type="hidden" class="form-control" name="endAt" th:value="*{#temporals.format(endAt, 'yyyy/MM/dd HH:mm:ss')}">
+              <th:block th:text="*{#temporals.format(endAt, 'yyyy/MM/dd HH:mm:ss')}">掲載終了日時</th:block>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 form-label" th:text="#{page.label.notice.emphasis}">付与有無</label>
             <div class="col-sm-9">
-              <input type="hidden" class="form-control" name="grantable" th:value="*{grantable}">
-              <th:block th:if="*{grantable}" th:text="#{page.label.possible}">可能</th:block>
-              <th:block th:if="*{!grantable}" th:text="#{page.label.impossible}">不可能</th:block>
+              <input type="hidden" class="form-control" name="emphasis" th:value="*{emphasis}">
+              <th:block th:if="*{#bools.isTrue(emphasis)}" th:text="#{page.label.yes}">可能</th:block>
+              <th:block th:if="*{#bools.isFalse(emphasis)}" th:text="#{page.label.no}">不可能</th:block>
             </div>
           </div>
         </div>
@@ -190,13 +242,13 @@
   </div>
 </div>
 
-<!-- ロール削除 -->
+<!-- お知らせ削除 -->
 <div class="modal" id="delete" tabindex="-1" th:fragment="delete(id)">
   <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
     <div class="modal-content">
-      <form method="post" th:action="@{/roles/__${id}__/delete}">
+      <form method="post" th:action="@{/systems/notices/__${id}__/delete}">
         <div class="modal-header">
-          <h5 class="modal-title" th:text="#{page.modal.title.role.delete}">ロール削除</h5>
+          <h5 class="modal-title" th:text="#{page.modal.title.notice.delete}">お知らせ削除</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -211,177 +263,6 @@
           <button type="submit" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
         </div>
       </form>
-    </div>
-  </div>
-</div>
-
-<!-- ユーザー割り当て -->
-<div th:fragment="assignUser(id)" class="modal" id="assignUser" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" th:text="#{page.modal.title.user.search}">ユーザー検索</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form method="get" name="searchNotGrantUser" onsubmit="return false;"
-              th:action="@{/roles/__${id}__/not-grant-users}">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
-            </div>
-            <div class="card-body">
-              <div class="row m-1">
-                <div class="col-6">
-                  <label th:text="#{page.label.user.loginId}" style="margin-bottom: .1rem">ログインID</label>
-                  <input type="text" class="form-control form-control-sm" name="loginId">
-                </div>
-                <div class="col-6">
-                  <label th:text="#{page.label.user.name}" style="margin-bottom: .1rem">ユーザー名</label>
-                  <input type="text" class="form-control form-control-sm" name="name">
-                </div>
-              </div>
-              <div class="row m-1">
-                <div class="col-6">
-                  <label th:text="#{page.label.user.company}" style="margin-bottom: .1rem">所属会社</label>
-                  <input type="text" class="form-control form-control-sm" name="companyName">
-                </div>
-              </div>
-              <div class="row text-center">
-                <div class="col-12">
-                  <button class="btn btn-primary search-not-grant-user" type="button">
-                    <i class="fas fa-search"></i>
-                    <th:block th:text="#{page.button.search}">検索</th:block>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-        <form name="grantUser" method="post" th:action="@{/roles/__${id}__/grants}">
-          <div id="notGrantUserContent">
-            <th:block th:fragment="notGrantedUserPage">
-              <th:block th:if="${!notGrantedUserPage.isEmpty()}">
-                <th:block th:replace="parts/pagination::pagination(${notGrantedUserPage})"/>
-                <table class="table table-sm table-striped">
-                  <thead>
-                  <tr>
-                    <th th:text="#{page.label.user.loginId}">ログインID</th>
-                    <th th:text="#{page.label.user.name}">ユーザー名</th>
-                    <th th:tel="#{page.label.user.company}">所属会社</th>
-                    <th>&nbsp;</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr th:each="user:${notGrantedUserPage.content}">
-                    <td th:text="${user.loginId}">
-                        ログインID
-                    </td>
-                    <td>
-                      <a th:href="@{/users/__${user.id}__}" th:text="${user.name}">
-                        ユーザー名
-                      </a>
-                    </td>
-                    <td>
-                      <a th:href="@{/companies/__${user.company.id}__}" th:text="${user.company.name}">
-                        所属会社
-                      </a>
-                    </td>
-                    <td class="text-right">
-                      <input type="checkbox" class="form-check-input user" name="userId"
-                             th:value="${user.id}" onclick="activeGrantableButton()" >
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                <th:block th:replace="parts/pagination::pagination(${notGrantedUserPage})"/>
-              </th:block>
-            </th:block>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
-        <button type="button" class="btn btn-primary grant" disabled="disabled">割り当て</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- パーミッション割り当て -->
-<div th:fragment="assignPermission(id)" class="modal" id="assignPermission" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" th:text="#{page.modal.title.permission.search}">パーミッション検索</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form method="get" name="searchUnassignedPermission" onsubmit="return false;"
-              th:action="@{/roles/__${id}__/unassign-permissions}">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
-            </div>
-            <div class="card-body">
-              <div class="row m-1">
-                <div class="col-6">
-                  <label th:text="#{page.label.permission.name}" style="margin-bottom: .1rem">パーミッション名</label>
-                  <input type="text" name="permissionName" class="form-control form-control-sm">
-                </div>
-              </div>
-              <div class="row text-center">
-                <div class="col-12">
-                  <button class="btn btn-primary search-unassign-permission" type="button">
-                    <i class="fas fa-search"></i>
-                    <th:block th:text="#{page.button.search}">検索</th:block>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-        <form name="assignPermission" method="post" th:action="@{/roles/__${id}__/assign-permissions}">
-          <div id="unassignPermissionContent">
-            <th:block th:fragment="unassignedPermissionPage">
-              <th:block th:if="${!unassignedPermissionPage.isEmpty()}">
-                <th:block th:replace="parts/pagination::pagination(${unassignedPermissionPage})"/>
-                <table class="table table-sm table-striped">
-                  <thead>
-                  <tr>
-                    <th th:text="#{page.label.permission.name}">パーミッション名</th>
-                    <th>&nbsp;</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr th:each="permission:${unassignedPermissionPage.content}">
-                    <td>
-                      <a th:href="@{/systems/permissions/__${permission.id}__}" th:text="${permission.name}">
-                        パーミッション名
-                      </a>
-                    </td>
-                    <td class="text-right">
-                      <input type="checkbox" class="form-check-input permission" name="permissionId"
-                             th:value="${permission.id}" onclick="activePermissionAssignButton()" >
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-                <th:block th:replace="parts/pagination::pagination(${unassignedPermissionPage})"/>
-              </th:block>
-            </th:block>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
-        <button type="button" class="btn btn-primary assign-permission" disabled="disabled">割り当て</button>
-      </div>
     </div>
   </div>
 </div>

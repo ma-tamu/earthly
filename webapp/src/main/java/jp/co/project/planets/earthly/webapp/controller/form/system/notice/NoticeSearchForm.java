@@ -11,5 +11,5 @@ import org.jilt.Builder;
  *            件名
  */
 @Builder(factoryMethod = "builder")
-public record NoticeSearchForm(String title, String startDate, String endDate) implements Serializable {
+public record NoticeSearchForm(String title, String startAt, String endAt) implements Serializable {
 }

@@ -55,14 +55,14 @@
                 <div class="form-group date" id="startAtDatetimepicker" data-target-input="nearest">
                   <label style="margin-bottom: .1rem" th:text="#{page.label.notice.date.start}">掲載開始日</label>
                   <input type="text"  class="form-control datetimepicker-input" data-target="#startAtDatetimepicker"
-                        data-toggle="datetimepicker" th:field="*{startDate}">
+                        data-toggle="datetimepicker" th:field="*{startAt}">
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group date" id="endAtDatetimepicker" data-target-input="nearest">
                   <label style="margin-bottom: .1rem" th:text="#{page.label.notice.date.end}">掲載終了日</label>
                   <input type="text" class="form-control datetimepicker-input" data-target="#endAtDatetimepicker"
-                         data-toggle="datetimepicker" th:field="*{endDate}">
+                         data-toggle="datetimepicker" th:field="*{endAt}">
                 </div>
               </div>
             </div>
@@ -92,9 +92,9 @@
                   <td>
                     <a th:href="@{/systems/notices/__${notice.id}__}" th:text="${notice.title}">件名</a>
                   </td>
-                  <td th:text="${notice.startDate}">掲載開始日</td>
+                  <td th:text="${notice.startAt}">掲載開始日</td>
                   <td>
-                    <th:block th:if="${#strings.isEmpty(notice.endDate)}" th:text="${notice.endDate}">掲載終了日</th:block>
+                    <th:block th:if="${!#strings.isEmpty(notice.endAt)}" th:text="${notice.endAt}">掲載終了日</th:block>
                   </td>
                 </tr>
                 </tbody>

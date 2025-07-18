@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class CompanyListener implements EntityListener<Company> {
 
     @Override
-    public void preInsert(Company entity, PreInsertContext<Company> context) {
+    public void preInsert(final Company entity, final PreInsertContext<Company> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Company entity, PreUpdateContext<Company> context) {
-        
-        
+    public void preUpdate(final Company entity, final PreUpdateContext<Company> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Company entity, PreDeleteContext<Company> context) {
+    public void preDelete(final Company entity, final PreDeleteContext<Company> context) {
     }
 
     @Override
-    public void postInsert(Company entity, PostInsertContext<Company> context) {
+    public void postInsert(final Company entity, final PostInsertContext<Company> context) {
     }
 
     @Override
-    public void postUpdate(Company entity, PostUpdateContext<Company> context) {
+    public void postUpdate(final Company entity, final PostUpdateContext<Company> context) {
     }
 
     @Override
-    public void postDelete(Company entity, PostDeleteContext<Company> context) {
+    public void postDelete(final Company entity, final PostDeleteContext<Company> context) {
     }
 }

@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class PermissionListener implements EntityListener<Permission> {
 
     @Override
-    public void preInsert(Permission entity, PreInsertContext<Permission> context) {
+    public void preInsert(final Permission entity, final PreInsertContext<Permission> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Permission entity, PreUpdateContext<Permission> context) {
-        
-        
+    public void preUpdate(final Permission entity, final PreUpdateContext<Permission> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Permission entity, PreDeleteContext<Permission> context) {
+    public void preDelete(final Permission entity, final PreDeleteContext<Permission> context) {
     }
 
     @Override
-    public void postInsert(Permission entity, PostInsertContext<Permission> context) {
+    public void postInsert(final Permission entity, final PostInsertContext<Permission> context) {
     }
 
     @Override
-    public void postUpdate(Permission entity, PostUpdateContext<Permission> context) {
+    public void postUpdate(final Permission entity, final PostUpdateContext<Permission> context) {
     }
 
     @Override
-    public void postDelete(Permission entity, PostDeleteContext<Permission> context) {
+    public void postDelete(final Permission entity, final PostDeleteContext<Permission> context) {
     }
 }

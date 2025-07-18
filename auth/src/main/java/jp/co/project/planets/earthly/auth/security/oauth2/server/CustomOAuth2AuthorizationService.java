@@ -21,7 +21,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.transaction.annotation.Transactional;
 
 import jp.co.project.planets.earthly.auth.helper.ConvertHelper;
-import jp.co.project.planets.earthly.common.utils.DateUtils;
+import jp.co.project.planets.earthly.core.utils.DateUtils;
 import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization;
 import jp.co.project.planets.earthly.schema.repository.OAuth2AuthorizationRepository;
 

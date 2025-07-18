@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class GrantTypeListener implements EntityListener<GrantType> {
 
     @Override
-    public void preInsert(GrantType entity, PreInsertContext<GrantType> context) {
+    public void preInsert(final GrantType entity, final PreInsertContext<GrantType> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(GrantType entity, PreUpdateContext<GrantType> context) {
-        
-        
+    public void preUpdate(final GrantType entity, final PreUpdateContext<GrantType> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(GrantType entity, PreDeleteContext<GrantType> context) {
+    public void preDelete(final GrantType entity, final PreDeleteContext<GrantType> context) {
     }
 
     @Override
-    public void postInsert(GrantType entity, PostInsertContext<GrantType> context) {
+    public void postInsert(final GrantType entity, final PostInsertContext<GrantType> context) {
     }
 
     @Override
-    public void postUpdate(GrantType entity, PostUpdateContext<GrantType> context) {
+    public void postUpdate(final GrantType entity, final PostUpdateContext<GrantType> context) {
     }
 
     @Override
-    public void postDelete(GrantType entity, PostDeleteContext<GrantType> context) {
+    public void postDelete(final GrantType entity, final PostDeleteContext<GrantType> context) {
     }
 }

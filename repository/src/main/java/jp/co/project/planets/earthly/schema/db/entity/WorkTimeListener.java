@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class WorkTimeListener implements EntityListener<WorkTime> {
 
     @Override
-    public void preInsert(WorkTime entity, PreInsertContext<WorkTime> context) {
+    public void preInsert(final WorkTime entity, final PreInsertContext<WorkTime> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(WorkTime entity, PreUpdateContext<WorkTime> context) {
-        
-        
+    public void preUpdate(final WorkTime entity, final PreUpdateContext<WorkTime> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(WorkTime entity, PreDeleteContext<WorkTime> context) {
+    public void preDelete(final WorkTime entity, final PreDeleteContext<WorkTime> context) {
     }
 
     @Override
-    public void postInsert(WorkTime entity, PostInsertContext<WorkTime> context) {
+    public void postInsert(final WorkTime entity, final PostInsertContext<WorkTime> context) {
     }
 
     @Override
-    public void postUpdate(WorkTime entity, PostUpdateContext<WorkTime> context) {
+    public void postUpdate(final WorkTime entity, final PostUpdateContext<WorkTime> context) {
     }
 
     @Override
-    public void postDelete(WorkTime entity, PostDeleteContext<WorkTime> context) {
+    public void postDelete(final WorkTime entity, final PostDeleteContext<WorkTime> context) {
     }
 }

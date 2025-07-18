@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,30 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class RolePermissionListener implements EntityListener<RolePermission> {
 
     @Override
-    public void preInsert(RolePermission entity, PreInsertContext<RolePermission> context) {
+    public void preInsert(final RolePermission entity, final PreInsertContext<RolePermission> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
     }
 
     @Override
-    public void preUpdate(RolePermission entity, PreUpdateContext<RolePermission> context) {
-        
-        
+    public void preUpdate(final RolePermission entity, final PreUpdateContext<RolePermission> context) {
+
     }
 
     @Override
-    public void preDelete(RolePermission entity, PreDeleteContext<RolePermission> context) {
+    public void preDelete(final RolePermission entity, final PreDeleteContext<RolePermission> context) {
     }
 
     @Override
-    public void postInsert(RolePermission entity, PostInsertContext<RolePermission> context) {
+    public void postInsert(final RolePermission entity, final PostInsertContext<RolePermission> context) {
     }
 
     @Override
-    public void postUpdate(RolePermission entity, PostUpdateContext<RolePermission> context) {
+    public void postUpdate(final RolePermission entity, final PostUpdateContext<RolePermission> context) {
     }
 
     @Override
-    public void postDelete(RolePermission entity, PostDeleteContext<RolePermission> context) {
+    public void postDelete(final RolePermission entity, final PostDeleteContext<RolePermission> context) {
     }
 }

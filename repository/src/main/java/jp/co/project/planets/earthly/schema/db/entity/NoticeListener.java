@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,31 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class NoticeListener implements EntityListener<Notice> {
 
     @Override
-    public void preInsert(Notice entity, PreInsertContext<Notice> context) {
+    public void preInsert(final Notice entity, final PreInsertContext<Notice> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
-        
-        
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Notice entity, PreUpdateContext<Notice> context) {
-        
-        
+    public void preUpdate(final Notice entity, final PreUpdateContext<Notice> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Notice entity, PreDeleteContext<Notice> context) {
+    public void preDelete(final Notice entity, final PreDeleteContext<Notice> context) {
     }
 
     @Override
-    public void postInsert(Notice entity, PostInsertContext<Notice> context) {
+    public void postInsert(final Notice entity, final PostInsertContext<Notice> context) {
     }
 
     @Override
-    public void postUpdate(Notice entity, PostUpdateContext<Notice> context) {
+    public void postUpdate(final Notice entity, final PostUpdateContext<Notice> context) {
     }
 
     @Override
-    public void postDelete(Notice entity, PostDeleteContext<Notice> context) {
+    public void postDelete(final Notice entity, final PostDeleteContext<Notice> context) {
     }
 }

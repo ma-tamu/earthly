@@ -29,9 +29,9 @@ public record NoticeEntryForm(String title, String body,
             .constraint(NoticeEntryForm::startAt, "startAt",
                     c -> c.notNull().message("jakarta.validation.constraints.NotBlank.message"))
             .constraintOnTarget(
-                    form -> ValidateUtils.isFuture(form.startAt, form.endAt),
+                    form -> ValidateUtils.isPast(form.startAt, form.endAt),
                     "startAt", "", "validate.notice.end.date.less.than")
-            .constraintOnTarget(form -> ValidateUtils.isPast(form.startAt, form.endAt), "endAt", "",
+            .constraintOnTarget(form -> ValidateUtils.isFuture(form.endAt, form.startAt), "endAt", "",
                     "validate.notice.end.date.less.than")
             .constraint(NoticeEntryForm::emphasis, "emphasis",
                     c -> c.notNull().message("jakarta.validation.constraints.NotBlank.message"))

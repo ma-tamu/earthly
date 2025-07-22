@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * gender enum
@@ -47,6 +47,6 @@ public enum Gender {
      */
     public static Gender of(final String value) {
         return Arrays.stream(Gender.values()).filter(
-                it -> StringUtils.equals(value, it.getValue())).findFirst().orElse(null);
+                it -> Strings.CS.equals(value, it.getValue())).findFirst().orElse(null);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.stereotype.Component;
 
 import jp.co.project.planets.earthly.schema.db.entity.Scope;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
@@ -18,6 +19,7 @@ import jp.co.project.planets.earthly.schema.repository.OAuthClientRepository;
 /**
  * custom registered client repository
  */
+@Component
 public class CustomRegisteredClientRepository implements RegisteredClientRepository {
 
     private final OAuthClientRepository oauthClientRepository;
@@ -33,7 +35,7 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
      *            password encoder
      */
     public CustomRegisteredClientRepository(final OAuthClientRepository oauthClientRepository,
-            final PasswordEncoder passwordEncoder) {
+        final PasswordEncoder passwordEncoder) {
         this.oauthClientRepository = oauthClientRepository;
         this.passwordEncoder = passwordEncoder;
     }

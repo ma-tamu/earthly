@@ -69,7 +69,7 @@ subprojects {
         implementation 'org.flywaydb:flyway-mysql'
 
         // util
-        implementation 'org.apache.commons:commons-lang3:3.17.0'
+        implementation 'org.apache.commons:commons-lang3:3.18.0'
         implementation 'org.apache.commons:commons-collections4:4.4'
         implementation 'com.google.guava:guava:33.3.1-jre'
         implementation 'org.mapstruct:mapstruct:1.6.3'

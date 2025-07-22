@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Component;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -96,7 +96,7 @@ public class TotpLogic {
         try {
             final byte[] hash = generateHash(secret, counter);
             final var actualCode = getDigitsFromHash(hash);
-            return StringUtils.equals(code, actualCode);
+            return Strings.CS.equals(code, actualCode);
         } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             return false;
         }

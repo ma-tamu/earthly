@@ -6,7 +6,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -155,7 +155,7 @@ public class UserLogic {
     public void update(final User user, final UserDto userDto, final String operateUserId) {
         user.setName(userDto.name());
         user.setMail(userDto.mail());
-        final var lockout = StringUtils.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
+        final var lockout = Strings.CS.equals(user.getId(), operateUserId) ? user.getLockout() : userDto.lockout();
         user.setLockout(BooleanUtils.isTrue(lockout));
         user.setTwoFactorAuthentication(BooleanUtils.isTrue(userDto.isMfa()));
         user.setLanguage(userDto.language());

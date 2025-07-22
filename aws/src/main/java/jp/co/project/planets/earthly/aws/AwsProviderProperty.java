@@ -1,6 +1,6 @@
 package jp.co.project.planets.earthly.aws;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ public final class AwsProviderProperty {
     private String endpoint;
 
     public boolean isLocalStack() {
-        return StringUtils.equals(service, "local");
+        return Strings.CS.equals(service, "local");
     }
 
     public String getService() {

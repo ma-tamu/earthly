@@ -3,7 +3,7 @@ package jp.co.project.planets.earthly.auth.service;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.health.Status;
@@ -50,7 +50,7 @@ public class HealthService {
         final var dbStatus = isHealthyDb ? STATUS_UP : STATUS_DOWN;
         final var componentStatusDto = new ComponentStatusDto("DB", dbStatus);
         final var componentStatusDtoList = List.of(componentStatusDto);
-        final var status = componentStatusDtoList.stream().anyMatch(it -> StringUtils.equals(it.status(), STATUS_DOWN))
+        final var status = componentStatusDtoList.stream().anyMatch(it -> Strings.CS.equals(it.status(), STATUS_DOWN))
                 ? STATUS_DOWN
                 : STATUS_UP;
         return new HealthResultDto(version, status, componentStatusDtoList);

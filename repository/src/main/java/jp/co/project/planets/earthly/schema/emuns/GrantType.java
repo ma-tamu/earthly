@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import jakarta.annotation.Nonnull;
 
@@ -54,7 +54,7 @@ public enum GrantType {
      * @return Grant Type
      */
     public static GrantType of(@Nonnull final String id) {
-        return Arrays.stream(GrantType.values()).filter(it -> StringUtils.equals(id, it.getId())).findFirst()
+        return Arrays.stream(GrantType.values()).filter(it -> Strings.CS.equals(id, it.getId())).findFirst()
                 .orElse(null);
     }
 

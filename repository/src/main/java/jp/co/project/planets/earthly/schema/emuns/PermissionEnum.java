@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import jp.co.project.planets.earthly.core.enums.Authority;
 
@@ -78,7 +78,7 @@ public enum PermissionEnum implements Authority {
      */
     public static PermissionEnum of(final String id) {
         return Arrays.stream(PermissionEnum.values()) //
-                .filter(it -> StringUtils.equals(it.getId(), id)).findFirst() //
+                .filter(it -> Strings.CS.equals(it.getId(), id)).findFirst() //
                 .orElseThrow(() -> new RuntimeException(String.format("permission not found. id:%s", id)));
     }
 

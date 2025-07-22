@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * scope enum
@@ -31,7 +31,7 @@ public enum Scope {
      * @return Scope
      */
     public static Scope of(final String id) {
-        return Arrays.stream(Scope.values()).filter(it -> StringUtils.equals(it.getId(), id)).findFirst().orElse(null);
+        return Arrays.stream(Scope.values()).filter(it -> Strings.CS.equals(it.getId(), id)).findFirst().orElse(null);
     }
 
     public String getId() {

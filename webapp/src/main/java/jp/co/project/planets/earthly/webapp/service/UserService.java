@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -165,7 +166,7 @@ public class UserService {
         }
 
         // 自分自身の場合は閲覧可能のため検証処理を終了する
-        if (StringUtils.equals(id, account.id())) {
+        if (Strings.CS.equals(id, account.id())) {
             return;
         }
 
@@ -299,11 +300,11 @@ public class UserService {
 
         // 同じ所属会社の場合は、変更可能とする。
         if (account.permissions().contains(PermissionEnum.EDIT_MY_COMPANY_BRANCH)) {
-            return StringUtils.equals(userDto.company(), account.belongCompany().id());
+            return Strings.CS.equals(userDto.company(), account.belongCompany().id());
         }
 
         // 自分自身の場合は、変更可能とする。
-        return StringUtils.equals(id, account.id());
+        return Strings.CS.equals(id, account.id());
     }
 
     /**
@@ -325,7 +326,7 @@ public class UserService {
 
         // 操作ユーザーと同じ所属会社と同じ場合は、変更可能とする。
         final var afterCompanyId = userDto.company();
-        if (StringUtils.equals(afterCompanyId, account.belongCompany().id())) {
+        if (Strings.CS.equals(afterCompanyId, account.belongCompany().id())) {
             return true;
         }
 
@@ -360,7 +361,7 @@ public class UserService {
 
         // パスワード強度の検証
         validateNewPasswordStrength(newPassword);
-        if (!StringUtils.equals(newPassword, confirmNewPassword)) {
+        if (!Strings.CS.equals(newPassword, confirmNewPassword)) {
             throw new BadRequestException(EWA4XX012);
         }
 
@@ -397,7 +398,7 @@ public class UserService {
     public void updatePassword(@Nonnull final String id, @Nonnull final String newPassword,
         @Nonnull final String renewPassword) {
 
-        if (!StringUtils.equals(newPassword, renewPassword)) {
+        if (!Strings.CS.equals(newPassword, renewPassword)) {
             throw new BadRequestException(EWA4XX007);
         }
 
@@ -462,7 +463,7 @@ public class UserService {
      */
     @VisibleForTesting
     void validateDeleteOperation(@Nonnull final String id, final Account account) {
-        if (StringUtils.equals(id, account.id())) {
+        if (Strings.CS.equals(id, account.id())) {
             throw new BadRequestException(EWA4XX002);
         }
         validateDeletePermission(id, account);
@@ -489,7 +490,7 @@ public class UserService {
         }
 
         final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
-        if (StringUtils.equals(user.getCompanyId(), account.belongCompany().id())) {
+        if (Strings.CS.equals(user.getCompanyId(), account.belongCompany().id())) {
             return;
         }
         throw new ForbiddenException(EWA4XX008);

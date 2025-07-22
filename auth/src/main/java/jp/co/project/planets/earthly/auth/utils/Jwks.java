@@ -2,6 +2,7 @@ package jp.co.project.planets.earthly.auth.utils;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -36,7 +37,8 @@ public final class Jwks {
 
     public static PrivateKey loadPrivateKey(final String privateKeyPath) throws Exception {
 
-        try (final var pem = new PEMParser(new FileReader(new ClassPathResource(privateKeyPath).getFile()))) {
+        try (final var pem = new PEMParser(
+                new FileReader(new ClassPathResource(privateKeyPath).getFile(), StandardCharsets.UTF_8))) {
             final var privateKeyInfo = (PrivateKeyInfo) pem.readObject();
             final var keyParameters = (ECPrivateKeyParameters) PrivateKeyFactory.createKey(privateKeyInfo);
             final var parameters = keyParameters.getParameters();
@@ -50,7 +52,8 @@ public final class Jwks {
 
     public static PublicKey loadPublicKey(final String publicKeyPath) throws Exception {
 
-        try (final var pem = new PEMParser(new FileReader(new ClassPathResource(publicKeyPath).getFile()))) {
+        try (final var pem = new PEMParser(
+                new FileReader(new ClassPathResource(publicKeyPath).getFile(), StandardCharsets.UTF_8))) {
             final var keyInfo = (SubjectPublicKeyInfo) pem.readObject();
             final var key = (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
             final var parameters = key.getParameters();
@@ -72,26 +75,26 @@ public final class Jwks {
 
     static PublicKey loadRsaPublicKye() {
         try (final var publicPem = new PEMParser(
-                new FileReader(new ClassPathResource("pem/RSA256_public.pem").getFile()))) {
+                new FileReader(new ClassPathResource("pem/RSA256_public.pem").getFile(), StandardCharsets.UTF_8))) {
             final var keyInfo = (SubjectPublicKeyInfo) publicPem.readObject();
             final var key = (RSAKeyParameters) PublicKeyFactory.createKey(keyInfo);
             final var publicKeySpec = new RSAPublicKeySpec(key.getModulus(), key.getExponent());
             final var keyFactory = KeyFactory.getInstance("RSA", new BouncyCastleProvider());
             return keyFactory.generatePublic(publicKeySpec);
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+        } catch (final IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }
 
     static PrivateKey loadRsaPrivateKey() {
         try (final var privatePem = new PEMParser(
-                new FileReader(new ClassPathResource("pem/RSA256_private.pem").getFile()));) {
+                new FileReader(new ClassPathResource("pem/RSA256_private.pem").getFile(), StandardCharsets.UTF_8))) {
             final var privateKeyInfo = (PrivateKeyInfo) privatePem.readObject();
             final var keyParameter = (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKeyInfo);
             final var rsaPrivateKeySpec = new RSAPrivateKeySpec(keyParameter.getModulus(), keyParameter.getExponent());
             final var keyFactory = KeyFactory.getInstance("RSA", new BouncyCastleProvider());
             return keyFactory.generatePrivate(rsaPrivateKeySpec);
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+        } catch (final IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }

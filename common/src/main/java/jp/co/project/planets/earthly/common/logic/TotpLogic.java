@@ -50,7 +50,7 @@ public class TotpLogic {
         final int numCharacters = 32;
         final byte[] bytes = new byte[(numCharacters * 5) / 8];
         random.nextBytes(bytes);
-        return new String(base64Codec.encode(bytes));
+        return new String(base64Codec.encode(bytes), StandardCharsets.UTF_8);
     }
 
     public List<String> generateRecoveryCode() {
@@ -73,7 +73,8 @@ public class TotpLogic {
             final var bitMatrix = writer.encode(otpauthUri, BarcodeFormat.QR_CODE, IMAGE_SIZE, IMAGE_SIZE);
             final var pngOutputStream = new ByteArrayOutputStream();
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-            final var encodedData = new String(base64Codec.encode(pngOutputStream.toByteArray()));
+            final var encodedData = new String(base64Codec.encode(pngOutputStream.toByteArray()),
+                    StandardCharsets.UTF_8);
             return String.format("data:%s;base64,%s", "image/png", encodedData);
         } catch (final WriterException | IOException e) {
             throw new RuntimeException("QR Code generated failed.", e);

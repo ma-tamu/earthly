@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import jp.co.project.planets.earthly.webapp.security.mfa.MultiFactorAuthenticationSuccessHandler;
 import jp.co.project.planets.earthly.webapp.security.mfa.MultiFactorAuthorizationManager;
-import jp.co.project.planets.earthly.webapp.security.service.DaoUserDetailService;
+import jp.co.project.planets.earthly.webapp.security.notice.EmphasisNoticeAuthorizationManager;
 
 /**
  * web security config
@@ -26,12 +26,7 @@ import jp.co.project.planets.earthly.webapp.security.service.DaoUserDetailServic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final DaoUserDetailService userDetailService;
     private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
-
-    public WebSecurityConfig(final DaoUserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
-    }
 
     /**
      * build security filter chain
@@ -51,6 +46,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/login", "/forgets/**", "/css/**", "/js/**", "/img/**", "/static/**",
                                         "/vendor/**", "/quickTEST", "/error")
                                 .permitAll().requestMatchers("/mfa").access(new MultiFactorAuthorizationManager())
+                                .requestMatchers("/notices/emphasis").access(new EmphasisNoticeAuthorizationManager())
                                 .anyRequest().authenticated())
                 .formLogin(formLoginConfigurer -> formLoginConfigurer.loginPage("/login").usernameParameter("loginId")
                         .passwordParameter("password").successHandler(primarySuccessHandler)

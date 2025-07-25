@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Earthly Login</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>強いお知らせ</h1>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row justify-content-md-center">
+        <div class="col col-lg-8">
+          <th:block th:each="emphasis:${notices}">
+            <div class="card card-default">
+              <div class="card-header">
+                <h3 class="card-title" th:text="${emphasis.title}">タイトル</h3>
+              </div>
+              <div class="card-body">
+                <th:block th:each="line:${emphasis.body.split('\r\n|\r|\n', -1)}">
+                  <th:block th:text="${line}">本文</th:block>
+                  <br/>
+                </th:block>
+              </div>
+            </div>
+            <th:block th:if="${!emphasisStat.last}">
+              <hr>
+            </th:block>
+          </th:block>
+        </div>
+      </div>
+      <div class="row justify-content-md-center">
+        <form method="post" th:action="@{/notices/emphasis}">
+          <button type="submit" class="btn btn-primary">閉じる</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

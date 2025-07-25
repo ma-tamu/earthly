@@ -202,6 +202,17 @@ PRIMARY KEY (`id`),
 UNIQUE KEY `uk_oauth_client_scope` (`oauth_client_id`,`scope_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='OAuthクライアントスコープ';
 
+DROP TABLE IF EXISTS `open_notice`;
+CREATE TABLE `open_notice` (
+`id` char(32) NOT NULL COMMENT '既読管理ID',
+`user_id` char(32) NOT NULL COMMENT 'ユーザーID',
+`notice_id` char(32) NOT NULL COMMENT 'お知らせID',
+`opened_at` datetime NOT NULL COMMENT '既読日時',
+PRIMARY KEY (`id`),
+UNIQUE KEY `uk_user_id` (`user_id`),
+KEY `idx_notice_id` (`notice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='既読管理';
+
 DROP TABLE IF EXISTS `organization`;
 CREATE TABLE `organization` (
 `id` char(32) COLLATE utf8mb4_bin NOT NULL COMMENT 'グループID',

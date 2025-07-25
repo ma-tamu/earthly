@@ -1,6 +1,7 @@
 package jp.co.project.planets.earthly.schema.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
@@ -41,6 +42,21 @@ public class NoticeRepository {
         final var options = Pageables.toSelectOptions(pageable).count();
         final var notices = noticeDao.selectByTitleAndPublicationDate(title, startDate, endDate, options);
         return new NoticeSearchResultDto(notices, pageable.getOffset(), pageable.getPageSize());
+    }
+
+    public List<Notice> findUnreadEmphasisNoticeByPublicationDate(final LocalDateTime lastEmphasisAt) {
+        final var currentLocalDateTime = LocalDateTime.now();
+        final var criteria = new Notice_();
+        return queryDsl.from(criteria).where(where -> {
+            where.gt(criteria.startAt, lastEmphasisAt);
+            where.le(criteria.startAt, currentLocalDateTime);
+            where.or(() -> {
+                where.isNull(criteria.endAt);
+                where.ge(criteria.endAt, currentLocalDateTime);
+            });
+            where.eq(criteria.emphasis, Boolean.TRUE);
+            where.eq(criteria.isDeleted, Boolean.FALSE);
+        }).orderBy(order -> order.desc(criteria.startAt)).fetch();
     }
 
     public int insert(final Notice notice) {

@@ -8,7 +8,7 @@ import jp.co.project.planets.earthly.core.enums.Authority;
 
 /**
  * アカウント
- * 
+ *
  * @param id
  *            ユーザーID
  * @param loginId
@@ -25,8 +25,11 @@ import jp.co.project.planets.earthly.core.enums.Authority;
  *            所属会社
  * @param permissions
  *            パーミッション
+ * @param emphasis
+ *            お知らせ
  */
 @Builder(factoryMethod = "builder")
 public record Account(String id, String loginId, String name, String mail, boolean lockout,
-        MultiFactor multiFactor, Company belongCompany, List<? extends Authority> permissions) {
+        MultiFactor multiFactor, Company belongCompany, List<? extends Authority> permissions,
+        Emphasis emphasis) {
 }

@@ -75,7 +75,7 @@ public final class Jwks {
 
     static PublicKey loadRsaPublicKye() {
         try (final var publicPem = new PEMParser(
-                new FileReader(new ClassPathResource("pem/RSA256_public.pem").getFile(), StandardCharsets.UTF_8))) {
+                new FileReader(new ClassPathResource("pem/rsa/public.pem").getFile(), StandardCharsets.UTF_8))) {
             final var keyInfo = (SubjectPublicKeyInfo) publicPem.readObject();
             final var key = (RSAKeyParameters) PublicKeyFactory.createKey(keyInfo);
             final var publicKeySpec = new RSAPublicKeySpec(key.getModulus(), key.getExponent());
@@ -88,7 +88,7 @@ public final class Jwks {
 
     static PrivateKey loadRsaPrivateKey() {
         try (final var privatePem = new PEMParser(
-                new FileReader(new ClassPathResource("pem/RSA256_private.pem").getFile(), StandardCharsets.UTF_8))) {
+                new FileReader(new ClassPathResource("pem/rsa/private.pem").getFile(), StandardCharsets.UTF_8))) {
             final var privateKeyInfo = (PrivateKeyInfo) privatePem.readObject();
             final var keyParameter = (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKeyInfo);
             final var rsaPrivateKeySpec = new RSAPrivateKeySpec(keyParameter.getModulus(), keyParameter.getExponent());

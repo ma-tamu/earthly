@@ -17,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
+import jp.co.project.planets.earthly.webapp.security.notice.EmphasisNoticeSuccessHandler;
 import jp.co.project.planets.earthly.webapp.service.MfaService;
 
 /**
@@ -35,7 +36,7 @@ public class MultiFactorAuthenticationController {
         final AuthenticationSuccessHandler successHandler,
         final AuthenticationFailureHandler failureHandler) {
         this.mfaService = mfaService;
-        this.successHandler = successHandler;
+        this.successHandler = new EmphasisNoticeSuccessHandler(successHandler);
         this.failureHandler = failureHandler;
     }
 

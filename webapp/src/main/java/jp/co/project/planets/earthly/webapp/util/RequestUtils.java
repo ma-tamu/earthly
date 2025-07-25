@@ -1,12 +1,18 @@
 package jp.co.project.planets.earthly.webapp.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -54,5 +60,17 @@ public final class RequestUtils {
             }
             return request.getRequestURI() + "?" + request.getQueryString();
         });
+    }
+
+    public static Optional<Cookie> getCookie(final String name) {
+        return Stream.of(getRequest().getCookies()).filter(cookie -> Strings.CS.equals(name, cookie.getName()))
+                .findFirst();
+    }
+
+    public static LocalDateTime getLastNoticeDate() {
+        return getCookie("notice")
+                .map(cookie -> LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(cookie.getValue())),
+                        ZoneId.systemDefault()))
+                .orElse(LocalDateTime.ofInstant(Instant.ofEpochMilli(1753260523L), ZoneId.systemDefault()));
     }
 }

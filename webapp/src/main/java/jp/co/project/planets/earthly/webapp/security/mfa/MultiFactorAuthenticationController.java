@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
 import jp.co.project.planets.earthly.webapp.security.notice.EmphasisNoticeSuccessHandler;
+import jp.co.project.planets.earthly.webapp.security.utils.SecurityContextUtils;
 import jp.co.project.planets.earthly.webapp.service.MfaService;
 
 /**
@@ -50,7 +51,7 @@ public class MultiFactorAuthenticationController {
         final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final boolean successful = mfaService.verify(code, userInfoDto.account());
         if (successful) {
-            mfaService.updateSecurityContext(userInfoDto);
+            SecurityContextUtils.updateSecurityContext(userInfoDto);
             successHandler.onAuthenticationSuccess(request, response,
                     SecurityContextHolder.getContext().getAuthentication());
         } else {

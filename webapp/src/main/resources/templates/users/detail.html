@@ -250,9 +250,10 @@
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
+<script th:replace="parts/badge::notice"></script>
 <script type="text/javascript" th:inline="javascript">
-  let param = {keyword: this.value};
-  let deferred = doGet(/*[[@{'/api/suggests/companies'}]]*/'', param);
+  let param = {keyword: value};
+  let deferred = doGet(/*[[@{'/api/badges/companies'}]]*/'', param);
 
   deferred.done(function (data) {
       $('#companyDataList > option').remove();

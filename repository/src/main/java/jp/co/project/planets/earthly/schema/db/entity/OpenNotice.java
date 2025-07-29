@@ -23,10 +23,6 @@ public class OpenNotice extends AbstractOpenNotice implements java.io.Serializab
     @Column(name = "user_id")
     String userId;
 
-    /** お知らせID */
-    @Column(name = "notice_id")
-    String noticeId;
-
     /** 既読日時 */
     @Column(name = "opened_at")
     LocalDateTime openedAt;
@@ -41,15 +37,12 @@ public class OpenNotice extends AbstractOpenNotice implements java.io.Serializab
      *            既読管理ID
      * @param userId
      *            ユーザーID
-     * @param noticeId
-     *            お知らせID
      * @param openedAt
      *            既読日時
      */
-    public OpenNotice(final String id, final String userId, final String noticeId, final LocalDateTime openedAt) {
+    public OpenNotice(final String id, final String userId, final LocalDateTime openedAt) {
         this.id = id;
         this.userId = userId;
-        this.noticeId = noticeId;
         this.openedAt = openedAt;
     }
 
@@ -89,25 +82,6 @@ public class OpenNotice extends AbstractOpenNotice implements java.io.Serializab
      */
     public void setUserId(final String userId) {
         this.userId = userId;
-    }
-
-    /**
-     * Returns the noticeId.
-     *
-     * @return the noticeId
-     */
-    public String getNoticeId() {
-        return noticeId;
-    }
-
-    /**
-     * Sets the noticeId.
-     *
-     * @param noticeId
-     *            the noticeId
-     */
-    public void setNoticeId(final String noticeId) {
-        this.noticeId = noticeId;
     }
 
     /**

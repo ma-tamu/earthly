@@ -44,6 +44,19 @@ public class NoticeRepository {
         return new NoticeSearchResultDto(notices, pageable.getOffset(), pageable.getPageSize());
     }
 
+    public List<Notice> findUnreadNoticeByPublicationDate(final LocalDateTime lastOpenedNoticeAt) {
+        final var currentLocalDateTime = LocalDateTime.now();
+        final var criteria = new Notice_();
+        return queryDsl.from(criteria).where(where -> {
+            where.gt(criteria.startAt, lastOpenedNoticeAt);
+            where.or(() -> {
+                where.isNull(criteria.endAt);
+                where.ge(criteria.endAt, currentLocalDateTime);
+            });
+            where.eq(criteria.isDeleted, Boolean.FALSE);
+        }).orderBy(order -> order.desc(criteria.startAt)).fetch();
+    }
+
     public List<Notice> findUnreadEmphasisNoticeByPublicationDate(final LocalDateTime lastEmphasisAt) {
         final var currentLocalDateTime = LocalDateTime.now();
         final var criteria = new Notice_();

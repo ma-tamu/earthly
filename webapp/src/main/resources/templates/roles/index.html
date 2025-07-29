@@ -95,6 +95,8 @@
 </body>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script th:replace="parts/badge::notice"></script>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success(${success})"></div>
 </th:block>

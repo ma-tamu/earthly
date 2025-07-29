@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jp.co.project.planets.earthly.webapp.constant.CookieName;
 
 /**
  * request utils
@@ -68,7 +69,7 @@ public final class RequestUtils {
     }
 
     public static LocalDateTime getLastNoticeDate() {
-        return getCookie("notice")
+        return getCookie(CookieName.NOTICE)
                 .map(cookie -> LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(cookie.getValue())),
                         ZoneId.systemDefault()))
                 .orElse(LocalDateTime.ofInstant(Instant.ofEpochMilli(1753260523L), ZoneId.systemDefault()));

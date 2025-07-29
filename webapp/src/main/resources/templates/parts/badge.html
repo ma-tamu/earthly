@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script th:inline="javascript" th:fragment="notice">
+  let deferred = doGet(/*[[@{'/api/badges/notices'}]]*/'');
+  const emptyMessage = /*[[${#messages.msg('page.label.notice.all.viewed')}]]*/'';
+  deferred.done(function (data) {
+    const menu = $('.dropdown-menu.dropdown-menu-lg.dropdown-menu-right.notice');
+    if (data.total === 0) {
+      menu.empty();
+      menu.append('<a href="#" class="dropdown-item">' + emptyMessage + '</a>');
+    } else  {
+      $('.far.fa-bell').parent().append('<span class="badge badge-danger navbar-badge">' + data.total + '</span>');
+      menu.empty();
+      data.notices.forEach((notice) => {
+        menu.append('<a href="#" class="dropdown-item">' + notice.title + '</a>');
+        menu.append('<div class="dropdown-divider"></div>');
+      })
+    }
+  });
+  deferred.fail(function (data) {
+    console.error(data)
+  });
+
+  $('.nav-link.notice').on('click', function (e) {
+      const form =$('form[name="updateNoticeBadge"]');
+      const body = form.serialize();
+      const url = form.attr('action');
+      const token = form.find('input[name=_csrf]').val();
+      let deferred = doPost(url, "application/x-www-form-urlencoded", token, body);
+      deferred.done(function (data, response) {
+          $('.badge.badge-danger.navbar-badge').empty();
+      });
+      deferred.fail(function (data, response) {
+          console.error(data);
+          window.location.href = "/earthly/error";
+      });
+  });
+</script>
+</html>

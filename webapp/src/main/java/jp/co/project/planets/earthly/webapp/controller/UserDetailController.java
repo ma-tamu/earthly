@@ -2,8 +2,8 @@ package jp.co.project.planets.earthly.webapp.controller;
 
 import static jp.co.project.planets.earthly.webapp.constant.MessageKey.*;
 import static jp.co.project.planets.earthly.webapp.constant.ModelKey.*;
-import static jp.co.project.planets.earthly.webapp.constant.ViewName.*;
-import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.*;
+import static jp.co.project.planets.earthly.webapp.constant.ViewName.REDIRECT_USER_DETAIL;
+import static jp.co.project.planets.earthly.webapp.emuns.ErrorMessageKey.NOT_SELECTION_ASSIGN_ROLE;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -12,21 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jp.co.project.planets.earthly.webapp.constant.ViewName;
-import jp.co.project.planets.earthly.webapp.controller.form.user.PasswordEditForm;
-import jp.co.project.planets.earthly.webapp.controller.form.user.UserAssignRoleForm;
-import jp.co.project.planets.earthly.webapp.controller.form.user.UserRoleSearchForm;
-import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleForm;
-import jp.co.project.planets.earthly.webapp.controller.form.user.UserUnassignedRoleSearchForm;
-import jp.co.project.planets.earthly.webapp.controller.form.user.UserUpdateForm;
+import jp.co.project.planets.earthly.webapp.controller.form.user.*;
 import jp.co.project.planets.earthly.webapp.exception.BadRequestException;
 import jp.co.project.planets.earthly.webapp.exception.ForbiddenException;
 import jp.co.project.planets.earthly.webapp.security.dto.EarthlyUserInfoDto;
@@ -301,4 +292,25 @@ public class UserDetailController {
         return new ModelAndView(REDIRECT_USER_DETAIL.formatted(id));
     }
 
+    @PostMapping("change-languages")
+    public ModelAndView updateLanguage(@PathVariable("userId") final String id,
+        final ChangeLanguageForm changeLanguageForm, final RedirectAttributes redirectAttributes,
+        @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+        userService.updateLanguage(id, changeLanguageForm.lang(), userInfoDto.account());
+        redirectAttributes.addAttribute("lang", changeLanguageForm.lang());
+        return new ModelAndView("redirect:" + changeLanguageForm.pathname());
+    }
+
+    @PostMapping("change-timezones")
+    public ModelAndView updateTimezone(@PathVariable("userId") final String id,
+        @Validated final ChangeTimezoneForm changeTimezoneForm, final BindingResult bindingResult,
+        final RedirectAttributes redirectAttributes, @AuthenticationPrincipal final EarthlyUserInfoDto userInfoDto) {
+
+        final var modelAndView = new ModelAndView("redirect:" + changeTimezoneForm.pathname());
+        if (bindingResult.hasErrors()) {
+            return modelAndView;
+        }
+        userService.updateTimezone(id, changeTimezoneForm.timezone(), userInfoDto.account());
+        return modelAndView;
+    }
 }

@@ -33,7 +33,9 @@ import jp.co.project.planets.earthly.common.logic.TotpLogic;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.common.model.dto.UserDto;
 import jp.co.project.planets.earthly.core.account.Account;
+import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
+import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.db.entity.UserRole;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.entity.UserSimpleEntity;
@@ -605,8 +607,41 @@ public class UserService {
         }
     }
 
-    void validate(final String id, final List<String> unassignedRoleList,
-        final EarthlyUserInfoDto userInfoDto) {
+    @Transactional
+    public void updateLanguage(final String id, final String lang, final Account account) {
 
+        if (!Strings.CS.equals(id, account.id())) {
+            throw new BadRequestException(EWA4XX005);
+        }
+
+        userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+
+        final var user = new User(id, null, null, null, lang, null, null, null, null, null, null, null, null, null,
+                null, id, Boolean.FALSE);
+        userRepository.update(user);
+    }
+
+    @Transactional
+    public Timezone getTimezone(final String id, final Account account) {
+        if (!Strings.CS.equals(id, account.id())) {
+            throw new BadRequestException(EWA4XX005);
+        }
+
+        final var user = userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+        return Timezone.of(user.getTimezone());
+    }
+
+    @Transactional
+    public void updateTimezone(final String id, final String timezone, final Account account) {
+
+        if (!Strings.CS.equals(id, account.id())) {
+            throw new BadRequestException(EWA4XX005);
+        }
+
+        userRepository.findByPrimaryKey(id).orElseThrow(() -> new NotFoundException(EWA4XX002));
+
+        final var user = new User(id, null, null, null, null, timezone, null, null, null, null, null, null, null, null,
+                null, id, Boolean.FALSE);
+        userRepository.update(user);
     }
 }

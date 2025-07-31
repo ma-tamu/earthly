@@ -242,6 +242,7 @@
   <div th:replace="users/modal::password(${userDetailDto.user.id})"></div>
   <div th:replace="users/modal::delete(${userDetailDto.user.id})"></div>
   <div th:replace="users/modal::roleModal(${userDetailDto.user.id})"></div>
+  <div th:replace="parts/timezone::modal"></div>
 </div>
 </div>
 </body>
@@ -251,6 +252,7 @@
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
 <script type="text/javascript" th:inline="javascript">
   let param = {keyword: value};
   let deferred = doGet(/*[[@{'/api/badges/companies'}]]*/'', param);

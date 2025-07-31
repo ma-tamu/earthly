@@ -71,15 +71,28 @@
           <i class="fas fa-user mr-2"></i> マイページ
         </a>
         <div class="dropdown-divider"></div>
+        <th:block th:with="lang=${#strings.equals(#locale.getLanguage(), 'en')?'ja':'en'}">
+          <form method="post" th:action="@{/users/__${#authentication.getPrincipal().account.id}__/change-languages?lang=__${lang}__}">
+            <input type="hidden" name="pathname" value=""/>
+            <button class="dropdown-item d-flex align-items-center language">
+              <i class="fas fa-language mr-2"></i>
+              <span th:text="#{page.header.change.locale}">言語切替</span>
+            </button>
+          </form>
+        </th:block>
+        <div class="dropdown-divider"></div>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-target="#changeTimezone" data-toggle="modal">
+          <i class="fas fa-clock mr-2"></i> タイムゾーン変更
+        </button>
+        <div class="dropdown-divider"></div>
         <form method="post" th:action="@{/logout}">
           <button class="dropdown-item d-flex align-items-center">
             <i class="fas fa-sign-out-alt mr-2"></i>
-            <span>ログアウト</span>
+            <span th:text="#{page.header.logout}">ログアウト</span>
           </button>
         </form>
       </div>
     </li>
-
   </ul>
 </nav><!-- End Header -->
 

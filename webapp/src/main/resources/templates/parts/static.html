@@ -34,7 +34,7 @@
   <script th:src="@{/vendor/toastr/toastr.min.js}"></script>
   <!-- AdminLTE App -->
   <script th:src="@{/js/adminlte.min.js}"></script>
-  <script>
+  <script th:inline="javascript">
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -52,6 +52,9 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
+    $('.language,.btn.btn-primary.timezone').on('click', function(e) {
+        $('input[name="pathname"]').val(window.location.pathname.replace('/earthly','') + window.location.search);
+    });
   </script>
 </th:block>
 </html>

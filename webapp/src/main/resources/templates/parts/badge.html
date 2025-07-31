@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <script th:inline="javascript" th:fragment="notice">
-  let deferred = doGet(/*[[@{'/api/badges/notices'}]]*/'');
+  const res = doGet(/*[[@{'/api/badges/notices'}]]*/'');
   const emptyMessage = /*[[${#messages.msg('page.label.notice.all.viewed')}]]*/'';
-  deferred.done(function (data) {
+  res.done(function (data) {
     const menu = $('.dropdown-menu.dropdown-menu-lg.dropdown-menu-right.notice');
     if (data.total === 0) {
       menu.empty();
@@ -17,7 +17,7 @@
       })
     }
   });
-  deferred.fail(function (data) {
+  res.fail(function (data) {
     console.error(data)
   });
 

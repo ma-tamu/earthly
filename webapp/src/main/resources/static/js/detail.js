@@ -48,17 +48,7 @@ $('#edit').on('hidden.bs.modal', function (e) {
 });
 
 function postSearch(formName, contentId) {
-    const form = $('form[name=' + formName + ']');
-    const body = form.serialize();
-    const url = form.attr('action');
-    const deferred = doGet(url, body);
-    deferred.done((data, response, status) => {
-        $('#' + contentId).html(data);
-    });
-    deferred.fail((data, response) => {
-        console.error(data);
-        window.location.href = "/earthly/error";
-    });
+    search(0, formName, contentId);
 }
 
 
@@ -104,4 +94,19 @@ function activeSubmitButton() {
         }
     });
     $('.modal.show .modal-content > form button[type=submit]').prop('disabled', isDisabled);
+}
+
+function search(pageNumber, formName, contentId) {
+    $('form[name=' + formName + '] input[name=page]').val(pageNumber);
+    const form = $('form[name=' + formName + ']');
+    const body = form.serialize();
+    const url = form.attr('action');
+    const deferred = doGet(url, body);
+    deferred.done((data, response, status) => {
+        $('#' + contentId).html(data);
+    });
+    deferred.fail((data, response) => {
+        console.error(data);
+        window.location.href = "/earthly/error";
+    });
 }

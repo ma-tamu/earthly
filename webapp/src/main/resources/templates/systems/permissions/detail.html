@@ -63,6 +63,7 @@
           <form method="get" name="searchAssignedRole" onsubmit="return false;"
                 th:action="@{/systems/permissions/__${permission.id}__/assigned-permissions}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -84,7 +85,7 @@
           <div class="card-body card-default">
             <div id="assignedRoleContent">
               <th:block th:fragment="assignedRoleContent" th:if="${!#lists.isEmpty(assignRolePage.content)}">
-                <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${assignRolePage}, 'searchAssignedRole', 'assignedRoleContent')"/>
                 <table class="table table-striped table-sm assign-user-list"
                        th:fragment="assignedRoleList">
                   <thead>
@@ -106,7 +107,7 @@
                   </tr>
                   </tbody>
                 </table>
-                <th:block th:replace="parts/pagination::pagination(${assignRolePage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${assignRolePage}, 'searchAssignedRole', 'assignedRoleContent')"/>
               </th:block>
             </div>
           </div>
@@ -131,11 +132,13 @@
 </div>
 
 <th:block th:replace="systems/permissions/modal::assignRole(${permission.id})"></th:block>
+<th:block th:replace="parts/timezone::modal"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
 <script th:src="@{/js/permission/detail.js}"></script>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success('page.toast.success.update')"></div>

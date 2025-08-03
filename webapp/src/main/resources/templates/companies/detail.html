@@ -39,7 +39,7 @@
       <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="${company.name}">会社名</h3>
-          <div class="card-tools">
+          <div class="card-tools" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).EDIT_COMPANY)}">
             <button type="button" class="btn btn-sm btn-primary edit" th:title="#{page.button.title.edit}"
                     data-target="#edit" data-toggle="modal">
               <i class="fas fa-user-edit"></i>
@@ -86,6 +86,7 @@
           <form method="get" name="searchManagementUser" onsubmit="return false;"
                 th:action="@{/companies/__${company.id}__/management-users}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -125,7 +126,7 @@
           <div class="card-body card-default">
             <div id="managementUserContent">
               <th:block th:fragment="managementUserContent">
-                <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${managementUserPage}, 'searchManagementUser', 'managementUserContent')"/>
                 <table class="table table-striped table-sm assign-management-user-list"
                        th:fragment="assignManagementUserList">
                   <thead>
@@ -152,7 +153,7 @@
                   </tr>
                   </tbody>
                 </table>
-                <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${managementUserPage}, 'searchManagementUser', 'managementUserContent')"/>
               </th:block>
             </div>
           </div>
@@ -179,7 +180,7 @@
       <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="#{page.label.company.list.group}">グループリスト</h3>
-          <div class="card-tools">
+          <div class="card-tools" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).EDIT_COMPANY)}">
             <button type="button" class="btn btn-sm btn-primary add-group" th:title="#{page.button.title.add}"
                     data-target="#addGroup" data-toggle="modal">
               <i class="fas fa-plus"></i>
@@ -189,6 +190,7 @@
         <div class="card-body card-default">
           <form method="get" name="searchGroup" onsubmit="return false;"
                 th:action="@{/companies/__${company.id}__/groups}">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -209,7 +211,7 @@
         <div class="card-body card-default">
           <div id="groupContent">
             <th:block th:fragment="groupPage">
-              <th:block th:replace="parts/pagination::pagination(${groupPage})"/>
+              <th:block th:replace="parts/pagination::deitalPagination(${groupPage}, 'searchGroup', 'groupContent')"/>
               <table class="table table-striped table-sm">
                 <thead>
                 <tr>
@@ -225,7 +227,7 @@
                 </tr>
                 </tbody>
               </table>
-              <th:block th:replace="parts/pagination::pagination(${groupPage})"/>
+              <th:block th:replace="parts/pagination::deitalPagination(${groupPage}, 'searchGroup', 'groupContent')"/>
             </th:block>
           </div>
         </div>
@@ -239,11 +241,13 @@
 <th:block th:replace="companies/modal::delete(${company.id})"></th:block>
 <th:block th:replace="companies/modal::assignManagementUser(${company.id})"></th:block>
 <th:block th:replace="companies/modal::addGroup(${company.id})"></th:block>
+<th:block th:replace="parts/timezone::modal"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::modal"></script>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success('page.toast.success.update')"></div>
 </th:block>

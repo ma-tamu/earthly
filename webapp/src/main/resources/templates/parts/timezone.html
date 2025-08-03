@@ -41,7 +41,9 @@
     $('#changeTimezone').on('show.bs.modal', ()=>{
         doGet(/*[[@{/api/users/__${#authentication.getPrincipal().account.id}__/timezones}]]*/'').done((data, response, status) => {
             $('select[name=timezone] option').each((i, el) => {
-                $('select[name=timezone] option[value='+ data.timezone + ']').prop('selected', true);
+                if (el.value === data.timezone) {
+                    $('select[name=timezone]').prop('selectedIndex', i);
+                }
             });
         });
     });

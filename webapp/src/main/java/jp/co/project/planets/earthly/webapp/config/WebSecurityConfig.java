@@ -29,7 +29,7 @@ public class WebSecurityConfig {
     private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     /**
-     * build security filter chain
+     * build a security filter chain
      *
      * @param httpSecurity
      *            http security

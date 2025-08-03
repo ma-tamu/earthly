@@ -109,6 +109,7 @@
           <form method="get" name="searchRedirectUri" onsubmit="return false;"
                 th:action="@{/clients/__${OAuthClientDetailEntity.id}__/redirect-uris}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
@@ -133,7 +134,7 @@
           <div class="card-body card-default">
             <div id="redirectUriContent">
               <th:block th:fragment="redirectUriPage">
-                <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${redirectUriPage}, 'searchRedirectUri', 'redirectUriContent')"/>
                 <table class="table table-sm table-striped redirect-url-list"
                        th:fragment="addRedirectUriList">
                   <thead>
@@ -156,7 +157,7 @@
                 </table>
                 <div class="row">
                   <div class="col-12">
-                    <th:block th:replace="parts/pagination::pagination(${redirectUriPage})"/>
+                    <th:block th:replace="parts/pagination::deitalPagination(${redirectUriPage}, 'searchRedirectUri', 'redirectUriContent')"/>
                   </div>
                 </div>
               </th:block>
@@ -201,6 +202,7 @@
           <form method="get" name="searchLogoutRedirectUri" onsubmit="return false;"
                 th:action="@{/clients/__${OAuthClientDetailEntity.id}__/logout-redirect-uris}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
@@ -225,7 +227,7 @@
           <div class="card-body card-default">
             <div id="logoutRedirectUriContent">
               <th:block th:fragment="logoutRedirectUriPage">
-                <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${logoutRedirectUriPage}, 'searchLogoutRedirectUri', 'logoutRedirectUriContent')"/>
                 <table class="table table-sm table-striped logout-redirect-uri-list"
                        th:fragment="logoutRedirectUrlList">
                   <thead>
@@ -248,7 +250,7 @@
                 </table>
                 <div class="row">
                   <div class="col-12">
-                    <th:block th:replace="parts/pagination::pagination(${logoutRedirectUriPage})"/>
+                    <th:block th:replace="parts/pagination::deitalPagination(${logoutRedirectUriPage}, 'searchLogoutRedirectUri', 'logoutRedirectUriContent')"/>
                   </div>
                 </div>
               </th:block>
@@ -295,6 +297,7 @@
           <form method="get" name="searchManagementUser" onsubmit="return false;"
                 th:action="@{/clients/__${OAuthClientDetailEntity.id}__/management-users}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -327,7 +330,7 @@
           <div class="card-body card-default">
             <div id="managementUserContent">
               <th:block th:fragment="managementUserPage">
-                <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${managementUserPage}, 'searchManagementUser', 'managementUserPage')"/>
                 <table class="table table-sm table-striped add-management-user-list"
                        th:fragment="addManagementUserList">
                   <thead>
@@ -354,7 +357,7 @@
                 </table>
                 <div class="row">
                   <div class="col-12">
-                    <th:block th:replace="parts/pagination::pagination(${managementUserPage})"/>
+                    <th:block th:replace="parts/pagination::deitalPagination(${managementUserPage}, 'searchManagementUser', 'managementUserPage')"/>
                   </div>
                 </div>
               </th:block>
@@ -388,6 +391,7 @@
 <div th:replace="clients/modal::addRedirectUri(${OAuthClientDetailEntity.id}, ${OAuthClientRedirectUrlAddForm})"></div>
 <div th:replace="clients/modal::addLogoutRedirectUri(${OAuthClientDetailEntity.id})"></div>
 <div th:replace="clients/modal::addManagementUser(${OAuthClientDetailEntity.id})"></div>
+<div th:replace="parts/timezone::modal"></div>
 <th:block th:if="${errorCode}">
   <div th:replace="parts/toast::danger"></div>
 </th:block>
@@ -397,6 +401,7 @@
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::modal"></script>
 <script type="text/javascript" th:inline="javascript">
 
 

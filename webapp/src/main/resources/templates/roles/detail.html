@@ -39,7 +39,7 @@
       <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="${role.name}">ロール名</h3>
-          <div class="card-tools">
+          <div class="card-tools" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).EDIT_ROLE)}">
             <button type="button" class="btn btn-sm btn-primary edit" th:title="#{page.button.title.edit}"
                     data-target="#edit" data-toggle="modal">
               <i class="fas fa-user-edit"></i>
@@ -89,6 +89,7 @@
           <form method="get" name="searchGrantedUser" onsubmit="return false;"
                 th:action="@{/roles/__${role.id}__/granted-users}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -124,7 +125,7 @@
           <div class="card-body card-default">
             <div id="grantedUserContent">
               <th:block th:fragment="grantedUserContent" th:if="${!#lists.isEmpty(grantedUserPage.content)}">
-                <th:block th:replace="parts/pagination::pagination(${grantedUserPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${grantedUserPage}, 'searchGrantedUser', 'grantedUserContent')"/>
                 <table class="table table-striped table-sm assign-user-list"
                        th:fragment="grantedUserList">
                   <thead>
@@ -152,7 +153,7 @@
                   </tr>
                   </tbody>
                 </table>
-                <th:block th:replace="parts/pagination::pagination(${grantedUserPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${grantedUserPage}, 'searchGrantedUser', 'grantedUserContent')"/>
               </th:block>
             </div>
           </div>
@@ -193,6 +194,7 @@
           <form method="get" name="searchAssignedPermission" onsubmit="return false;"
                 th:action="@{/roles/__${role.id}__/assigned-permissions}">
             <input type="hidden" name="isRemoveMode" value="false">
+            <input type="hidden" name="page">
             <div class="row">
               <div class="col-sm-4">
                 <div class="form-group">
@@ -215,7 +217,7 @@
           <div class="card-body card-default">
             <div id="assignPermissionContent">
               <th:block th:fragment="assignPermissionContent" th:if="${!#lists.isEmpty(assignPermissionPage.content)}">
-                <th:block th:replace="parts/pagination::pagination(${assignPermissionPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${assignPermissionPage}, 'searchAssignedPermission', 'assignPermissionContent')"/>
                 <table class="table table-striped table-sm assign-user-list"
                        th:fragment="assignPermissionList">
                   <thead>
@@ -237,7 +239,7 @@
                   </tr>
                   </tbody>
                 </table>
-                <th:block th:replace="parts/pagination::pagination(${assignPermissionPage})"/>
+                <th:block th:replace="parts/pagination::deitalPagination(${assignPermissionPage}, 'searchAssignedPermission', 'assignPermissionContent')"/>
               </th:block>
             </div>
           </div>
@@ -267,11 +269,13 @@
 <th:block th:replace="roles/modal::delete(${role.id})"></th:block>
 <th:block th:replace="roles/modal::assignUser(${role.id})"></th:block>
 <th:block th:replace="roles/modal::assignPermission(${role.id})"></th:block>
+<div th:replace="parts/timezone::modal"></div>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<div th:replace="parts/timezone::script"></div>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success('page.toast.success.update')"></div>
 </th:block>

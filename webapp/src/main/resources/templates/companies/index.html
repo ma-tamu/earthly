@@ -26,7 +26,7 @@
             </ol>
           </div>
         </div>
-        <div class="row justify-content-end">
+        <div class="row justify-content-end" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_COMPANY)}">
           <div class="col-1 text-right">
             <div class="btn-group">
               <a class="btn btn-primary btn-sm m-1" data-bs-toggle="tooltip" data-placement="top"
@@ -93,10 +93,12 @@
   </div>
 </div>
 </body>
+<th:block th:replace="parts/timezone::modal"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::modal"></script>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success(${success})"></div>
 </th:block>

@@ -81,10 +81,12 @@
 </body>
 <div th:replace="clients/modal::entry(${OAuthClientEntryForm})"></div>
 <div th:replace="clients/modal::cancel"></div>
+<div th:replace="parts/timezone::modal"></div>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::modal"></script>
 <script th:inline="javascript" type="text/javascript">
     $('#scope').select2({
         width: 'resolve'

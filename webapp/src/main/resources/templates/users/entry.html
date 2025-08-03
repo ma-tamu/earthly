@@ -146,10 +146,12 @@
 </body>
 <div th:replace="users/modal::entry(${userEntryForm})"></div>
 <div th:replace="users/modal::cancel"></div>
+<div th:replace="parts/timezone::modal"></div>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
 <script type="text/javascript" th:inline="javascript">
     const url = /*[[@{'/api/suggests/companies'}]]*/'';
     let param = {keyword: this.value};

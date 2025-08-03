@@ -39,7 +39,7 @@
       <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title" th:text="${notice.title}">件名</h3>
-          <div class="card-tools">
+          <div class="card-tools" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).EDIT_NOTICE)}">
             <button type="button" class="btn btn-sm btn-primary edit" th:title="#{page.button.title.edit}"
                     data-target="#edit" data-toggle="modal">
               <i class="fas fa-user-edit"></i>
@@ -82,11 +82,13 @@
 <th:block th:replace="systems/notices/modal::edit(${notice.id})"></th:block>
 <th:block th:replace="systems/notices/modal::confirm(${notice.id})"></th:block>
 <th:block th:replace="systems/notices/modal::delete(${notice.id})"></th:block>
+<th:block th:replace="parts/timezone::modal"></th:block>
 <th:block th:replace="parts/template::footer"></th:block>
 <th:block th:replace="parts/static::bottom"></th:block>
 <script th:src="@{/js/client.js}"></script>
 <script th:src="@{/js/detail.js}"></script>
 <script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
 <th:block th:if="${success}">
   <div th:replace="parts/toast::success('page.toast.success.update')"></div>
 </th:block>

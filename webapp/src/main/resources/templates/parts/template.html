@@ -141,29 +141,31 @@
             </p>
           </a>
         </li>
-        <li class="nav-item" th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI(), 'permissions', 'notices')  ? 'menu-is-opening menu-open active' : ''}">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-cogs"></i>
-            <p>
-              システム管理
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a th:href="@{/systems/permissions}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/permissions') ? 'active' : ''}">
-                <i class="fas fa-cog nav-icon"></i>
-                <p>パーミッション管理</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a th:href="@{/systems/notices}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/notices') ? 'active' : ''}">
-                <i class="fas fa-comment-alt nav-icon"></i>
-                <p>お知らせ管理</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+        <th:block th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_NOTICE) || #authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_ROLE)}">
+          <li class="nav-item" th:classappend="${T(org.apache.commons.lang3.StringUtils).containsAny(T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI(), 'permissions', 'notices')  ? 'menu-is-opening menu-open active' : ''}">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cogs"></i>
+              <p>
+                システム管理
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_ROLE)}">
+                <a th:href="@{/systems/permissions}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/permissions') ? 'active' : ''}">
+                  <i class="fas fa-cog nav-icon"></i>
+                  <p>パーミッション管理</p>
+                </a>
+              </li>
+              <li class="nav-item" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_NOTICE)}">
+                <a th:href="@{/systems/notices}" class="nav-link" th:classappend="${T(jp.co.project.planets.earthly.webapp.util.RequestUtils).getRequest().getRequestURI().contains('/notices') ? 'active' : ''}">
+                  <i class="fas fa-comment-alt nav-icon"></i>
+                  <p>お知らせ管理</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </th:block>
       </ul>
     </nav>
   </div>

@@ -8,6 +8,7 @@ import java.sql.Statement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+
 import org.seasar.doma.jdbc.NoCacheSqlFileRepository;
 import org.seasar.doma.jdbc.SqlFile;
 import org.seasar.doma.jdbc.SqlFileRepository;
@@ -46,14 +47,15 @@ public class OAuthClientManagementDaoTest {
     }
 
     /**
+     * 
      * @param sqlFile
      * @throws Exception
      */
-    protected void execute(final SqlFile sqlFile) throws Exception {
-        final Connection connection = getConnection();
+    protected void execute(SqlFile sqlFile) throws Exception {
+        Connection connection = getConnection();
         try {
             connection.setAutoCommit(false);
-            final Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();
             try {
                 statement.execute(sqlFile.getSql());
             } finally {
@@ -69,6 +71,7 @@ public class OAuthClientManagementDaoTest {
     }
 
     /**
+     * 
      * @return
      * @throws Exception
      */
@@ -77,24 +80,52 @@ public class OAuthClientManagementDaoTest {
     }
 
     /**
+     * 
      * @throws Exception
      */
     @Test
-    public void testSelectAccessibleByClientId(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleByClientId.sql",
-                dialect);
+    public void testSelectAccessibleByClientId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleByClientId.sql", dialect);
         execute(sqlFile);
     }
 
     /**
+     * 
      * @throws Exception
      */
     @Test
-    public void testSelectAccessiblyManagementUserByClientId(final TestInfo testInfo) throws Exception {
-        final SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(),
-                "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessiblyManagementUserByClientId.sql",
-                dialect);
+    public void testSelectAccessibleByClientIdAndInUserId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleByClientIdAndInUserId.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectAccessibleUnassignedUserByAnyKeyword(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessibleUnassignedUserByAnyKeyword.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectAccessiblyManagementUserByClientId(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectAccessiblyManagementUserByClientId.sql", dialect);
+        execute(sqlFile);
+    }
+
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSelectByAccessibleClientIdAndUserName(TestInfo testInfo) throws Exception {
+        SqlFile sqlFile = repository.getSqlFile(testInfo.getTestMethod().get(), "META-INF/jp/co/project/planets/earthly/schema/db/dao/OAuthClientManagementDao/selectByAccessibleClientIdAndUserName.sql", dialect);
         execute(sqlFile);
     }
 

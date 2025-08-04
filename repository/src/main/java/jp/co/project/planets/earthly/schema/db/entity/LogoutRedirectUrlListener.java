@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,27 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class LogoutRedirectUrlListener implements EntityListener<LogoutRedirectUrl> {
 
     @Override
-    public void preInsert(LogoutRedirectUrl entity, PreInsertContext<LogoutRedirectUrl> context) {
+    public void preInsert(final LogoutRedirectUrl entity, final PreInsertContext<LogoutRedirectUrl> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(LogoutRedirectUrl entity, PreUpdateContext<LogoutRedirectUrl> context) {
+    public void preUpdate(final LogoutRedirectUrl entity, final PreUpdateContext<LogoutRedirectUrl> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(LogoutRedirectUrl entity, PreDeleteContext<LogoutRedirectUrl> context) {
+    public void preDelete(final LogoutRedirectUrl entity, final PreDeleteContext<LogoutRedirectUrl> context) {
     }
 
     @Override
-    public void postInsert(LogoutRedirectUrl entity, PostInsertContext<LogoutRedirectUrl> context) {
+    public void postInsert(final LogoutRedirectUrl entity, final PostInsertContext<LogoutRedirectUrl> context) {
     }
 
     @Override
-    public void postUpdate(LogoutRedirectUrl entity, PostUpdateContext<LogoutRedirectUrl> context) {
+    public void postUpdate(final LogoutRedirectUrl entity, final PostUpdateContext<LogoutRedirectUrl> context) {
     }
 
     @Override
-    public void postDelete(LogoutRedirectUrl entity, PostDeleteContext<LogoutRedirectUrl> context) {
+    public void postDelete(final LogoutRedirectUrl entity, final PostDeleteContext<LogoutRedirectUrl> context) {
     }
 }

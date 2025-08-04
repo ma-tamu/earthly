@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * OAuthクライアント
- */
+    * OAuthクライアント
+*/
 @Entity(listener = OauthClientListener.class, metamodel = @Metamodel)
 @Table(name = "oauth_client")
 public class OauthClient extends AbstractOauthClient implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -55,25 +55,30 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public OauthClient() {
-    }
-
+public OauthClient() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param name OAuthクライアント名
-     * @Param clientId クライアントID
-     * @Param clientSecret クライアントシークレット
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param name
+     *         OAuthクライアント名
+     * @param clientId
+     *         クライアントID
+     * @param clientSecret
+     *         クライアントシークレット
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public OauthClient(final String id, final String name, final String clientId, final String clientSecret,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+    public OauthClient(final String id,final String name,final String clientId,final String clientSecret,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.clientId = clientId;
@@ -84,6 +89,7 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -97,10 +103,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -116,10 +121,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -135,10 +139,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the clientId.
      *
-     * @param clientId
-     *            the clientId
+     * @param clientId the clientId
      */
-    public void setClientId(final String clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -154,10 +157,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the clientSecret.
      *
-     * @param clientSecret
-     *            the clientSecret
+     * @param clientSecret the clientSecret
      */
-    public void setClientSecret(final String clientSecret) {
+    public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
@@ -173,10 +175,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -192,10 +193,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -211,10 +211,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -230,10 +229,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -249,10 +247,9 @@ public class OauthClient extends AbstractOauthClient implements java.io.Serializ
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

@@ -1,7 +1,7 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 password_token
-where
+WHERE
     id = /* id */'a'
     

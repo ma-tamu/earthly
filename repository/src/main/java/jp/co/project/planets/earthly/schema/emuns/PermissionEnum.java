@@ -2,17 +2,21 @@ package jp.co.project.planets.earthly.schema.emuns;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+
+import jp.co.project.planets.earthly.core.enums.Authority;
 
 /**
  * permission enum
  */
-public enum PermissionEnum {
+public enum PermissionEnum implements Authority {
 
     /** ユーザー追加 */
     ADD_USER("f212985ca90d11ec88720242ac120003"),
     /** 会社追加 */
     ADD_COMPANY("f212996aa90d11ec88720242ac120003"),
+    /** グループ追加 */
+    ADD_GROUP("1c4a0a592cb611f0a2d4c6a57441edb9"),
     /** 分室追加 */
     ADD_ALL_BRANCH("f2129a10a90d11ec88720242ac120003"),
     /** 所属会社の分室追加 */
@@ -74,7 +78,7 @@ public enum PermissionEnum {
      */
     public static PermissionEnum of(final String id) {
         return Arrays.stream(PermissionEnum.values()) //
-                .filter(it -> StringUtils.equals(it.getId(), id)).findFirst() //
+                .filter(it -> Strings.CS.equals(it.getId(), id)).findFirst() //
                 .orElseThrow(() -> new RuntimeException(String.format("permission not found. id:%s", id)));
     }
 
@@ -83,6 +87,7 @@ public enum PermissionEnum {
      *
      * @return id
      */
+    @Override
     public String getId() {
         return id;
     }

@@ -1,20 +1,21 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * OAuthクライアント認可タイプ
- */
+    * OAuthクライアント認可タイプ
+*/
 @Entity(listener = OauthClientGrantTypeListener.class, metamodel = @Metamodel)
 @Table(name = "oauth_client_grant_type")
 public class OauthClientGrantType extends AbstractOauthClientGrantType implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -29,21 +30,23 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     @Column(name = "grant_type_id")
     String grantTypeId;
 
-    public OauthClientGrantType() {
-    }
-
+public OauthClientGrantType() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param oauthClientId OAuthクライアントid
-     * @Param grantTypeId 認可タイプid
+     * @param id
+     *         id
+     * @param oauthClientId
+     *         OAuthクライアントid
+     * @param grantTypeId
+     *         認可タイプid
      */
-    public OauthClientGrantType(final String id, final String oauthClientId, final String grantTypeId) {
+    public OauthClientGrantType(final String id,final String oauthClientId,final String grantTypeId) {
         this.id = id;
         this.oauthClientId = oauthClientId;
         this.grantTypeId = grantTypeId;
     }
+
 
     /**
      * Returns the id.
@@ -57,10 +60,9 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -76,10 +78,9 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     /**
      * Sets the oauthClientId.
      *
-     * @param oauthClientId
-     *            the oauthClientId
+     * @param oauthClientId the oauthClientId
      */
-    public void setOauthClientId(final String oauthClientId) {
+    public void setOauthClientId(String oauthClientId) {
         this.oauthClientId = oauthClientId;
     }
 
@@ -95,10 +96,9 @@ public class OauthClientGrantType extends AbstractOauthClientGrantType implement
     /**
      * Sets the grantTypeId.
      *
-     * @param grantTypeId
-     *            the grantTypeId
+     * @param grantTypeId the grantTypeId
      */
-    public void setGrantTypeId(final String grantTypeId) {
+    public void setGrantTypeId(String grantTypeId) {
         this.grantTypeId = grantTypeId;
     }
 }

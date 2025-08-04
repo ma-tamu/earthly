@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,27 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class RegionListener implements EntityListener<Region> {
 
     @Override
-    public void preInsert(Region entity, PreInsertContext<Region> context) {
+    public void preInsert(final Region entity, final PreInsertContext<Region> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Region entity, PreUpdateContext<Region> context) {
+    public void preUpdate(final Region entity, final PreUpdateContext<Region> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Region entity, PreDeleteContext<Region> context) {
+    public void preDelete(final Region entity, final PreDeleteContext<Region> context) {
     }
 
     @Override
-    public void postInsert(Region entity, PostInsertContext<Region> context) {
+    public void postInsert(final Region entity, final PostInsertContext<Region> context) {
     }
 
     @Override
-    public void postUpdate(Region entity, PostUpdateContext<Region> context) {
+    public void postUpdate(final Region entity, final PostUpdateContext<Region> context) {
     }
 
     @Override
-    public void postDelete(Region entity, PostDeleteContext<Region> context) {
+    public void postDelete(final Region entity, final PostDeleteContext<Region> context) {
     }
 }

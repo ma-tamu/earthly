@@ -18,7 +18,7 @@ public class Pagination {
      * 最初のページ
      *
      * @param page
-     *         ページ
+     *            ページ
      * @return true:最初のページ false:最初のページでない
      */
     public boolean isFirst(final Page page) {
@@ -29,7 +29,7 @@ public class Pagination {
      * 最終ページか
      *
      * @param page
-     *         ページ
+     *            ページ
      * @return true:最終ページ false:最終ページでない
      */
     public boolean isLast(final Page page) {
@@ -40,19 +40,18 @@ public class Pagination {
      * ページネーションの有無
      *
      * @param page
-     *         ページ
+     *            ページ
      * @return true:ページネーションあり false:ページネーションなし
      */
     public boolean isPageable(final Page page) {
         return CollectionUtils.isNotEmpty(page.getContent());
     }
 
-
     /**
      * ページネーション開始ページ番号を取得
      *
      * @param page
-     *         ページ
+     *            ページ
      * @return 開始ページ番号
      */
     public long getStartPage(final Page page) {
@@ -72,7 +71,7 @@ public class Pagination {
      * ページネーション終了ページ番号を取得
      *
      * @param page
-     *         ページ
+     *            ページ
      * @return 終了ページ番号
      */
     public long getEndPage(final Page page) {
@@ -92,5 +91,8 @@ public class Pagination {
         return pageNumber + PAGE_DISPLAY_RANGE;
     }
 
+    public boolean isCurrent(final Page page, final int pageNumber) {
+        return page.getNumber() == pageNumber;
+    }
 
 }

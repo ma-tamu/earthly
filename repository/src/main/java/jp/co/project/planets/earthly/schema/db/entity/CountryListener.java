@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,27 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class CountryListener implements EntityListener<Country> {
 
     @Override
-    public void preInsert(Country entity, PreInsertContext<Country> context) {
+    public void preInsert(final Country entity, final PreInsertContext<Country> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(Country entity, PreUpdateContext<Country> context) {
+    public void preUpdate(final Country entity, final PreUpdateContext<Country> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(Country entity, PreDeleteContext<Country> context) {
+    public void preDelete(final Country entity, final PreDeleteContext<Country> context) {
     }
 
     @Override
-    public void postInsert(Country entity, PostInsertContext<Country> context) {
+    public void postInsert(final Country entity, final PostInsertContext<Country> context) {
     }
 
     @Override
-    public void postUpdate(Country entity, PostUpdateContext<Country> context) {
+    public void postUpdate(final Country entity, final PostUpdateContext<Country> context) {
     }
 
     @Override
-    public void postDelete(Country entity, PostDeleteContext<Country> context) {
+    public void postDelete(final Country entity, final PostDeleteContext<Country> context) {
     }
 }

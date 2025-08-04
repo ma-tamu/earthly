@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * OAuthクライアントリダイレクトURL
- */
+    * OAuthクライアントリダイレクトURL
+*/
 @Entity(listener = OauthClientRedirectUrlListener.class, metamodel = @Metamodel)
 @Table(name = "oauth_client_redirect_url")
 public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -51,24 +51,28 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public OauthClientRedirectUrl() {
-    }
-
+public OauthClientRedirectUrl() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param oauthClientId OAuthクライアントid
-     * @Param redirectUrl リダイレクトURL
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param oauthClientId
+     *         OAuthクライアントid
+     * @param redirectUrl
+     *         リダイレクトURL
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public OauthClientRedirectUrl(final String id, final String oauthClientId, final String redirectUrl,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+    public OauthClientRedirectUrl(final String id,final String oauthClientId,final String redirectUrl,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.oauthClientId = oauthClientId;
         this.redirectUrl = redirectUrl;
@@ -78,6 +82,7 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -91,10 +96,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -110,10 +114,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the oauthClientId.
      *
-     * @param oauthClientId
-     *            the oauthClientId
+     * @param oauthClientId the oauthClientId
      */
-    public void setOauthClientId(final String oauthClientId) {
+    public void setOauthClientId(String oauthClientId) {
         this.oauthClientId = oauthClientId;
     }
 
@@ -129,10 +132,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the redirectUrl.
      *
-     * @param redirectUrl
-     *            the redirectUrl
+     * @param redirectUrl the redirectUrl
      */
-    public void setRedirectUrl(final String redirectUrl) {
+    public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
     }
 
@@ -148,10 +150,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -167,10 +168,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -186,10 +186,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -205,10 +204,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -224,10 +222,9 @@ public class OauthClientRedirectUrl extends AbstractOauthClientRedirectUrl imple
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

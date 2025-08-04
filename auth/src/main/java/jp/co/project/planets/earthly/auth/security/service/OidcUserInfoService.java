@@ -5,7 +5,7 @@ import java.util.Locale;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.stereotype.Service;
 
-import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.emuns.Gender;
 import jp.co.project.planets.earthly.schema.repository.UserRepository;
 
 /**
@@ -39,7 +39,7 @@ public class OidcUserInfoService {
                 .name(user.getName()) //
                 .preferredUsername(user.getLoginId()) //
                 .email(user.getMail()) //
-                .gender(GenderEnum.of(user.getGender()).name()) //
+                .gender(Gender.of(user.getGender()).name()) //
                 .locale(Locale.forLanguageTag(user.getLanguage()).toString()) //
                 .zoneinfo(user.getTimezone()) //
                 .build();

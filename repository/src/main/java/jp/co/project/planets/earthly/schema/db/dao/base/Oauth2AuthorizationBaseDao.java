@@ -1,13 +1,12 @@
 package jp.co.project.planets.earthly.schema.db.dao.base;
 
+import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
 import org.seasar.doma.boot.ConfigAutowireable;
-
-import jp.co.project.planets.earthly.schema.db.entity.Oauth2Authorization;
 
 /**
  */
@@ -26,14 +25,14 @@ public interface Oauth2AuthorizationBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(Oauth2Authorization entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(Oauth2Authorization entity);
 
     /**

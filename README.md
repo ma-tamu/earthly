@@ -31,4 +31,10 @@ git clone https://github.com/ma-tamu/earthly.git
 T.B.D
 
 # Q&A
-T.B.D
+Q. RSA鍵のpemファイルはどうやって作ればいいの
+
+A. OpenSSLを使って下記のコマンドを入力すれば作れます。
+```shell
+openssl genrsa 2048 > ${秘密鍵名}.pem
+openssl rsa -in ${秘密鍵名}.pem -pubout > ${公開鍵名}.pem
+```

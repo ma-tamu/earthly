@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="pagination(page)">
-  <div class="float-end" th:if="${#pagination.isPageable(page)}">
+  <div class="float-right" th:if="${#pagination.isPageable(page)}">
     <ul class="pagination">
       <li class="page-item" th:classappend="${#pagination.isFirst(page)} ? 'disabled':''">
         <button class="page-link" aria-label="Previous" name="page" value="0"
@@ -10,7 +10,8 @@
         </button>
       </li>
       <li class="page-item"
-          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}">
+          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}"
+          th:classappend="${#pagination.isCurrent(page,i)} ? 'active':''">
         <button class="page-link" name="page" value="1" th:value="${i}" th:text="${i + 1}">1</button>
       </li>
       <li class="page-item" th:classappend="${#pagination.isLast(page)} ? 'disabled':''">
@@ -23,4 +24,30 @@
   </div>
 </th:block>
 
+<th:block th:fragment="deitalPagination(page, formName, contentId)">
+  <div class="float-right" th:if="${#pagination.isPageable(page)}">
+    <ul class="pagination">
+      <li class="page-item" th:classappend="${#pagination.isFirst(page)} ? 'disabled':''">
+        <button type="button" class="page-link" aria-label="Previous" name="page" value="0"
+                th:classappend="${#pagination.isFirst(page)} ? 'disabled':''"
+                th:onclick="|search('0', '__${formName}__', '__${contentId}__')|">
+          <span aria-hidden="true">&lt;&lt;</span>
+        </button>
+      </li>
+      <li class="page-item"
+          th:each="i : ${#numbers.sequence(#pagination.getStartPage(page),#pagination.getEndPage(page))}"
+          th:classappend="${#pagination.isCurrent(page,i)} ? 'active':''">
+        <button type="button" class="page-link" name="page" value="1" th:value="${i}" th:text="${i + 1}"
+                th:onclick="|search('__${i}__', '__${formName}__', '__${contentId}__')|">1</button>
+      </li>
+      <li class="page-item" th:classappend="${#pagination.isLast(page)} ? 'disabled':''">
+        <button type="button" class="page-link" aria-label="Next" name="page" th:value="${page.totalPages}-1"
+                th:classappend="${#pagination.isLast(page)} ? 'disabled':''"
+                th:onclick="|search('__${page.totalPages - 1}__', '__${formName}__', '__${contentId}__')|">
+          <span aria-hidden="true">&gt;&gt;</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</th:block>
 </html>

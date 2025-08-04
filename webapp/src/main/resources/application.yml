@@ -55,6 +55,7 @@ management:
       base-path: /
 
 earthly:
+  version: 0.0.1
   base-url: http://localhost:${server.port}${server.servlet.context-path}
   datasource:
     host: ${MYSQL_HOST:localhost}

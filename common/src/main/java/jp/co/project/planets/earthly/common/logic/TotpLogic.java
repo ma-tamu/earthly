@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Component;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -50,7 +50,7 @@ public class TotpLogic {
         final int numCharacters = 32;
         final byte[] bytes = new byte[(numCharacters * 5) / 8];
         random.nextBytes(bytes);
-        return new String(base64Codec.encode(bytes));
+        return new String(base64Codec.encode(bytes), StandardCharsets.UTF_8);
     }
 
     public List<String> generateRecoveryCode() {
@@ -73,7 +73,8 @@ public class TotpLogic {
             final var bitMatrix = writer.encode(otpauthUri, BarcodeFormat.QR_CODE, IMAGE_SIZE, IMAGE_SIZE);
             final var pngOutputStream = new ByteArrayOutputStream();
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-            final var encodedData = new String(base64Codec.encode(pngOutputStream.toByteArray()));
+            final var encodedData = new String(base64Codec.encode(pngOutputStream.toByteArray()),
+                    StandardCharsets.UTF_8);
             return String.format("data:%s;base64,%s", "image/png", encodedData);
         } catch (final WriterException | IOException e) {
             throw new RuntimeException("QR Code generated failed.", e);
@@ -96,7 +97,7 @@ public class TotpLogic {
         try {
             final byte[] hash = generateHash(secret, counter);
             final var actualCode = getDigitsFromHash(hash);
-            return StringUtils.equals(code, actualCode);
+            return Strings.CS.equals(code, actualCode);
         } catch (final InvalidKeyException | NoSuchAlgorithmException e) {
             return false;
         }

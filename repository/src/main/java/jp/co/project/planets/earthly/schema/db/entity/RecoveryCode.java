@@ -1,10 +1,10 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
     * 
@@ -13,8 +13,9 @@ import org.seasar.doma.Table;
 @Table(name = "recovery_code")
 public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /**  */
     @Id
@@ -33,23 +34,26 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     @Column(name = "used")
     Boolean used;
 
-    public RecoveryCode() {
-    }
-
+public RecoveryCode() {
+}
     /**
      * new instance
-     * 
-     * @Param id
-     * @Param userid
-     * @Param code
-     * @Param used
+     * @param id
+     *         
+     * @param userid
+     *         
+     * @param code
+     *         
+     * @param used
+     *         
      */
-    public RecoveryCode(final String id, final String userid, final String code, final Boolean used) {
+    public RecoveryCode(final String id,final String userid,final String code,final Boolean used) {
         this.id = id;
         this.userid = userid;
         this.code = code;
         this.used = used;
     }
+
 
     /**
      * Returns the id.
@@ -63,10 +67,9 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -82,10 +85,9 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     /**
      * Sets the userid.
      *
-     * @param userid
-     *            the userid
+     * @param userid the userid
      */
-    public void setUserid(final String userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 
@@ -101,10 +103,9 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     /**
      * Sets the code.
      *
-     * @param code
-     *            the code
+     * @param code the code
      */
-    public void setCode(final String code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -120,10 +121,9 @@ public class RecoveryCode extends AbstractRecoveryCode implements java.io.Serial
     /**
      * Sets the used.
      *
-     * @param used
-     *            the used
+     * @param used the used
      */
-    public void setUsed(final Boolean used) {
+    public void setUsed(Boolean used) {
         this.used = used;
     }
 }

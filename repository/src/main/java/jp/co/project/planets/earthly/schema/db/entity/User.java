@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * ユーザー
- */
+    * ユーザー
+*/
 @Entity(listener = UserListener.class, metamodel = @Metamodel)
 @Table(name = "user")
 public class User extends AbstractUser implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -87,35 +87,46 @@ public class User extends AbstractUser implements java.io.Serializable {
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public User() {
-    }
-
+public User() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param loginId ログインID
-     * @Param name ユーザー名
-     * @Param gender 性別
-     * @Param language
-     * @Param timezone
-     * @Param mail メールアドレス
-     * @Param password パスワード
-     * @Param lockout ロックアウト
-     * @Param twoFactorAuthentication
-     * @Param secret
-     * @Param companyId 所属会社
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param loginId
+     *         ログインID
+     * @param name
+     *         ユーザー名
+     * @param gender
+     *         性別
+     * @param language
+     *         
+     * @param timezone
+     *         
+     * @param mail
+     *         メールアドレス
+     * @param password
+     *         パスワード
+     * @param lockout
+     *         ロックアウト
+     * @param twoFactorAuthentication
+     *         
+     * @param secret
+     *         
+     * @param companyId
+     *         所属会社
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public User(final String id, final String loginId, final String name, final String gender, final String language,
-            final String timezone, final String mail, final String password, final Boolean lockout,
-            final Boolean twoFactorAuthentication, final String secret, final String companyId,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+    public User(final String id,final String loginId,final String name,final String gender,final String language,final String timezone,final String mail,final String password,final Boolean lockout,final Boolean twoFactorAuthentication,final String secret,final String companyId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.loginId = loginId;
         this.name = name;
@@ -135,6 +146,7 @@ public class User extends AbstractUser implements java.io.Serializable {
         this.isDeleted = isDeleted;
     }
 
+
     /**
      * Returns the id.
      *
@@ -147,10 +159,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -166,10 +177,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the loginId.
      *
-     * @param loginId
-     *            the loginId
+     * @param loginId the loginId
      */
-    public void setLoginId(final String loginId) {
+    public void setLoginId(String loginId) {
         this.loginId = loginId;
     }
 
@@ -185,10 +195,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -204,10 +213,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the gender.
      *
-     * @param gender
-     *            the gender
+     * @param gender the gender
      */
-    public void setGender(final String gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -223,10 +231,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the language.
      *
-     * @param language
-     *            the language
+     * @param language the language
      */
-    public void setLanguage(final String language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
@@ -242,10 +249,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the timezone.
      *
-     * @param timezone
-     *            the timezone
+     * @param timezone the timezone
      */
-    public void setTimezone(final String timezone) {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
@@ -261,10 +267,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the mail.
      *
-     * @param mail
-     *            the mail
+     * @param mail the mail
      */
-    public void setMail(final String mail) {
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
@@ -280,10 +285,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the password.
      *
-     * @param password
-     *            the password
+     * @param password the password
      */
-    public void setPassword(final String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -299,10 +303,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the lockout.
      *
-     * @param lockout
-     *            the lockout
+     * @param lockout the lockout
      */
-    public void setLockout(final Boolean lockout) {
+    public void setLockout(Boolean lockout) {
         this.lockout = lockout;
     }
 
@@ -318,10 +321,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the twoFactorAuthentication.
      *
-     * @param twoFactorAuthentication
-     *            the twoFactorAuthentication
+     * @param twoFactorAuthentication the twoFactorAuthentication
      */
-    public void setTwoFactorAuthentication(final Boolean twoFactorAuthentication) {
+    public void setTwoFactorAuthentication(Boolean twoFactorAuthentication) {
         this.twoFactorAuthentication = twoFactorAuthentication;
     }
 
@@ -337,10 +339,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the secret.
      *
-     * @param secret
-     *            the secret
+     * @param secret the secret
      */
-    public void setSecret(final String secret) {
+    public void setSecret(String secret) {
         this.secret = secret;
     }
 
@@ -356,10 +357,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the companyId.
      *
-     * @param companyId
-     *            the companyId
+     * @param companyId the companyId
      */
-    public void setCompanyId(final String companyId) {
+    public void setCompanyId(String companyId) {
         this.companyId = companyId;
     }
 
@@ -375,10 +375,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -394,10 +393,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -413,10 +411,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -432,10 +429,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -451,10 +447,9 @@ public class User extends AbstractUser implements java.io.Serializable {
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

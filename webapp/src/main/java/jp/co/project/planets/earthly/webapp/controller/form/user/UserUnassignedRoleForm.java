@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotEmpty;
 /**
  * ロール解除FORM
  * 
- * @param unassigns
+ * @param roleId
  *            ロールIDリスト
  */
-public record UserUnassignedRoleForm(@NotEmpty List<String> unassigns) implements Serializable {
+public record UserUnassignedRoleForm(@NotEmpty List<String> roleId) implements Serializable {
 }

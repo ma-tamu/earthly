@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{page.header.title}">Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.user.list}">ユーザーリスト</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item  active" th:text="#{page.title.user.list}">ユーザーリスト</li>
+            </ol>
+          </div>
+        </div>
+        <div class="row justify-content-end" th:if="${#authentication.getPrincipal().account.permissions.contains(T(jp.co.project.planets.earthly.schema.emuns.PermissionEnum).ADD_USER)}">
+          <div class="col-1 text-right">
+            <div class="btn-group">
+              <a class="btn btn-primary btn-sm m-1" data-bs-toggle="tooltip" data-placement="top"
+                 th:title="#{page.tooltip.entry}" th:href="@{/users/entries}">
+                <i class="fas fa-user-plus"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <form method="get" th:action="@{/users}">
+        <div class="card">
+          <div class="card-body">
+            <h5 th:text="#{page.panel.title.search}">検索条件</h5>
+            <div class="row m-1">
+              <div class="col-6">
+                <label for="loginId" th:text="#{page.label.user.loginId}" style="margin-bottom: .1rem">ログインID</label>
+                <input type="text" id="loginId" name="loginId" class="form-control" th:value="${userSearchForm.loginId}">
+              </div>
+              <div class="col-6">
+                <label for="name" th:text="#{page.label.user.name}" style="margin-bottom: .1rem">ユーザー名</label>
+                <input type="text" id="name" name="name" class="form-control" th:value="${userSearchForm.name}">
+              </div>
+            </div>
+            <div class="row m-1">
+              <div class="col-6">
+                <label for="company" th:text="#{page.label.user.company}" style="margin-bottom: .1rem">所属会社</label>
+                <input type="text" id="company" name="company" class="form-control" th:value="${userSearchForm.company}">
+              </div>
+            </div>
+            <div class="row text-center m-1">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search"></i>
+                  <th:block th:text="#{page.button.search}">検索</th:block>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="card">
+          <div class="card-body">
+            <th:block th:if="${!#lists.isEmpty(pageImpl.content)}">
+              <th:block th:replace="parts/pagination::pagination(${pageImpl})"/>
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th th:text="#{page.label.user.loginId}">ログインID</th>
+                  <th th:text="#{page.label.user.name}">ユーザー名</th>
+                  <th th:text="#{page.label.user.company}">所属会社</th>
+                  <th th:text="#{page.label.user.lockout}">ロックアウト</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${pageImpl.content}">
+                  <td>
+                    <a th:href="@{/users/__${user.id}__}" th:text="${user.loginId}">SampleID01</a>
+                  </td>
+                  <td th:text="${user.name}">SampleName01</td>
+                  <td>
+                    <a th:href="@{/companies/__${user.companyId}__}" th:text="${user.companyName}">SampleCompany01</a>
+                  </td>
+                  <td>
+                    <i class="fas" th:classappend="${#bools.isTrue(user.lockout)} ? 'fa-lock' : 'fa-lock-open'"></i>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <th:block th:include="parts/pagination::pagination(${pageImpl})"/>
+            </th:block>
+            <th:block th:if="${#lists.isEmpty(pageImpl.content)}">
+              <img th:src="@{/img/inbox.png}">
+            </th:block>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>
+</body>
+<th:block th:replace="parts/timezone::modal"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
+</html>

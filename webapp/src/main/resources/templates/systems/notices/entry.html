@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title th:text="#{page.header.title}">Earthly</title>
+  <th:block th:replace="parts/static::head"></th:block>
+</head>
+<body class="sidebar-mini layout-fixed" style="height: auto">
+<div class="app-wrapper">
+  <th:block th:replace="parts/template::header"></th:block>
+  <th:block th:replace="parts/template::navigation"></th:block>
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 th:text="#{page.title.notice.entry}">お知らせ登録</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/}" th:text="#{page.title.home}">Home</a></li>
+              <li class="breadcrumb-item"><a th:href="@{/systems/notices}" th:text="#{page.title.notice.list}">お知らせリスト</a>
+              </li>
+              <li class="breadcrumb-item active" th:text="#{page.title.notice.entry}">お知らせ登録</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="alert alert-danger alert-dismissible fade show" th:if="${errorCode}">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        <th:block th:text="${#messages.msgOrNullWithParams(errorCode.messageKey, messageArgs)}">エラーメッセージ</th:block>
+      </div>
+      <form method="post" class="form-horizontal entry" th:action="@{/systems/notices/entries}" th:object="${noticeEntryForm}">
+        <div class="form-group row m-1">
+          <label class="col-sm-2 col-form-label" for="title" th:text="#{page.label.notice.title}">件名</label>
+          <div class="col-sm-6">
+            <input class="form-control" th:classappend="${#fields.hasErrors('title')}?'is-invalid'"
+                   th:field="*{title}" th:readonly="${readOnly}" type="text">
+            <div class="invalid-feedback" th:errors="*{title}" th:if="${#fields.hasErrors('title')}">
+              件名は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-sm-2 form-label" for="body" th:text="#{page.label.notice.body}">本文</label>
+          <div class="col-sm-6">
+            <textarea class="form-control" th:classappend="${#fields.hasErrors('body')}?'is-invalid'"
+                   th:field="*{body}" th:readonly="${readOnly}" type="text">
+            </textarea>
+            <div class="invalid-feedback" th:errors="*{body}" th:if="${#fields.hasErrors('body')}">
+              本文は必須です。
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="startAt" th:text="#{page.label.notice.date.start}">掲載開始日時</label>
+          <div class="col-6">
+            <div class="form-group date" id="startAtDatetimepicker" data-target-input="nearest">
+              <input type="text" class="form-control datetimepicker-input" data-target="#startAtDatetimepicker"
+                     data-toggle="datetimepicker" th:classappend="${#fields.hasErrors('startAt')}?'is-invalid'"
+                     th:field="*{startAt}" maxlength="19">
+              <div class="invalid-feedback" th:errors="*{startAt}" th:if="${#fields.hasErrors('startAt')}">
+                掲載開始日時は必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="endAt" th:text="#{page.label.notice.date.end}">掲載終了日時</label>
+          <div class="col-6">
+            <div class="form-group date" id="endAtDatetimepicker" data-target-input="nearest">
+              <input type="text" class="form-control datetimepicker-input" data-target="#endAtDatetimepicker"
+                     data-toggle="datetimepicker" th:classappend="${#fields.hasErrors('endAt')}?'is-invalid'"
+                     th:field="*{endAt}" maxlength="19">
+              <div class="invalid-feedback" th:errors="*{endAt}" th:if="${#fields.hasErrors('endAt')}">
+                掲載終了日時は必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row m-1">
+          <label class="col-2 form-label" for="emphasis" th:text="#{page.label.notice.emphasis}">強いお知らせか</label>
+          <div class="col-6">
+            <div class="form-check">
+              <input type="radio" class="form-check-input" id="yes" name="emphasis"
+                     th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="true"
+                     th:checked="*{#bools.isTrue(emphasis)}" onclick="activeSubmitButton()">
+              <label class="form-check-label" for="yes" th:text="#{page.label.yes}"></label>
+            </div>
+            <div class="form-check">
+              <input type="radio" class="form-check-input" id="no" name="emphasis"
+                     th:classappend="${#fields.hasErrors('emphasis')}?'is-invalid'" value="false"
+                     th:checked="*{#bools.isFalse(emphasis)}"
+                     onclick="activeSubmitButton()">
+              <label class="form-check-label" for="no" th:text="#{page.label.no}"></label>
+            </div>
+            <div class="invalid-feedback" th:errors="*{emphasis}" th:if="${#fields.hasErrors('emphasis')}">
+              強いお知らせかは必須です。
+            </div>
+          </div>
+        </div>
+        <div class="row m-1 text-center justify-content-end">
+          <button type="button" class="btn btn-secondary mr-1" data-target="#cancel"
+                  data-toggle="modal" th:text="#{page.button.back}">戻る
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.confirm}">確認</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+</div>
+</body>
+<th:block th:replace="systems/notices/modal::entry"></th:block>
+<th:block th:replace="systems/notices/modal::cancel"></th:block>
+<th:block th:replace="parts/timezone::modal"></th:block>
+<th:block th:replace="parts/template::footer"></th:block>
+<th:block th:replace="parts/static::bottom"></th:block>
+<script th:src="@{/js/client.js}"></script>
+<script th:replace="parts/badge::notice"></script>
+<script th:replace="parts/timezone::script"></script>
+<script>
+    $(()=>{
+        $('#startAtDatetimepicker').datetimepicker({
+            format: 'YYYY/MM/DD HH:mm:ss',
+            locale: 'ja',
+            dayViewHeaderFormat: 'YYYY年 MM月',
+            showClose: true,
+            sideBySide: true
+        });
+        $('#endAtDatetimepicker').datetimepicker({
+            format: 'YYYY/MM/DD HH:mm:ss',
+            locale: 'ja',
+            dayViewHeaderFormat: 'YYYY年 MM月',
+            showClose: true,
+            sideBySide: true
+        });
+
+    })
+</script>
+<script th:inline="javascript" th:if="${readOnly}">
+    $(function () {
+        $('#entry').modal('show')
+    });
+    $('#entry').on('hidden.bs.modal', function (e) {
+        const form = $('form.entry');
+        form.find('input').each((i, e) => {
+            e.readOnly = false;
+        });
+        form.find('textarea').each((i, e) => {
+            e.readOnly = false;
+        });
+    });
+</script>
+</html>

@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * パスワードトークン
- */
+    * パスワードトークン
+*/
 @Entity(listener = PasswordTokenListener.class, metamodel = @Metamodel)
 @Table(name = "password_token")
 public class PasswordToken extends AbstractPasswordToken implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -35,23 +35,26 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     @Column(name = "expire")
     LocalDateTime expire;
 
-    public PasswordToken() {
-    }
-
+public PasswordToken() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param userId ユーザーID
-     * @Param token トークン
-     * @Param expire 有効期限
+     * @param id
+     *         id
+     * @param userId
+     *         ユーザーID
+     * @param token
+     *         トークン
+     * @param expire
+     *         有効期限
      */
-    public PasswordToken(final String id, final String userId, final String token, final LocalDateTime expire) {
+    public PasswordToken(final String id,final String userId,final String token,final LocalDateTime expire) {
         this.id = id;
         this.userId = userId;
         this.token = token;
         this.expire = expire;
     }
+
 
     /**
      * Returns the id.
@@ -65,10 +68,9 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -84,10 +86,9 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     /**
      * Sets the userId.
      *
-     * @param userId
-     *            the userId
+     * @param userId the userId
      */
-    public void setUserId(final String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -103,10 +104,9 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     /**
      * Sets the token.
      *
-     * @param token
-     *            the token
+     * @param token the token
      */
-    public void setToken(final String token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
@@ -122,10 +122,9 @@ public class PasswordToken extends AbstractPasswordToken implements java.io.Seri
     /**
      * Sets the expire.
      *
-     * @param expire
-     *            the expire
+     * @param expire the expire
      */
-    public void setExpire(final LocalDateTime expire) {
+    public void setExpire(LocalDateTime expire) {
         this.expire = expire;
     }
 }

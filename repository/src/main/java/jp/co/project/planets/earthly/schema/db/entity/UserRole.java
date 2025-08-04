@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * ユーザに紐づくロール
- */
+    * ユーザに紐づくロール
+*/
 @Entity(listener = UserRoleListener.class, metamodel = @Metamodel)
 @Table(name = "user_role")
 public class UserRole extends AbstractUserRole implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -39,26 +39,29 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     @Column(name = "created_by")
     String createdBy;
 
-    public UserRole() {
-    }
-
+public UserRole() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param userId id
-     * @Param roleId id
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
+     * @param id
+     *         id
+     * @param userId
+     *         id
+     * @param roleId
+     *         id
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
      */
-    public UserRole(final String id, final String userId, final String roleId, final LocalDateTime createdAt,
-            final String createdBy) {
+    public UserRole(final String id,final String userId,final String roleId,final LocalDateTime createdAt,final String createdBy) {
         this.id = id;
         this.userId = userId;
         this.roleId = roleId;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
     }
+
 
     /**
      * Returns the id.
@@ -72,10 +75,9 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -91,10 +93,9 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * Sets the userId.
      *
-     * @param userId
-     *            the userId
+     * @param userId the userId
      */
-    public void setUserId(final String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -110,10 +111,9 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * Sets the roleId.
      *
-     * @param roleId
-     *            the roleId
+     * @param roleId the roleId
      */
-    public void setRoleId(final String roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 
@@ -129,10 +129,9 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -148,10 +147,9 @@ public class UserRole extends AbstractUserRole implements java.io.Serializable {
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 }

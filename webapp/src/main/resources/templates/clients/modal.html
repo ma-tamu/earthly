@@ -1,40 +1,360 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div class="modal" id="deleteModal" tabindex="-1" th:fragment="delete(id)">
-  <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
-    <div class="modal-content">
-      <form th:action="@{/clients/__${id}__/delete}">
-        <div class="modal-header">
-          <h5 class="modal-title" th:text="#{page.modal.title.client}">OAuthクライアント削除</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>削除しますか?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary">削除</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div th:fragment="cancel" class="modal" id="cancelModal" tabindex="-1" aria-hidden="true" style="display: none">
+
+<!-- OAuthクライアント登録キャンセル -->
+<div th:fragment="cancel" class="modal" id="cancel" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><i class="ri-alert-line"></i></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body" th:text="#{page.modal.entry.cancel}">
         登録をキャンセルしますか？
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.back}">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.back}">戻る
+        </button>
         <a type="button" class="btn btn-primary" th:href="@{/clients}" th:text="#{page.button.ok}">OK</a>
       </div>
     </div>
   </div>
 </div>
 
+<!-- OAuthクライアント登録確認 -->
+<div class="modal fade" id="entry" th:fragment="entry(form)">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" th:text="#{page.modal.title.client.entry}">OAuthクライアント登録確認</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/clients/create}" th:object="${form}">
+        <div class="modal-body">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.client.name}">
+              OAuthクライアント名
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{name}">OAuthクライアント名</th:block>
+              <input type="hidden" name="name" class="form-control" th:value="*{name}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="scope" th:text="#{page.label.client.scope}">
+              スコープ
+            </label>
+            <div class="col-sm-9">
+              <th:block th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
+                        th:with="scopeName=${#lists.contains(OAuthClientEntryForm.scope(),scope.id) ? scope.name : ''}"
+                        th:text="${scopeStat.first ? scopeName : ' ' + scopeName}">スコープ
+              </th:block>
+              <th:block th:each="value : *{scope}">
+                <input type="hidden" name="scope" class="form-control" th:value="${value}">
+              </th:block>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{page.button.cancel}">
+            キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.create}">登録</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- OAuthクライアント編集 -->
+<div class="modal fade" id="edit" th:fragment="edit(entity, OAuthClientEditForm)">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" th:text="#{page.modal.title.client.edit}">OAuthクライアント編集</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/clients/__${entity.id}__/edit}" th:object="${OAuthClientEditForm}">
+        <div class="modal-body edit">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.client.name}">
+              OAuthクライアント名
+            </label>
+            <div class="col-sm-9">
+              <input type="text" id="name" name="name" class="form-control"
+                     th:classappend="${#fields.hasErrors('name')}?'is-invalid'"
+                     th:field="*{name}" th:data-before="${entity.name}">
+              <div class="invalid-feedback" th:errors="*{name}" th:if="${#fields.hasErrors('name')}">
+                OAuthクライアント名は必須です。
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="scope" th:text="#{page.label.client.scope}">
+              スコープ
+            </label>
+            <div class="col-sm-9">
+              <select id="scope" name="scope" class="form-control" multiple="multiple"
+                      th:classappend="${#fields.hasErrors('scope')}?'is-invalid'" style="width: 100%"
+                      th:data-before="${#strings.listJoin(OAuthClientDetailEntity.scopes, ',')}">
+                <th:block th:if="${#lists.isEmpty(OAuthClientEditForm.scope())}">
+                  <option th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
+                          th:text="${scope.name()}" th:value="${scope.id}"></option>
+                </th:block>
+                <th:block th:unless="${#lists.isEmpty(OAuthClientEditForm.scope())}">
+                  <option th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
+                          th:selected="${#lists.contains(OAuthClientEditForm.scope(),scope.id)}"
+                          th:text="${scope.name()}"
+                          th:value="${scope.id}"></option>
+                </th:block>
+              </select>
+              <div class="invalid-feedback" th:errors="*{scope}" th:if="${#fields.hasErrors('scope')}">
+                スコープは必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancel()">キャンセル</button>
+          <button type="submit" class="btn btn-primary">確認</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- OAuthクライアント編集確認 -->
+<div class="modal fade" id="confirm" th:fragment="confirm(id, OAuthClientEditForm)">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" th:text="#{page.modal.title.client.edit.confirm}">OAuthクライアント編集確認</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/clients/__${id}__/update}" th:object="${OAuthClientEditForm}">
+        <div class="modal-body">
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="name" th:text="#{page.label.client.name}">
+              OAuthクライアント名
+            </label>
+            <div class="col-sm-9">
+              <th:block th:text="*{name}">OAuthクライアント名</th:block>
+              <input type="hidden" name="name" class="form-control" th:value="*{name}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" for="scope" th:text="#{page.label.client.scope}">
+              スコープ
+            </label>
+            <div class="col-sm-9">
+              <th:block th:each="scope : ${T(jp.co.project.planets.earthly.schema.emuns.Scope).values()}"
+                        th:with="scopeName=${#lists.contains(OAuthClientEditForm.scope(),scope.id) ? scope.name : ''}"
+                        th:text="${scopeStat.first ? scopeName : ' ' + scopeName}">スコープ
+              </th:block>
+              <th:block th:each="value : *{scope}">
+                <input type="hidden" name="scope" class="form-control" th:value="${value}">
+              </th:block>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{page.button.cancel}">
+            キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.update}">更新</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- OAuthクライアント削除 -->
+<div class="modal" id="delete" tabindex="-1" th:fragment="delete(id)">
+  <div class="modal-dialog modal-dialog-centered modal-lg delete-modal">
+    <div class="modal-content">
+      <form th:action="@{/clients/__${id}__/delete}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{page.modal.title.client.delete}">OAuthクライアント削除</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p th:text="#{page.modal.message.delete}">削除しますか?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{page.button.cancel}">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.delete}">削除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- リダイレクトURI追加 -->
+<div class="modal" id="addRedirectUri" th:fragment="addRedirectUri(id, OAuthClientRedirectUrlAddForm)">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{page.modal.title.client.add.redirect.uri}">リダイレクトURI追加</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/clients/__${id}__/redirect-uris/add}" class="add-redirect-uri"
+            th:object="${OAuthClientRedirectUrlAddForm}">
+        <div class="modal-body">
+          <div class="row m-3">
+            <div class="col-12">
+              <label for="redirectUri">リダイレクトURI</label>
+              <input type="text" class="form-control" th:field="*{redirectUri}"
+                     th:classappend="${#fields.hasErrors('redirectUri')}?'is-invalid'">
+              <div class="invalid-feedback" th:errors="*{redirectUri}" th:if="${#fields.hasErrors('redirectUri')}">
+                リダイレクトURLは必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelAddRedirectUrl()">
+            キャンセル
+          </button>
+          <button type="submit" class="btn btn-primary" th:text="#{page.button.add}">追加</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ログアウトリダイレクトURI追加 -->
+<div th:fragment="addLogoutRedirectUri(id)" class="modal" id="addLogoutRedirectUri">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{page.modal.title.client.add.logout.redirect.uri}">
+          ログアウトリダイレクトURI追加</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" th:action="@{/clients/__${id}__/logout-redirect-uris/add}" class="add-logout-redirect-uri"
+            th:object="${OAuthClientLogoutRedirectUrlAddForm}">
+        <div class="modal-body">
+          <div class="row m-3">
+            <div class="col-12">
+              <label for="redirectUri" th:text="#{page.label.client.list.logout.redirect.uri}">
+                ログアウトリダイレクトURI
+              </label>
+              <input type="text" class="form-control" th:field="*{redirectUri}"
+                     th:classappend="${#fields.hasErrors('redirectUri')}?'is-invalid'">
+              <div class="invalid-feedback" th:errors="*{redirectUri}" th:if="${#fields.hasErrors('redirectUri')}">
+                ログアウトリダイレクトURLは必須です。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-primary">追加</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- 管理ユーザー割り当て -->
+<div th:fragment="addManagementUser(id)" class="modal" id="addManagementUser" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{page.modal.title.client.management.user}">管理ユーザー検索</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="get" name="searchUnassignedManagementUser" onsubmit="return false;"
+              th:action="@{/clients/__${id}__/management-users/not-assigns}">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" th:tel="#{page.modal.title.search}">検索条件</div>
+            </div>
+            <div class="card-body">
+              <div class="row m-1">
+                <div class="col-6">
+                  <label for="userName" th:text="#{page.label.user.name}" style="margin-bottom: .1rem">ユーザー名</label>
+                  <input type="text" class="form-control form-control-sm" id="userName" name="userName">
+                </div>
+                <div class="col-6">
+                  <label for="company" th:text="#{page.label.user.company}" style="margin-bottom: .1rem">所属会社</label>
+                  <input type="text" class="form-control form-control-sm" id="company" name="company">
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-12">
+                  <button class="btn btn-primary search-unassigned-management-user" type="button">
+                    <i class="fas fa-search"></i>
+                    <th:block th:text="#{page.button.search}">検索</th:block>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <form method="post" name="assignManagementUser" th:action="@{/clients/__${id}__/management-users/assigns}">
+          <div id="unassignedManagementUser">
+            <th:block th:fragment="unassignedManagementUserPage">
+              <th:block th:if="${!unassignedManagementUserPage.isEmpty()}">
+                <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
+                <table class="table table-sm table-striped">
+                  <thead>
+                  <tr>
+                    <th th:text="#{page.label.user.name}">ユーザー名</th>
+                    <th th:tel="#{page.label.user.company}">所属会社</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="managementUser:${unassignedManagementUserPage.content}">
+                    <td>
+                      <a th:href="@{/users/__${managementUser.userId}__}" th:text="${managementUser.userName}">
+                        ユーザー名
+                      </a>
+                    </td>
+                    <td>
+                      <a th:href="@{/companies/__${managementUser.companyId}__}" th:text="${managementUser.companyName}">
+                        所属会社
+                      </a>
+                    </td>
+                    <td class="text-right">
+                      <input type="checkbox" class="form-check-input assign-management-user" name="userId"
+                             th:value="${managementUser.userId}" onclick="activeManagementUserAssignButton()" >
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <th:block th:replace="parts/pagination::pagination(${unassignedManagementUserPage})"/>
+              </th:block>
+            </th:block>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cancel" data-dismiss="modal">キャンセル</button>
+        <button type="button" class="btn btn-primary assign-management-user" disabled="disabled">割り当て</button>
+      </div>
+    </div>
+  </div>
+</div>
 </html>

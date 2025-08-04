@@ -51,5 +51,10 @@ WHERE
         AND is_deleted = 0
     )
   /*%end*/
+  /*%if @isNotBlank(companyName)*/
+  AND company.name LIKE /*@infix(companyName)*/'a'
+  /*%end*/
+  /*%if @isNotBlank(userName)*/
   AND user.name LIKE /* @infix(userName) */''
+  /*%end*/
   AND user.is_deleted = 0

@@ -2,13 +2,13 @@ package jp.co.project.planets.earthly.common.logic;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClient;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientGrantType;
 import jp.co.project.planets.earthly.schema.db.entity.OauthClientScope;
@@ -33,9 +33,9 @@ public class OAuthClientLogic {
     private final CryptoLogic cryptoLogic;
 
     public OAuthClientLogic(final CryptoLogic cryptoLogic, final OAuthClientRepository oauthClientRepository,
-            final OAuthClientGrantTypeRepository oauthClientGrantTypeRepository,
-            final OAuthClientScopeRepository oauthClientScopeRepository,
-            final OAuthClientManagementRepository oauthClientManagementRepository) {
+        final OAuthClientGrantTypeRepository oauthClientGrantTypeRepository,
+        final OAuthClientScopeRepository oauthClientScopeRepository,
+        final OAuthClientManagementRepository oauthClientManagementRepository) {
         this.cryptoLogic = cryptoLogic;
         this.oauthClientRepository = oauthClientRepository;
         this.oauthClientGrantTypeRepository = oauthClientGrantTypeRepository;
@@ -50,20 +50,19 @@ public class OAuthClientLogic {
      *            OAuthクライアント名
      * @param scopes
      *            スコープ
-     * @param operationUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @return OAuthクライアントID
      */
-    public String create(final String name, final List<String> scopes, final String operationUserId) {
+    public String create(final String name, final List<String> scopes, final Account account) {
 
-        final var entryOAuthClient = generateOAuthClient(name, operationUserId);
-        final int insertCount = oauthClientRepository.insert(entryOAuthClient);
-        if (insertCount < 1) {
+        final var entryOAuthClient = generateOAuthClient(name, account);
+        final var result = oauthClientRepository.insert(entryOAuthClient);
+        if (result < 1) {
             log.error("OAuthクライアントの登録に失敗しました。");
             return null;
         }
-        final var oauthClientOptional = oauthClientRepository.findAccessibleByName(name, Collections.emptyList(),
-                operationUserId);
+        final var oauthClientOptional = oauthClientRepository.findAccessibleByName(name, account);
         if (oauthClientOptional.isEmpty()) {
             log.error("OAuthクライアント名からの取得に失敗しました。 name:{}", name);
             return null;
@@ -78,7 +77,7 @@ public class OAuthClientLogic {
             final var oauthClientGrantType = new OauthClientGrantType(null, id, grantType.getId());
             oauthClientGrantTypeRepository.insert(oauthClientGrantType);
         }
-        oauthClientManagementRepository.insert(id, operationUserId);
+        oauthClientManagementRepository.insert(id, account.id());
         return id;
     }
 
@@ -87,17 +86,17 @@ public class OAuthClientLogic {
      *
      * @param name
      *            OAuthクライアント名
-     * @param operationUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @return OauthClient
      */
-    OauthClient generateOAuthClient(final String name, final String operationUserId) {
+    OauthClient generateOAuthClient(final String name, final Account account) {
         final var currentTime = Instant.now(Clock.systemUTC()).toEpochMilli();
         final var clientId = cryptoLogic.encodeSHA256(String.valueOf(currentTime));
         final var planText = name + "-" + currentTime;
         final var secret = cryptoLogic.encodeSHA256(planText);
-        return new OauthClient(null, name, clientId, secret, null, operationUserId, null,
-                operationUserId, false);
+        return new OauthClient(null, name, clientId, secret, null, account.id(), null,
+                account.id(), false);
     }
 
     /**
@@ -105,20 +104,17 @@ public class OAuthClientLogic {
      * 
      * @param id
      *            OAuthクライアントID
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operationUserId
-     *            ユーザーID
+     * @param account
+     *            ユーザー情報
      * @return true:閲覧可能 false:閲覧不可
      */
-    public boolean canAccessibleClient(final String id, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
+    public boolean canAccessibleClient(final String id, final Account account) {
 
-        if (permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT)) {
+        if (account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT)) {
             return true;
         }
 
-        return isManagementUser(id, operationUserId);
+        return isManagementUser(id, account.id());
     }
 
     /**
@@ -126,18 +122,15 @@ public class OAuthClientLogic {
      * 
      * @param id
      *            OAuthクライアントID
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operationUserId
-     *            ユーザーID
+     * @param account
+     *            ユーザー情報
      * @return true:編集可能 false:編集不可
      */
-    public boolean canEditableClient(final String id, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
-        if (permissionEnumList.contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
+    public boolean canEditableClient(final String id, final Account account) {
+        if (account.permissions().contains(PermissionEnum.EDIT_OAUTH_CLIENT)) {
             return true;
         }
-        return isManagementUser(id, operationUserId);
+        return isManagementUser(id, account.id());
     }
 
     /**

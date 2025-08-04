@@ -2,10 +2,12 @@ package jp.co.project.planets.earthly.schema.repository;
 
 import java.util.List;
 
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.UserRoleDao;
 import jp.co.project.planets.earthly.schema.db.entity.UserRole;
+import jp.co.project.planets.earthly.schema.db.entity.UserRole_;
 
 /**
  * user role repository
@@ -14,6 +16,7 @@ import jp.co.project.planets.earthly.schema.db.entity.UserRole;
 public class UserRoleRepository {
 
     private final UserRoleDao userRoleDao;
+    private final QueryDsl queryDsl;
 
     /**
      * new instance user role repository
@@ -21,8 +24,9 @@ public class UserRoleRepository {
      * @param userRoleDao
      *            user role dao
      */
-    public UserRoleRepository(final UserRoleDao userRoleDao) {
+    public UserRoleRepository(final UserRoleDao userRoleDao, final QueryDsl queryDsl) {
         this.userRoleDao = userRoleDao;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -58,5 +62,18 @@ public class UserRoleRepository {
      */
     public int delete(final UserRole userRole) {
         return userRoleDao.delete(userRole);
+    }
+
+    public int deleteByRoleId(final String roleId) {
+        final var criteria = new UserRole_();
+        return queryDsl.delete(criteria).where(w -> w.eq(criteria.roleId, roleId)).execute();
+    }
+
+    public int deleteByRoleIdAndUserId(final String roleId, final List<String> userIdList) {
+        final var criteria = new UserRole_();
+        return queryDsl.delete(criteria).where(w -> {
+            w.eq(criteria.roleId, roleId);
+            w.in(criteria.userId, userIdList);
+        }).execute();
     }
 }

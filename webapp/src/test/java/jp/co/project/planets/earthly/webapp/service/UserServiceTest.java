@@ -23,7 +23,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import jp.co.project.planets.earthly.common.logic.UserLogic;
 import jp.co.project.planets.earthly.core.enums.Timezone;
 import jp.co.project.planets.earthly.schema.db.entity.Role;
-import jp.co.project.planets.earthly.schema.emuns.GenderEnum;
+import jp.co.project.planets.earthly.schema.emuns.Gender;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
 import jp.co.project.planets.earthly.schema.model.entity.CountryEntity;
@@ -64,7 +64,7 @@ class UserServiceTest {
         final var belongCompanyEntity = new BelongCompanyEntity("COMPANY_ID_01", "COMPANY_NAME_01", countryEntity);
         final var role01 = new Role("ROLE_ID_01", "ROLE_NAME_01", null, null, null, null, false);
         final var roleList = List.of(role01);
-        final var userEntity = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", GenderEnum.MALE.getValue(),
+        final var userEntity = new UserEntity("USER_ID_02", "LOGIN_ID_02", "USER_NAME_02", Gender.MALE.getValue(),
                 "algie_dolanqyj@prize.gtt", "$2a$10$IfIpdWUeKUBFd0pN6dRV/.4IT3Lsln5zuw8bZgiV.nTH/RbVRlxP2", "ja",
                 Timezone.ASIA_TOKYO.getId(), Boolean.FALSE, false, "NULL", belongCompanyEntity, roleList,
                 Collections.emptyList(), LocalDateTime.of(2022, Month.AUGUST, 3, 13, 18, 12), null,
@@ -73,10 +73,10 @@ class UserServiceTest {
                 Optional.of(userEntity));
 
         // test
-        final var actual = userService.getById("USER_ID_02", userInfoDto);
+        final var actual = userService.getDetail("USER_ID_02", userInfoDto);
 
         // verify
-        final var expected = new UserDetailDto(userEntity, null);
+        final var expected = new UserDetailDto(userEntity, null, unassignedRolePage);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
@@ -104,7 +104,7 @@ class UserServiceTest {
 
         // test & verify
         final var expected = new NotFoundException("not found user user=USER_ID_02.", EWA4XX002);
-        assertThatThrownBy(() -> userService.getById("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
+        assertThatThrownBy(() -> userService.getDetail("USER_ID_02", userInfoDto)).isInstanceOfSatisfying(
                 NotFoundException.class, e -> assertThat(e).usingRecursiveComparison().isEqualTo(expected));
     }
 

@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * 国
- */
+    * 国
+*/
 @Entity(listener = CountryListener.class, metamodel = @Metamodel)
 @Table(name = "country")
 public class Country extends AbstractCountry implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -55,25 +55,30 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public Country() {
-    }
-
+public Country() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param name 名前
-     * @Param regionId リージョン
-     * @Param languageId 言語
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param name
+     *         名前
+     * @param regionId
+     *         リージョン
+     * @param languageId
+     *         言語
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public Country(final String id, final String name, final String regionId, final String languageId,
-            final LocalDateTime createdAt, final String createdBy, final LocalDateTime updatedAt,
-            final String updatedBy, final Boolean isDeleted) {
+    public Country(final String id,final String name,final String regionId,final String languageId,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.regionId = regionId;
@@ -84,6 +89,7 @@ public class Country extends AbstractCountry implements java.io.Serializable {
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -97,10 +103,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -116,10 +121,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -135,10 +139,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the regionId.
      *
-     * @param regionId
-     *            the regionId
+     * @param regionId the regionId
      */
-    public void setRegionId(final String regionId) {
+    public void setRegionId(String regionId) {
         this.regionId = regionId;
     }
 
@@ -154,10 +157,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the languageId.
      *
-     * @param languageId
-     *            the languageId
+     * @param languageId the languageId
      */
-    public void setLanguageId(final String languageId) {
+    public void setLanguageId(String languageId) {
         this.languageId = languageId;
     }
 
@@ -173,10 +175,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -192,10 +193,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -211,10 +211,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -230,10 +229,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -249,10 +247,9 @@ public class Country extends AbstractCountry implements java.io.Serializable {
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

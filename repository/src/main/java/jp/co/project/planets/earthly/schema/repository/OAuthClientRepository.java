@@ -6,10 +6,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.GrantTypeDao;
 import jp.co.project.planets.earthly.schema.db.dao.LogoutRedirectUrlDao;
 import jp.co.project.planets.earthly.schema.db.dao.OAuthClientDao;
@@ -25,7 +26,6 @@ import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
 import jp.co.project.planets.earthly.schema.model.dto.OAuthClientSearchResultDto;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientDetailEntity;
 import jp.co.project.planets.earthly.schema.model.entity.OAuthClientEntity;
-import jp.co.project.planets.earthly.schema.model.entity.OAuthClientManagementUserEntity;
 
 /**
  * oauth client repository
@@ -40,24 +40,23 @@ public class OAuthClientRepository {
     private final LogoutRedirectUrlDao logoutRedirectUrlDao;
     private final OAuthClientManagementDao oauthClientManagementDao;
 
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
     public OAuthClientRepository(final OAuthClientDao oauthClientDao, final GrantTypeDao grantTypeDao,
-            final ScopeDao scopeDao, final RedirectUriDao redirectUriDao,
-            final LogoutRedirectUrlDao logoutRedirectUrlDao, final OAuthClientManagementDao oauthClientManagementDao,
-            final Entityql entityql) {
+        final ScopeDao scopeDao, final RedirectUriDao redirectUriDao, final LogoutRedirectUrlDao logoutRedirectUrlDao,
+        final OAuthClientManagementDao oauthClientManagementDao, final QueryDsl queryDsl) {
         this.oauthClientDao = oauthClientDao;
         this.grantTypeDao = grantTypeDao;
         this.scopeDao = scopeDao;
         this.redirectUriDao = redirectUriDao;
         this.logoutRedirectUrlDao = logoutRedirectUrlDao;
         this.oauthClientManagementDao = oauthClientManagementDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     public OauthClient findByPrimaryKey(final String id) {
         final var oauthClient_ = new OauthClient_();
-        return entityql.from(oauthClient_).where(w -> w.eq(oauthClient_.id, id)).forUpdate().fetchOne();
+        return queryDsl.from(oauthClient_).where(w -> w.eq(oauthClient_.id, id)).forUpdate().fetchOne();
     }
 
     /**
@@ -109,18 +108,14 @@ public class OAuthClientRepository {
      *
      * @param id
      *            OAuthクライアントID
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operatorUserId
+     * @param account
      *            操作ユーザーID
      * @return OAuthClientEntity
      */
-    public Optional<OAuthClientDetailEntity> findAccessibleById(final String id,
-            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
-        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        final var hasViewAllUser = permissionEnumList.contains(PermissionEnum.VIEW_ALL_USER);
-        return oauthClientDao.selectAccessibleById(id, hasViewAllOAuthClient, operatorUserId)
-                .map(entity -> generateOAuthClientDetailEntity(entity, hasViewAllUser, operatorUserId));
+    public Optional<OAuthClientDetailEntity> findAccessibleById(final String id, final Account account) {
+        final var hasViewAllOAuthClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        return oauthClientDao.selectAccessibleById(id, hasViewAllOAuthClient, account.id())
+                .map(entity -> generateOAuthClientDetailEntity(entity, account));
     }
 
     /**
@@ -128,29 +123,27 @@ public class OAuthClientRepository {
      * 
      * @param oauthClient
      *            OAuthクライアント
-     * @param hasViewAllUser
-     *            view_all_userを付与さているか
-     * @param operatorUserId
+     * @param account
      *            操作ユーザーID
      * @return OAuthClientDetailEntity
      */
     private OAuthClientDetailEntity generateOAuthClientDetailEntity(final OauthClient oauthClient,
-            final boolean hasViewAllUser, final String operatorUserId) {
+        final Account account) {
         final var id = oauthClient.getId();
         final var grantTypes = grantTypeDao.selectByClientId(id);
         final var scopes = scopeDao.selectByClientId(id);
         final var scopeIdList = scopes.stream().map(Scope::getId).toList();
         final var oauthClientRedirectUrl = new OauthClientRedirectUrl_();
-        final var redirectUris = entityql.from(oauthClientRedirectUrl)
+        final var redirectUris = queryDsl.from(oauthClientRedirectUrl)
                 .where(w -> w.eq(oauthClientRedirectUrl.oauthClientId, id))
                 .orderBy(o -> o.asc(oauthClientRedirectUrl.id)).fetch();
         final var logoutRedirectUrl = new LogoutRedirectUrl_();
-        final var logoutRedirectUrls = entityql.from(logoutRedirectUrl)
+        final var logoutRedirectUrls = queryDsl.from(logoutRedirectUrl)
                 .where(w -> w.eq(logoutRedirectUrl.oauthClientId, id)).orderBy(o -> o.asc(logoutRedirectUrl.createdAt))
                 .fetch();
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
         final var managementUsers = oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id,
-                hasViewAllUser,
-                operatorUserId);
+                hasViewAllUser, account.id());
         return new OAuthClientDetailEntity(id, oauthClient.getClientId(), oauthClient.getClientSecret(),
                 oauthClient.getName(), scopeIdList, grantTypes, redirectUris, logoutRedirectUrls, managementUsers);
     }
@@ -158,16 +151,13 @@ public class OAuthClientRepository {
     /**
      * 閲覧できるOAuthクライアントリスト取得
      *
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operatorUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @return OAuthクライアントリスト
      */
-    public List<OauthClient> findByAccessible(final List<PermissionEnum> permissionEnumList,
-            final String operatorUserId) {
-        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        return oauthClientDao.selectByAccessible(hasViewAllOAuthClient, operatorUserId);
+    public List<OauthClient> findByAccessible(final Account account) {
+        final var hasViewAllOAuthClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        return oauthClientDao.selectByAccessible(hasViewAllOAuthClient, account.id());
     }
 
     /**
@@ -177,41 +167,21 @@ public class OAuthClientRepository {
      *            OAuthクライアント名
      * @param pageable
      *            ページャー
-     * @param permissionEnumList
-     *            パーミッションリスト
-     * @param operatorUserId
-     *            操作ユーザーID
+     * @param account
+     *            操作ユーザー
      * @return OAuthクライアントリスト
      */
-    public OAuthClientSearchResultDto findByName(final String name, final Pageable pageable,
-            final List<PermissionEnum> permissionEnumList, final String operatorUserId) {
+    public OAuthClientSearchResultDto findByName(final String name, final Pageable pageable, final Account account) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
-        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        final var oauthClientList = oauthClientDao.selectByName(name, hasViewAllOAuthClient, operatorUserId,
+        final var hasViewAllOAuthClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        final var oauthClientList = oauthClientDao.selectByName(name, hasViewAllOAuthClient, account.id(),
                 selectOptions);
         return new OAuthClientSearchResultDto(oauthClientList, pageable.getOffset(), selectOptions.getCount());
     }
 
-    public Optional<OauthClient> findAccessibleByName(final String name, final List<PermissionEnum> permissionEnumList,
-            final String operationUserId) {
-        final var hasViewAllOAuthClient = permissionEnumList.contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
-        return oauthClientDao.selectByAccessibleName(name, hasViewAllOAuthClient, operationUserId);
-    }
-
-    /**
-     * 閲覧できるOAuthクライアント管理者リストを取得
-     *
-     * @param id
-     *            OAuthクライアントID
-     * @param hasViewAllUser
-     *            view_all_userを保持しているか
-     * @param operatorUserId
-     *            操作ユーザーID
-     * @return oauth client management user list
-     */
-    public List<OAuthClientManagementUserEntity> findAccessiblyManagementUserByClientId(final String id,
-            final boolean hasViewAllUser, final String operatorUserId) {
-        return oauthClientManagementDao.selectAccessiblyManagementUserByClientId(id, hasViewAllUser, operatorUserId);
+    public Optional<OauthClient> findAccessibleByName(final String name, final Account account) {
+        final var hasViewAllOAuthClient = account.permissions().contains(PermissionEnum.VIEW_ALL_OAUTH_CLIENT);
+        return oauthClientDao.selectByAccessibleName(name, hasViewAllOAuthClient, account.id());
     }
 
     /**

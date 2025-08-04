@@ -5,26 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.seasar.doma.boot.Pageables;
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import jp.co.project.planets.earthly.core.account.Account;
 import jp.co.project.planets.earthly.schema.db.dao.CompanyDao;
 import jp.co.project.planets.earthly.schema.db.dao.RoleDao;
 import jp.co.project.planets.earthly.schema.db.dao.UserDao;
-import jp.co.project.planets.earthly.schema.db.entity.Company;
-import jp.co.project.planets.earthly.schema.db.entity.Role;
 import jp.co.project.planets.earthly.schema.db.entity.User;
 import jp.co.project.planets.earthly.schema.db.entity.User_;
 import jp.co.project.planets.earthly.schema.emuns.PermissionEnum;
+import jp.co.project.planets.earthly.schema.model.dto.UserPageResultDto;
 import jp.co.project.planets.earthly.schema.model.dto.UserSearchResultDto;
-import jp.co.project.planets.earthly.schema.model.entity.BelongCompanyEntity;
-import jp.co.project.planets.earthly.schema.model.entity.CompanyEntity;
-import jp.co.project.planets.earthly.schema.model.entity.CompanySimpleEntity;
-import jp.co.project.planets.earthly.schema.model.entity.CountryEntity;
-import jp.co.project.planets.earthly.schema.model.entity.LanguageEntity;
-import jp.co.project.planets.earthly.schema.model.entity.RegionEntity;
-import jp.co.project.planets.earthly.schema.model.entity.UserEntity;
 
 /**
  * user repository
@@ -36,7 +29,7 @@ public class UserRepository {
     private final CompanyDao companyDao;
     private final RoleDao roleDao;
 
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
     /**
      * new instance user repository
@@ -47,14 +40,15 @@ public class UserRepository {
      *            company dao
      * @param roleDao
      *            role dao
-     * @param entityql
+     * @param queryDsl
+     *            query dsl
      */
     public UserRepository(final UserDao userDao, final CompanyDao companyDao, final RoleDao roleDao,
-            final Entityql entityql) {
+        final QueryDsl queryDsl) {
         this.userDao = userDao;
         this.companyDao = companyDao;
         this.roleDao = roleDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -68,6 +62,11 @@ public class UserRepository {
         return Optional.ofNullable(userDao.selectById(id));
     }
 
+    public List<User> findByPrimaryKeysAccessibly(final List<String> ids, final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        return userDao.selectByPrimaryKeysAccessibly(ids, hasViewAllCompany, account.id());
+    }
+
     /**
      * find by login id
      *
@@ -75,7 +74,7 @@ public class UserRepository {
      *            login id
      * @return user
      */
-    public Optional<User> findByLoginId(final String loginId) {
+    public Optional<jp.co.project.planets.earthly.schema.model.entity.User> findByLoginId(final String loginId) {
         return userDao.selectByLoginId(loginId);
     }
 
@@ -84,54 +83,22 @@ public class UserRepository {
      *
      * @param id
      *            ユーザーID
-     * @param permissionEnumList
-     *            実行ユーザーのパーミッションリスト
-     * @param executionUserId
+     * @param account
      *            実行ユーザー
      * @return UserEntity
      */
-    public Optional<UserEntity> findAccessibleByPrimaryKey(final String id,
-            final List<PermissionEnum> permissionEnumList, final String executionUserId) {
-        final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
-        final var userOptional = userDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, executionUserId);
-        if (userOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        final var user = userOptional.get();
-        final var companyEntityOptional = companyDao.selectByPrimaryKey(user.getCompanyId());
-        if (companyEntityOptional.isEmpty()) {
-            return Optional.empty();
-        }
-        final boolean hasViewAllRole = permissionEnumList.contains(PermissionEnum.VIEW_ALL_ROLE);
-        final var roleList = roleDao.selectGrantedRoleByUserId(id, hasViewAllRole, executionUserId);
-        final var managementCompanyList = companyDao.selectManagementCompanyByUserId(id);
-        return Optional.of(generateUserEntity(user, companyEntityOptional.get(), roleList, managementCompanyList));
-    }
-
-    private UserEntity generateUserEntity(final User user, final CompanyEntity companyEntity,
-            final List<Role> roleList, final List<Company> managementCompanyList) {
-        final var regionEntity = new RegionEntity(companyEntity.regionId(), companyEntity.regionName());
-        final var languageEntity = new LanguageEntity(companyEntity.languageId(), companyEntity.languageName());
-        final var countryEntity = new CountryEntity(companyEntity.countryId(), companyEntity.countryName(),
-                languageEntity, regionEntity);
-        final var belongCompanyEntity = new BelongCompanyEntity(companyEntity.id(), companyEntity.name(),
-                countryEntity);
-        final var companySimpleEntityList = managementCompanyList.stream()
-                .map(it -> new CompanySimpleEntity(it.getId(), it.getName())).toList();
-
-        return new UserEntity(user.getId(), user.getLoginId(), user.getName(), user.getGender(), user.getMail(),
-                user.getPassword(), user.getLanguage(), user.getTimezone(), user.getLockout(),
-                user.getTwoFactorAuthentication(), user.getSecret(), belongCompanyEntity, roleList,
-                companySimpleEntityList, user.getCreatedAt(), null, user.getUpdatedAt(), null, user.getIsDeleted());
+    public Optional<jp.co.project.planets.earthly.schema.model.entity.User> findAccessibleByPrimaryKey(final String id,
+        final Account account) {
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        return userDao.selectAccessibleByPrimaryKey(id, hasViewAllCompany, account.id());
     }
 
     public UserSearchResultDto findByLoginIdAndNameAndCompany(final String loginId, final String name,
-            final String company, final Pageable pageable, final List<PermissionEnum> permissionEnumList,
-            final String executionUserId) {
+        final String company, final Pageable pageable, final Account account) {
         final var selectOptions = Pageables.toSelectOptions(pageable).count();
-        final boolean hasViewAllCompany = permissionEnumList.contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
         final var userList = userDao.selectByLoginIdAndNameAndCompany(loginId, name, company, hasViewAllCompany,
-                executionUserId, selectOptions);
+                account.id(), selectOptions);
         return new UserSearchResultDto(userList, pageable.getOffset(), selectOptions.getCount());
     }
 
@@ -144,11 +111,66 @@ public class UserRepository {
      */
     public Optional<User> findByMail(final String loginId, final String mail) {
         final var user = new User_();
-        return entityql.from(user).where(w -> {
+        return queryDsl.from(user).where(w -> {
             w.eq(user.loginId, loginId);
             w.eq(user.mail, mail);
             w.eq(user.isDeleted, false);
         }).fetchOptional();
+    }
+
+    /**
+     * 会社管理者のユーザーを取得
+     *
+     * @param loginId
+     *            ログインID
+     * @param name
+     *            ユーザー名
+     * @param companyId
+     *            会社ID
+     * @param companyName
+     *            会社名
+     * @param pageable
+     *            ページャー
+     * @param account
+     *            実行ユーザーID
+     * @return 会社管理者
+     */
+    public UserPageResultDto findCompanyManagerByLikeLoginIdAndNameAndCompanyName(final String loginId,
+        final String name, final String companyId, final String companyName, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
+        final var userList = userDao.selectCompanyManagerByName(loginId, name, companyId, companyName,
+                hasViewAllUser, account.id(), selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotCompanyManagerByNameAndCompanyName(final String loginId,
+        final String name, final String companyName, final String companyId, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
+        final var userList = userDao.selectNotCompanyManagerByNameAndCompanyName(loginId, name, companyName, companyId,
+                hasViewAllUser, account.id(), selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findBelongOrganizationByLikeLoginIdAndName(final String loginId, final String name,
+        final String companyId, final String organizationId, final Pageable pageable, final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
+        final var userList = userDao.selectBelongOrganizationByLikeLoginIdAndName(loginId, name, companyId,
+                organizationId, hasViewAllUser, account.id(), selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotBelongOrganizationByLikeLoginIdAndName(final String loginId, final String name,
+        final String companyId, final String organizationId, final Pageable pageable, final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllUser = account.permissions().contains(PermissionEnum.VIEW_ALL_USER);
+        final var userList = userDao.selectNotBelongOrganizationByLikeLoginIdAndName(loginId, name, companyId,
+                organizationId, hasViewAllUser, account.id(), selectOptions);
+        return new UserPageResultDto(userList, pageable.getOffset(), selectOptions.getCount());
     }
 
     /**
@@ -188,5 +210,25 @@ public class UserRepository {
         user.setUpdatedAt(LocalDateTime.now());
         user.setIsDeleted(true);
         return userDao.update(user);
+    }
+
+    public UserPageResultDto findGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(
+        final String roleId, final String loginId, final String name, final String companyName, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var users = userDao.selectAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(roleId, loginId, name,
+                companyName, hasViewAllCompany, account.id(), selectOptions);
+        return new UserPageResultDto(users, pageable.getOffset(), selectOptions.getCount());
+    }
+
+    public UserPageResultDto findNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(final String roleId,
+        final String loginId, final String name, final String companyName, final Pageable pageable,
+        final Account account) {
+        final var selectOptions = Pageables.toSelectOptions(pageable).count();
+        final boolean hasViewAllCompany = account.permissions().contains(PermissionEnum.VIEW_ALL_COMPANY);
+        final var users = userDao.selectNotGrantedRoleAccessibleByRoleIdAndAnyLoginIdAndNameAndCompanyName(roleId,
+                loginId, name, companyName, hasViewAllCompany, account.id(), selectOptions);
+        return new UserPageResultDto(users, pageable.getOffset(), selectOptions.getCount());
     }
 }

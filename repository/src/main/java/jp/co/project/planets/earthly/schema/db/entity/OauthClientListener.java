@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,27 +8,32 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class OauthClientListener implements EntityListener<OauthClient> {
 
     @Override
-    public void preInsert(OauthClient entity, PreInsertContext<OauthClient> context) {
+    public void preInsert(final OauthClient entity, final PreInsertContext<OauthClient> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(OauthClient entity, PreUpdateContext<OauthClient> context) {
+    public void preUpdate(final OauthClient entity, final PreUpdateContext<OauthClient> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(OauthClient entity, PreDeleteContext<OauthClient> context) {
+    public void preDelete(final OauthClient entity, final PreDeleteContext<OauthClient> context) {
     }
 
     @Override
-    public void postInsert(OauthClient entity, PostInsertContext<OauthClient> context) {
+    public void postInsert(final OauthClient entity, final PostInsertContext<OauthClient> context) {
     }
 
     @Override
-    public void postUpdate(OauthClient entity, PostUpdateContext<OauthClient> context) {
+    public void postUpdate(final OauthClient entity, final PostUpdateContext<OauthClient> context) {
     }
 
     @Override
-    public void postDelete(OauthClient entity, PostDeleteContext<OauthClient> context) {
+    public void postDelete(final OauthClient entity, final PostDeleteContext<OauthClient> context) {
     }
 }

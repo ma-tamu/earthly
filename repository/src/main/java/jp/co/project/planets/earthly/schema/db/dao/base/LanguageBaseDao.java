@@ -1,13 +1,12 @@
 package jp.co.project.planets.earthly.schema.db.dao.base;
 
+import jp.co.project.planets.earthly.schema.db.entity.Language;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Delete;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
 import org.seasar.doma.Update;
 import org.seasar.doma.boot.ConfigAutowireable;
-
-import jp.co.project.planets.earthly.schema.db.entity.Language;
 
 /**
  */
@@ -26,14 +25,14 @@ public interface LanguageBaseDao {
      * @param entity
      * @return affected rows
      */
-    @Insert
+    @Insert(excludeNull = true)
     int insert(Language entity);
 
     /**
      * @param entity
      * @return affected rows
      */
-    @Update
+    @Update(excludeNull = true)
     int update(Language entity);
 
     /**

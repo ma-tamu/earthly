@@ -3,10 +3,12 @@ package jp.co.project.planets.earthly.webapp.controller.form.client;
 import java.io.Serializable;
 
 /**
- * OAuthクライアントリダイレクト検索FORM
+ * OAuthクライアントリダイレクトURI検索FORM
  * 
- * @param redirectUrl
- *            検索するリダイレクトURL
+ * @param redirectUri
+ *            検索するリダイレクトURI
+ * @param isRemoveMode
+ *            削除モード有無
  */
-public record OAuthClientRedirectUrlSearchForm(String redirectUrl) implements Serializable {
+public record OAuthClientRedirectUrlSearchForm(String redirectUri, Boolean isRemoveMode) implements Serializable {
 }

@@ -1,22 +1,22 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * ロール
- */
+    * ロール
+*/
 @Entity(listener = RoleListener.class, metamodel = @Metamodel)
 @Table(name = "role")
 public class Role extends AbstractRole implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -26,6 +26,14 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /** ロール名 */
     @Column(name = "name")
     String name;
+
+    /** 概要 */
+    @Column(name = "description")
+    String description;
+
+    /** 不要可能 */
+    @Column(name = "grantable")
+    Boolean grantable;
 
     /** 作成日 */
     @Column(name = "created_at")
@@ -47,30 +55,41 @@ public class Role extends AbstractRole implements java.io.Serializable {
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public Role() {
-    }
-
+public Role() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param name ロール名
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param name
+     *         ロール名
+     * @param description
+     *         概要
+     * @param grantable
+     *         不要可能
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public Role(final String id, final String name, final LocalDateTime createdAt, final String createdBy,
-            final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+    public Role(final String id,final String name,final String description,final Boolean grantable,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.grantable = grantable;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
         this.isDeleted = isDeleted;
     }
+
 
     /**
      * Returns the id.
@@ -84,10 +103,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -103,11 +121,46 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the name.
      *
-     * @param name
-     *            the name
+     * @param name the name
      */
-    public void setName(final String name) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description the description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Returns the grantable.
+     *
+     * @return the grantable
+     */
+    public Boolean getGrantable() {
+        return grantable;
+    }
+
+    /**
+     * Sets the grantable.
+     *
+     * @param grantable the grantable
+     */
+    public void setGrantable(Boolean grantable) {
+        this.grantable = grantable;
     }
 
     /**
@@ -122,10 +175,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -141,10 +193,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -160,10 +211,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -179,10 +229,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -198,10 +247,9 @@ public class Role extends AbstractRole implements java.io.Serializable {
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

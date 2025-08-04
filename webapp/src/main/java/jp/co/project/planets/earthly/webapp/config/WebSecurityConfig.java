@@ -4,26 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.AuthorizationManager;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
-import jp.co.project.planets.earthly.webapp.security.mfa.MfaAuthentication;
-import jp.co.project.planets.earthly.webapp.security.mfa.MfaAuthenticationHandler;
-import jp.co.project.planets.earthly.webapp.security.mfa.MfaFailureHandler;
-import jp.co.project.planets.earthly.webapp.security.mfa.MfaSuccessHandler;
-import jp.co.project.planets.earthly.webapp.security.mfa.MfaTrustResolver;
-import jp.co.project.planets.earthly.webapp.security.service.DaoUserDetailService;
+import jp.co.project.planets.earthly.webapp.security.mfa.MultiFactorAuthenticationSuccessHandler;
+import jp.co.project.planets.earthly.webapp.security.mfa.MultiFactorAuthorizationManager;
+import jp.co.project.planets.earthly.webapp.security.notice.EmphasisNoticeAuthorizationManager;
 
 /**
  * web security config
@@ -32,15 +26,10 @@ import jp.co.project.planets.earthly.webapp.security.service.DaoUserDetailServic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final DaoUserDetailService userDetailService;
     private final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(final DaoUserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
-    }
-
     /**
-     * build security filter chain
+     * build a security filter chain
      *
      * @param httpSecurity
      *            http security
@@ -50,35 +39,19 @@ public class WebSecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityException(final HttpSecurity httpSecurity,
-            final AuthorizationManager<RequestAuthorizationContext> mfaAuthorizationManager) throws Exception {
-        final var mfaAuthenticationHandler = new MfaAuthenticationHandler();
-        httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
-        httpSecurity
+        final AuthenticationSuccessHandler primarySuccessHandler) throws Exception {
+        return httpSecurity.httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/login", "/forgets/**", "/css/**", "/js/**", "/img/**", "/static/**",
                                         "/vendor/**", "/quickTEST", "/error")
-                                .permitAll().requestMatchers("/mfa").access(mfaAuthorizationManager).anyRequest()
-                                .authenticated())
+                                .permitAll().requestMatchers("/mfa").access(new MultiFactorAuthorizationManager())
+                                .requestMatchers("/notices/emphasis").access(new EmphasisNoticeAuthorizationManager())
+                                .anyRequest().authenticated())
                 .formLogin(formLoginConfigurer -> formLoginConfigurer.loginPage("/login").usernameParameter("loginId")
-                        .passwordParameter("password").successHandler(mfaAuthenticationHandler)
-                        .failureHandler(mfaAuthenticationHandler))
-                .exceptionHandling(exception -> exception
-                        .withObjectPostProcessor(new ObjectPostProcessor<ExceptionTranslationFilter>() {
-                            @Override
-                            public <O extends ExceptionTranslationFilter> O postProcess(final O filter) {
-                                filter.setAuthenticationTrustResolver(new MfaTrustResolver());
-                                return filter;
-                            }
-                        }))
-                .securityContext(context -> context.requireExplicitSave(false));
-        return httpSecurity.build();
-    }
-
-    @Bean
-    public AuthorizationManager<RequestAuthorizationContext> mfaAuthorizationManager() {
-        return (authentication,
-                context) -> new AuthorizationDecision(authentication.get() instanceof MfaAuthentication);
+                        .passwordParameter("password").successHandler(primarySuccessHandler)
+                        .successHandler(new MultiFactorAuthenticationSuccessHandler("/mfa", primarySuccessHandler)))
+                .securityContext(context -> context.requireExplicitSave(false)).build();
     }
 
     @Bean
@@ -87,12 +60,12 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new MfaSuccessHandler();
+    public AuthenticationSuccessHandler primarySuccessHandler() {
+        return new SavedRequestAwareAuthenticationSuccessHandler();
     }
 
     @Bean
     public AuthenticationFailureHandler failureHandler() {
-        return new MfaFailureHandler();
+        return new SimpleUrlAuthenticationFailureHandler("/login?error");
     }
 }

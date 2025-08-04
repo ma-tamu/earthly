@@ -16,10 +16,14 @@ public class PasswordTokenListener implements EntityListener<PasswordToken> {
     @Override
     public void preInsert(PasswordToken entity, PreInsertContext<PasswordToken> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(PasswordToken entity, PreUpdateContext<PasswordToken> context) {
+        
+        
     }
 
     @Override

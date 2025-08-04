@@ -1,8 +1,8 @@
-select
-/*%expand*/*
-from
+SELECT
+  /*%expand*/*
+FROM
 logout_redirect_url
-where
+WHERE
     id = /* id */'a'
     
       AND is_deleted = 0

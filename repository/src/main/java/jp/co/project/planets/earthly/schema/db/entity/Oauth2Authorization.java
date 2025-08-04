@@ -1,12 +1,11 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDateTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDateTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
     * 
@@ -15,8 +14,9 @@ import org.seasar.doma.Table;
 @Table(name = "oauth2_authorization")
 public class Oauth2Authorization extends AbstractOauth2Authorization implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /**  */
     @Id
@@ -115,47 +115,60 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     @Column(name = "refresh_token_metadata")
     String refreshTokenMetadata;
 
-    public Oauth2Authorization() {
-    }
-
+public Oauth2Authorization() {
+}
     /**
      * new instance
-     * 
-     * @Param id
-     * @Param registeredClientId
-     * @Param principalName
-     * @Param authorizationGrantType
-     * @Param attributes
-     * @Param state
-     * @Param authorizationCodeValue
-     * @Param authorizationCodeIssuedAt
-     * @Param authorizationCodeExpiresAt
-     * @Param authorizationCodeMetadata
-     * @Param accessTokenValue
-     * @Param accessTokenIssuedAt
-     * @Param accessTokenExpiresAt
-     * @Param accessTokenMetadata
-     * @Param accessTokenType
-     * @Param accessTokenScopes
-     * @Param oidcIdTokenValue
-     * @Param oidcIdTokenIssuedAt
-     * @Param oidcIdTokenExpiresAt
-     * @Param oidcIdTokenMetadata
-     * @Param refreshTokenValue
-     * @Param refreshTokenIssuedAt
-     * @Param refreshTokenExpiresAt
-     * @Param refreshTokenMetadata
+     * @param id
+     *         
+     * @param registeredClientId
+     *         
+     * @param principalName
+     *         
+     * @param authorizationGrantType
+     *         
+     * @param attributes
+     *         
+     * @param state
+     *         
+     * @param authorizationCodeValue
+     *         
+     * @param authorizationCodeIssuedAt
+     *         
+     * @param authorizationCodeExpiresAt
+     *         
+     * @param authorizationCodeMetadata
+     *         
+     * @param accessTokenValue
+     *         
+     * @param accessTokenIssuedAt
+     *         
+     * @param accessTokenExpiresAt
+     *         
+     * @param accessTokenMetadata
+     *         
+     * @param accessTokenType
+     *         
+     * @param accessTokenScopes
+     *         
+     * @param oidcIdTokenValue
+     *         
+     * @param oidcIdTokenIssuedAt
+     *         
+     * @param oidcIdTokenExpiresAt
+     *         
+     * @param oidcIdTokenMetadata
+     *         
+     * @param refreshTokenValue
+     *         
+     * @param refreshTokenIssuedAt
+     *         
+     * @param refreshTokenExpiresAt
+     *         
+     * @param refreshTokenMetadata
+     *         
      */
-    public Oauth2Authorization(final String id, final String registeredClientId, final String principalName,
-            final String authorizationGrantType, final String attributes, final String state,
-            final String authorizationCodeValue, final LocalDateTime authorizationCodeIssuedAt,
-            final LocalDateTime authorizationCodeExpiresAt, final String authorizationCodeMetadata,
-            final String accessTokenValue, final LocalDateTime accessTokenIssuedAt,
-            final LocalDateTime accessTokenExpiresAt, final String accessTokenMetadata, final String accessTokenType,
-            final String accessTokenScopes, final String oidcIdTokenValue, final LocalDateTime oidcIdTokenIssuedAt,
-            final LocalDateTime oidcIdTokenExpiresAt, final String oidcIdTokenMetadata, final String refreshTokenValue,
-            final LocalDateTime refreshTokenIssuedAt, final LocalDateTime refreshTokenExpiresAt,
-            final String refreshTokenMetadata) {
+    public Oauth2Authorization(final String id,final String registeredClientId,final String principalName,final String authorizationGrantType,final String attributes,final String state,final String authorizationCodeValue,final LocalDateTime authorizationCodeIssuedAt,final LocalDateTime authorizationCodeExpiresAt,final String authorizationCodeMetadata,final String accessTokenValue,final LocalDateTime accessTokenIssuedAt,final LocalDateTime accessTokenExpiresAt,final String accessTokenMetadata,final String accessTokenType,final String accessTokenScopes,final String oidcIdTokenValue,final LocalDateTime oidcIdTokenIssuedAt,final LocalDateTime oidcIdTokenExpiresAt,final String oidcIdTokenMetadata,final String refreshTokenValue,final LocalDateTime refreshTokenIssuedAt,final LocalDateTime refreshTokenExpiresAt,final String refreshTokenMetadata) {
         this.id = id;
         this.registeredClientId = registeredClientId;
         this.principalName = principalName;
@@ -182,6 +195,7 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
         this.refreshTokenMetadata = refreshTokenMetadata;
     }
 
+
     /**
      * Returns the id.
      *
@@ -194,10 +208,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -213,10 +226,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the registeredClientId.
      *
-     * @param registeredClientId
-     *            the registeredClientId
+     * @param registeredClientId the registeredClientId
      */
-    public void setRegisteredClientId(final String registeredClientId) {
+    public void setRegisteredClientId(String registeredClientId) {
         this.registeredClientId = registeredClientId;
     }
 
@@ -232,10 +244,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the principalName.
      *
-     * @param principalName
-     *            the principalName
+     * @param principalName the principalName
      */
-    public void setPrincipalName(final String principalName) {
+    public void setPrincipalName(String principalName) {
         this.principalName = principalName;
     }
 
@@ -251,10 +262,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the authorizationGrantType.
      *
-     * @param authorizationGrantType
-     *            the authorizationGrantType
+     * @param authorizationGrantType the authorizationGrantType
      */
-    public void setAuthorizationGrantType(final String authorizationGrantType) {
+    public void setAuthorizationGrantType(String authorizationGrantType) {
         this.authorizationGrantType = authorizationGrantType;
     }
 
@@ -270,10 +280,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the attributes.
      *
-     * @param attributes
-     *            the attributes
+     * @param attributes the attributes
      */
-    public void setAttributes(final String attributes) {
+    public void setAttributes(String attributes) {
         this.attributes = attributes;
     }
 
@@ -289,10 +298,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the state.
      *
-     * @param state
-     *            the state
+     * @param state the state
      */
-    public void setState(final String state) {
+    public void setState(String state) {
         this.state = state;
     }
 
@@ -308,10 +316,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the authorizationCodeValue.
      *
-     * @param authorizationCodeValue
-     *            the authorizationCodeValue
+     * @param authorizationCodeValue the authorizationCodeValue
      */
-    public void setAuthorizationCodeValue(final String authorizationCodeValue) {
+    public void setAuthorizationCodeValue(String authorizationCodeValue) {
         this.authorizationCodeValue = authorizationCodeValue;
     }
 
@@ -327,10 +334,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the authorizationCodeIssuedAt.
      *
-     * @param authorizationCodeIssuedAt
-     *            the authorizationCodeIssuedAt
+     * @param authorizationCodeIssuedAt the authorizationCodeIssuedAt
      */
-    public void setAuthorizationCodeIssuedAt(final LocalDateTime authorizationCodeIssuedAt) {
+    public void setAuthorizationCodeIssuedAt(LocalDateTime authorizationCodeIssuedAt) {
         this.authorizationCodeIssuedAt = authorizationCodeIssuedAt;
     }
 
@@ -346,10 +352,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the authorizationCodeExpiresAt.
      *
-     * @param authorizationCodeExpiresAt
-     *            the authorizationCodeExpiresAt
+     * @param authorizationCodeExpiresAt the authorizationCodeExpiresAt
      */
-    public void setAuthorizationCodeExpiresAt(final LocalDateTime authorizationCodeExpiresAt) {
+    public void setAuthorizationCodeExpiresAt(LocalDateTime authorizationCodeExpiresAt) {
         this.authorizationCodeExpiresAt = authorizationCodeExpiresAt;
     }
 
@@ -365,10 +370,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the authorizationCodeMetadata.
      *
-     * @param authorizationCodeMetadata
-     *            the authorizationCodeMetadata
+     * @param authorizationCodeMetadata the authorizationCodeMetadata
      */
-    public void setAuthorizationCodeMetadata(final String authorizationCodeMetadata) {
+    public void setAuthorizationCodeMetadata(String authorizationCodeMetadata) {
         this.authorizationCodeMetadata = authorizationCodeMetadata;
     }
 
@@ -384,10 +388,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenValue.
      *
-     * @param accessTokenValue
-     *            the accessTokenValue
+     * @param accessTokenValue the accessTokenValue
      */
-    public void setAccessTokenValue(final String accessTokenValue) {
+    public void setAccessTokenValue(String accessTokenValue) {
         this.accessTokenValue = accessTokenValue;
     }
 
@@ -403,10 +406,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenIssuedAt.
      *
-     * @param accessTokenIssuedAt
-     *            the accessTokenIssuedAt
+     * @param accessTokenIssuedAt the accessTokenIssuedAt
      */
-    public void setAccessTokenIssuedAt(final LocalDateTime accessTokenIssuedAt) {
+    public void setAccessTokenIssuedAt(LocalDateTime accessTokenIssuedAt) {
         this.accessTokenIssuedAt = accessTokenIssuedAt;
     }
 
@@ -422,10 +424,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenExpiresAt.
      *
-     * @param accessTokenExpiresAt
-     *            the accessTokenExpiresAt
+     * @param accessTokenExpiresAt the accessTokenExpiresAt
      */
-    public void setAccessTokenExpiresAt(final LocalDateTime accessTokenExpiresAt) {
+    public void setAccessTokenExpiresAt(LocalDateTime accessTokenExpiresAt) {
         this.accessTokenExpiresAt = accessTokenExpiresAt;
     }
 
@@ -441,10 +442,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenMetadata.
      *
-     * @param accessTokenMetadata
-     *            the accessTokenMetadata
+     * @param accessTokenMetadata the accessTokenMetadata
      */
-    public void setAccessTokenMetadata(final String accessTokenMetadata) {
+    public void setAccessTokenMetadata(String accessTokenMetadata) {
         this.accessTokenMetadata = accessTokenMetadata;
     }
 
@@ -460,10 +460,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenType.
      *
-     * @param accessTokenType
-     *            the accessTokenType
+     * @param accessTokenType the accessTokenType
      */
-    public void setAccessTokenType(final String accessTokenType) {
+    public void setAccessTokenType(String accessTokenType) {
         this.accessTokenType = accessTokenType;
     }
 
@@ -479,10 +478,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the accessTokenScopes.
      *
-     * @param accessTokenScopes
-     *            the accessTokenScopes
+     * @param accessTokenScopes the accessTokenScopes
      */
-    public void setAccessTokenScopes(final String accessTokenScopes) {
+    public void setAccessTokenScopes(String accessTokenScopes) {
         this.accessTokenScopes = accessTokenScopes;
     }
 
@@ -498,10 +496,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the oidcIdTokenValue.
      *
-     * @param oidcIdTokenValue
-     *            the oidcIdTokenValue
+     * @param oidcIdTokenValue the oidcIdTokenValue
      */
-    public void setOidcIdTokenValue(final String oidcIdTokenValue) {
+    public void setOidcIdTokenValue(String oidcIdTokenValue) {
         this.oidcIdTokenValue = oidcIdTokenValue;
     }
 
@@ -517,10 +514,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the oidcIdTokenIssuedAt.
      *
-     * @param oidcIdTokenIssuedAt
-     *            the oidcIdTokenIssuedAt
+     * @param oidcIdTokenIssuedAt the oidcIdTokenIssuedAt
      */
-    public void setOidcIdTokenIssuedAt(final LocalDateTime oidcIdTokenIssuedAt) {
+    public void setOidcIdTokenIssuedAt(LocalDateTime oidcIdTokenIssuedAt) {
         this.oidcIdTokenIssuedAt = oidcIdTokenIssuedAt;
     }
 
@@ -536,10 +532,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the oidcIdTokenExpiresAt.
      *
-     * @param oidcIdTokenExpiresAt
-     *            the oidcIdTokenExpiresAt
+     * @param oidcIdTokenExpiresAt the oidcIdTokenExpiresAt
      */
-    public void setOidcIdTokenExpiresAt(final LocalDateTime oidcIdTokenExpiresAt) {
+    public void setOidcIdTokenExpiresAt(LocalDateTime oidcIdTokenExpiresAt) {
         this.oidcIdTokenExpiresAt = oidcIdTokenExpiresAt;
     }
 
@@ -555,10 +550,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the oidcIdTokenMetadata.
      *
-     * @param oidcIdTokenMetadata
-     *            the oidcIdTokenMetadata
+     * @param oidcIdTokenMetadata the oidcIdTokenMetadata
      */
-    public void setOidcIdTokenMetadata(final String oidcIdTokenMetadata) {
+    public void setOidcIdTokenMetadata(String oidcIdTokenMetadata) {
         this.oidcIdTokenMetadata = oidcIdTokenMetadata;
     }
 
@@ -574,10 +568,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the refreshTokenValue.
      *
-     * @param refreshTokenValue
-     *            the refreshTokenValue
+     * @param refreshTokenValue the refreshTokenValue
      */
-    public void setRefreshTokenValue(final String refreshTokenValue) {
+    public void setRefreshTokenValue(String refreshTokenValue) {
         this.refreshTokenValue = refreshTokenValue;
     }
 
@@ -593,10 +586,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the refreshTokenIssuedAt.
      *
-     * @param refreshTokenIssuedAt
-     *            the refreshTokenIssuedAt
+     * @param refreshTokenIssuedAt the refreshTokenIssuedAt
      */
-    public void setRefreshTokenIssuedAt(final LocalDateTime refreshTokenIssuedAt) {
+    public void setRefreshTokenIssuedAt(LocalDateTime refreshTokenIssuedAt) {
         this.refreshTokenIssuedAt = refreshTokenIssuedAt;
     }
 
@@ -612,10 +604,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the refreshTokenExpiresAt.
      *
-     * @param refreshTokenExpiresAt
-     *            the refreshTokenExpiresAt
+     * @param refreshTokenExpiresAt the refreshTokenExpiresAt
      */
-    public void setRefreshTokenExpiresAt(final LocalDateTime refreshTokenExpiresAt) {
+    public void setRefreshTokenExpiresAt(LocalDateTime refreshTokenExpiresAt) {
         this.refreshTokenExpiresAt = refreshTokenExpiresAt;
     }
 
@@ -631,10 +622,9 @@ public class Oauth2Authorization extends AbstractOauth2Authorization implements 
     /**
      * Sets the refreshTokenMetadata.
      *
-     * @param refreshTokenMetadata
-     *            the refreshTokenMetadata
+     * @param refreshTokenMetadata the refreshTokenMetadata
      */
-    public void setRefreshTokenMetadata(final String refreshTokenMetadata) {
+    public void setRefreshTokenMetadata(String refreshTokenMetadata) {
         this.refreshTokenMetadata = refreshTokenMetadata;
     }
 }

@@ -2,7 +2,7 @@ package jp.co.project.planets.earthly.schema.repository;
 
 import java.util.Optional;
 
-import org.seasar.doma.jdbc.criteria.Entityql;
+import org.seasar.doma.jdbc.criteria.QueryDsl;
 import org.springframework.stereotype.Repository;
 
 import jp.co.project.planets.earthly.schema.db.dao.OAuthClientConsentDao;
@@ -16,19 +16,19 @@ import jp.co.project.planets.earthly.schema.db.entity.OauthClientConsent_;
 public class OAuthClientConsentRepository {
 
     private final OAuthClientConsentDao oauthClientConsentDao;
-    private final Entityql entityql;
+    private final QueryDsl queryDsl;
 
     /**
      * new instance oauth client consent repository
      *
      * @param oauthClientConsentDao
      *            oauth client consent dao
-     * @param entityql
+     * @param queryDsl
      *            entity sql
      */
-    public OAuthClientConsentRepository(final OAuthClientConsentDao oauthClientConsentDao, final Entityql entityql) {
+    public OAuthClientConsentRepository(final OAuthClientConsentDao oauthClientConsentDao, final QueryDsl queryDsl) {
         this.oauthClientConsentDao = oauthClientConsentDao;
-        this.entityql = entityql;
+        this.queryDsl = queryDsl;
     }
 
     /**
@@ -41,9 +41,9 @@ public class OAuthClientConsentRepository {
      * @return OauthClientConsent
      */
     public Optional<OauthClientConsent> selectConsentClientIdByUserId(final String registeredClientId,
-            final String principalName) {
+        final String principalName) {
         final var oauthClientConsent = new OauthClientConsent_();
-        return entityql.from(oauthClientConsent).where(w -> {
+        return queryDsl.from(oauthClientConsent).where(w -> {
             w.eq(oauthClientConsent.registeredClientId, registeredClientId);
             w.eq(oauthClientConsent.principalName, principalName);
         }).fetchOptional();

@@ -16,10 +16,14 @@ public class SubOfficeListener implements EntityListener<SubOffice> {
     @Override
     public void preInsert(SubOffice entity, PreInsertContext<SubOffice> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        
+        
     }
 
     @Override
     public void preUpdate(SubOffice entity, PreUpdateContext<SubOffice> context) {
+        
+        
     }
 
     @Override

@@ -45,4 +45,21 @@ public interface LogoutRedirectUrlDao extends LogoutRedirectUrlBaseDao {
     @Select
     List<LogoutRedirectUrl> selectByClientLogoutRedirectUrl(String clientId, String logoutRedirectUrl,
         boolean hasViewAllOAuthClient, String operatorUserId, SelectOptions options);
+
+    /**
+     * 対象OAuthクライアントに紐づくログアウトリダイレクトURIを取得
+     * 
+     * @param clientId
+     *            OAuthクライアントID
+     * @param redirectUriIdList
+     *            ログアウトリダイレクトURL IDリスト
+     * @param hasViewAllOAuthClient
+     *            view_all_clientを保持しているか
+     * @param operatorUserId
+     *            操作ユーザー
+     * @return OAuthクライアントログアウトURIリスト
+     */
+    @Select
+    List<LogoutRedirectUrl> selectByClientIdAndRedirectUris(String clientId, List<String> redirectUriIdList,
+        boolean hasViewAllOAuthClient, String operatorUserId);
 }

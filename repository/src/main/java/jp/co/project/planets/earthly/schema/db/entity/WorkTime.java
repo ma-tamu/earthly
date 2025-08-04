@@ -1,24 +1,24 @@
-package jp.co.project.planets.earthly.schema.db.entity;
+    package jp.co.project.planets.earthly.schema.db.entity;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import org.seasar.doma.Column;
-import org.seasar.doma.Entity;
-import org.seasar.doma.Id;
-import org.seasar.doma.Metamodel;
-import org.seasar.doma.Table;
+    import java.time.LocalDate;
+    import java.time.LocalDateTime;
+    import java.time.LocalTime;
+    import org.seasar.doma.Column;
+    import org.seasar.doma.Entity;
+    import org.seasar.doma.Id;
+    import org.seasar.doma.Metamodel;
+    import org.seasar.doma.Table;
 
 /**
- * 作業時間
- */
+    * 作業時間
+*/
 @Entity(listener = WorkTimeListener.class, metamodel = @Metamodel)
 @Table(name = "work_time")
 public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
 
-    @java.io.Serial
-    private static final long serialVersionUID = 1L;
+@java.io.Serial
+private static final long serialVersionUID = 1L;
+
 
     /** id */
     @Id
@@ -69,29 +69,36 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     @Column(name = "is_deleted")
     Boolean isDeleted;
 
-    public WorkTime() {
-    }
-
+public WorkTime() {
+}
     /**
      * new instance
-     * 
-     * @Param id id
-     * @Param workDate 年月日
-     * @Param startTime 始業時間
-     * @Param endTime 終業時間
-     * @Param officialWorkingTime 所定内通常勤務
-     * @Param officialMidnightWorkingTime 所定内深夜勤務
-     * @Param officialBreakTime 所定内休憩勤務
-     * @Param createdAt 作成日
-     * @Param createdBy 作成者
-     * @Param updatedAt 更新日
-     * @Param updatedBy 更新者
-     * @Param isDeleted 削除フラグ
+     * @param id
+     *         id
+     * @param workDate
+     *         年月日
+     * @param startTime
+     *         始業時間
+     * @param endTime
+     *         終業時間
+     * @param officialWorkingTime
+     *         所定内通常勤務
+     * @param officialMidnightWorkingTime
+     *         所定内深夜勤務
+     * @param officialBreakTime
+     *         所定内休憩勤務
+     * @param createdAt
+     *         作成日
+     * @param createdBy
+     *         作成者
+     * @param updatedAt
+     *         更新日
+     * @param updatedBy
+     *         更新者
+     * @param isDeleted
+     *         削除フラグ
      */
-    public WorkTime(final String id, final LocalDate workDate, final LocalTime startTime, final LocalTime endTime,
-            final LocalTime officialWorkingTime, final LocalTime officialMidnightWorkingTime,
-            final LocalTime officialBreakTime, final LocalDateTime createdAt, final String createdBy,
-            final LocalDateTime updatedAt, final String updatedBy, final Boolean isDeleted) {
+    public WorkTime(final String id,final LocalDate workDate,final LocalTime startTime,final LocalTime endTime,final LocalTime officialWorkingTime,final LocalTime officialMidnightWorkingTime,final LocalTime officialBreakTime,final LocalDateTime createdAt,final String createdBy,final LocalDateTime updatedAt,final String updatedBy,final Boolean isDeleted) {
         this.id = id;
         this.workDate = workDate;
         this.startTime = startTime;
@@ -106,6 +113,7 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
         this.isDeleted = isDeleted;
     }
 
+
     /**
      * Returns the id.
      *
@@ -118,10 +126,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the id.
      *
-     * @param id
-     *            the id
+     * @param id the id
      */
-    public void setId(final String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -137,10 +144,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the workDate.
      *
-     * @param workDate
-     *            the workDate
+     * @param workDate the workDate
      */
-    public void setWorkDate(final LocalDate workDate) {
+    public void setWorkDate(LocalDate workDate) {
         this.workDate = workDate;
     }
 
@@ -156,10 +162,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the startTime.
      *
-     * @param startTime
-     *            the startTime
+     * @param startTime the startTime
      */
-    public void setStartTime(final LocalTime startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
@@ -175,10 +180,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the endTime.
      *
-     * @param endTime
-     *            the endTime
+     * @param endTime the endTime
      */
-    public void setEndTime(final LocalTime endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 
@@ -194,10 +198,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the officialWorkingTime.
      *
-     * @param officialWorkingTime
-     *            the officialWorkingTime
+     * @param officialWorkingTime the officialWorkingTime
      */
-    public void setOfficialWorkingTime(final LocalTime officialWorkingTime) {
+    public void setOfficialWorkingTime(LocalTime officialWorkingTime) {
         this.officialWorkingTime = officialWorkingTime;
     }
 
@@ -213,10 +216,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the officialMidnightWorkingTime.
      *
-     * @param officialMidnightWorkingTime
-     *            the officialMidnightWorkingTime
+     * @param officialMidnightWorkingTime the officialMidnightWorkingTime
      */
-    public void setOfficialMidnightWorkingTime(final LocalTime officialMidnightWorkingTime) {
+    public void setOfficialMidnightWorkingTime(LocalTime officialMidnightWorkingTime) {
         this.officialMidnightWorkingTime = officialMidnightWorkingTime;
     }
 
@@ -232,10 +234,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the officialBreakTime.
      *
-     * @param officialBreakTime
-     *            the officialBreakTime
+     * @param officialBreakTime the officialBreakTime
      */
-    public void setOfficialBreakTime(final LocalTime officialBreakTime) {
+    public void setOfficialBreakTime(LocalTime officialBreakTime) {
         this.officialBreakTime = officialBreakTime;
     }
 
@@ -251,10 +252,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the createdAt.
      *
-     * @param createdAt
-     *            the createdAt
+     * @param createdAt the createdAt
      */
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -270,10 +270,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the createdBy.
      *
-     * @param createdBy
-     *            the createdBy
+     * @param createdBy the createdBy
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -289,10 +288,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the updatedAt.
      *
-     * @param updatedAt
-     *            the updatedAt
+     * @param updatedAt the updatedAt
      */
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -308,10 +306,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the updatedBy.
      *
-     * @param updatedBy
-     *            the updatedBy
+     * @param updatedBy the updatedBy
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -327,10 +324,9 @@ public class WorkTime extends AbstractWorkTime implements java.io.Serializable {
     /**
      * Sets the isDeleted.
      *
-     * @param isDeleted
-     *            the isDeleted
+     * @param isDeleted the isDeleted
      */
-    public void setIsDeleted(final Boolean isDeleted) {
+    public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 }

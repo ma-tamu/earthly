@@ -1,5 +1,5 @@
 function doGet(url, param) {
-    return execute(url, "GET", "application/json", param);
+    return execute(url, "GET", "application/json", null, param);
 }
 
 function doPost(url, body) {
@@ -32,6 +32,9 @@ function execute(url, method, contentType, csrfToken, param) {
     }).then(
         function (data, response, status) {
             deferred.resolve(data, response, status);
+            if (1 < data.indexOf("html")) {
+                window.location.replace(window.location.href);
+            }
         },
         function (data, response, status) {
             deferred.resolve(data, response, status);

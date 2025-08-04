@@ -1,12 +1,6 @@
 package jp.co.project.planets.earthly.schema.db.entity;
 
-import org.seasar.doma.jdbc.entity.EntityListener;
-import org.seasar.doma.jdbc.entity.PostDeleteContext;
-import org.seasar.doma.jdbc.entity.PostInsertContext;
-import org.seasar.doma.jdbc.entity.PostUpdateContext;
-import org.seasar.doma.jdbc.entity.PreDeleteContext;
-import org.seasar.doma.jdbc.entity.PreInsertContext;
-import org.seasar.doma.jdbc.entity.PreUpdateContext;
+import org.seasar.doma.jdbc.entity.*;
 
 /**
  * 
@@ -14,27 +8,35 @@ import org.seasar.doma.jdbc.entity.PreUpdateContext;
 public class OauthClientRedirectUrlListener implements EntityListener<OauthClientRedirectUrl> {
 
     @Override
-    public void preInsert(OauthClientRedirectUrl entity, PreInsertContext<OauthClientRedirectUrl> context) {
+    public void preInsert(final OauthClientRedirectUrl entity, final PreInsertContext<OauthClientRedirectUrl> context) {
         entity.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        final var now = java.time.LocalDateTime.now();
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preUpdate(OauthClientRedirectUrl entity, PreUpdateContext<OauthClientRedirectUrl> context) {
+    public void preUpdate(final OauthClientRedirectUrl entity, final PreUpdateContext<OauthClientRedirectUrl> context) {
+        final var now = java.time.LocalDateTime.now();
+        entity.setUpdatedAt(now);
     }
 
     @Override
-    public void preDelete(OauthClientRedirectUrl entity, PreDeleteContext<OauthClientRedirectUrl> context) {
+    public void preDelete(final OauthClientRedirectUrl entity, final PreDeleteContext<OauthClientRedirectUrl> context) {
     }
 
     @Override
-    public void postInsert(OauthClientRedirectUrl entity, PostInsertContext<OauthClientRedirectUrl> context) {
+    public void postInsert(final OauthClientRedirectUrl entity,
+        final PostInsertContext<OauthClientRedirectUrl> context) {
     }
 
     @Override
-    public void postUpdate(OauthClientRedirectUrl entity, PostUpdateContext<OauthClientRedirectUrl> context) {
+    public void postUpdate(final OauthClientRedirectUrl entity,
+        final PostUpdateContext<OauthClientRedirectUrl> context) {
     }
 
     @Override
-    public void postDelete(OauthClientRedirectUrl entity, PostDeleteContext<OauthClientRedirectUrl> context) {
+    public void postDelete(final OauthClientRedirectUrl entity,
+        final PostDeleteContext<OauthClientRedirectUrl> context) {
     }
 }

@@ -2,11 +2,11 @@ package jp.co.project.planets.earthly.core.enums;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 public enum Timezone {
 
-    //  南アフリカ標準時
+    // 南アフリカ標準時
     AFRICA_JOHANNESBURG("Africa/Johannesburg"),
     // 西アフリカ時間
     AFRICA_LAGOS("Africa/Lagos"),
@@ -96,7 +96,7 @@ public enum Timezone {
     ATLANTIC_CAPE_VERDE("Atlantic/Cape_Verde"),
     // 中部標準時 （南オーストラリア）
     AUSTRALIA_ADELAIDE("Australia/Adelaide"),
-    // 東部標準時 （クイーンズランド）	
+    // 東部標準時 （クイーンズランド）
     AUSTRALIA_BRISBANE("Australia/Brisbane"),
     // 中部標準時 （ノーザンテリトリー）
     AUSTRALIA_DARWIN("Australia/Darwin"),
@@ -156,6 +156,6 @@ public enum Timezone {
     }
 
     public static Timezone of(final String value) {
-        return Arrays.stream(Timezone.values()).filter(it -> StringUtils.equals(it.id, value)).findFirst().orElse(null);
+        return Arrays.stream(Timezone.values()).filter(it -> Strings.CS.equals(it.id, value)).findFirst().orElse(null);
     }
 }

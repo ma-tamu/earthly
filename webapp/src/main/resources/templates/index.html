@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="refresh" th:content="|0;URL=@{/users/__${#authentication.principal.id}__}|">
+  <meta http-equiv="refresh" th:content="|0;URL=@{/users/__${#authentication.principal.account.id}__}|">
   <title>Earthly</title>
   <th:block th:replace="parts/static::head"></th:block>
 </head>

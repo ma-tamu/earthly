@@ -17,9 +17,12 @@ dependencies {
 
     implementation 'com.nimbusds:nimbus-jose-jwt'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    implementation 'org.springframework.security:spring-security-oauth2-authorization-server:1.2.4'
+    implementation 'org.springframework.security:spring-security-oauth2-authorization-server'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation project(':core')
     implementation project(':common')
     implementation project(':repository')
+
+    implementation 'com.auth0:java-jwt:4.5.0'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.81'
 }

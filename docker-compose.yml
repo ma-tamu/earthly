@@ -58,7 +58,85 @@ services:
       - AWS_DEFAULT_REGION=ap-northeast-1
       - DATA_DIR=/tmp/localstack/data
       - DISABLE_CORS_CHECKS=1
-
+  postgres:
+    profiles:
+      - all
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hydra
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: hydra
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  pgadmin:
+    profiles:
+      - all
+    image: dpage/pgadmin4:9.14.0
+    restart: always
+    ports:
+      - "18080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  ory-hydra-migrate:
+    profiles:
+      - all
+    image: oryd/hydra:v2.2
+    environment:
+      DSN: postgres://hydra:secret@postgres:5432/hydra?sslmode=disable
+    command: migrate sql -e --yes
+    depends_on:
+      postgres:
+        condition: service_healthy
+  ory-hydra:
+    profiles:
+      - all
+    image: oryd/hydra:v2.2
+    restart: always
+    environment:
+      DSN: postgres://hydra:secret@postgres:5432/hydra?sslmode=disable
+      SECRETS_SYSTEM: super-secret-system-secret-at-least-32-chars
+      URLS_SELF_ISSUER: http://localhost:4444
+      URLS_CONSENT: http://localhost:3000/consent
+      URLS_LOGIN: http://localhost:3000/login
+      URLS_LOGOUT: http://localhost:3000/logout
+      LOG_LEVEL: debug
+    command: serve all --dev
+    ports:
+        - "4444:4444"
+        - "4445:4445"
+    depends_on:
+      ory-hydra-migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:4444/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  oryd-hydra-login-consent:
+    profiles:
+      - all
+    image: oryd/hydra-login-consent-node:latest
+    ports:
+      - "9020:3000"
+    environment:
+      HYDRA_ADMIN_URL: https://ory-hydra-example--hydra:4445
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
 volumes:
   localstack-data:
     driver: 'local'
+  postgres_data:

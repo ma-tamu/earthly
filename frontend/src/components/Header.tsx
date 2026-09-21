@@ -1,10 +1,12 @@
+import type {FC} from "react";
+
 type HeaderProps = {
     currentLang: string;
     onLangChange: (lang: string) => void;
 };
 
 
-export const Header: React.FC<HeaderProps> = ({currentLang, onLangChange}) => {
+export const Header: FC<HeaderProps> = ({currentLang, onLangChange}) => {
     return (
         <header className="border-b border-slate-100 px-6 py-4 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50">
             <div className="flex items-center space-x-3">
@@ -13,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({currentLang, onLangChange}) => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold tracking-tight bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           Earthly
         </span>
             </div>
@@ -22,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({currentLang, onLangChange}) => {
                 <select
                     value={currentLang}
                     onChange={(e) => onLangChange(e.target.value)}
-                    className="appearance-none bg-slate-50 border border-slate-200 text-sm rounded-lg pl-3 pr-8 py-2 text-slate-600 cursor-pointer focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                    className="appearance-none bg-slate-50 border border-slate-200 text-sm rounded-lg pl-3 pr-8 py-2 text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
                 >
                     <option value="ja">日本語 (JA)</option>
                     <option value="en">English (EN)</option>

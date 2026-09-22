@@ -5,4 +5,5 @@ export interface UserRepository {
   authenticate(loginId: string, password: string): Promise<void>;
   logout(): Promise<void>;
   me(): Promise<User>;
+  find(page: number): Promise<User[]>;
 }

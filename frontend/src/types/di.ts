@@ -6,5 +6,6 @@ export const TYPES = {
 
     // service
     AuthService: Symbol.for("AuthService"),
+    UserService: Symbol.for("UserService"),
     GreetingService: Symbol.for("GreetingService"),
 }

@@ -17,17 +17,17 @@ export function MainLayout() {
 
   const menuItems = [
     {
-      path: '/dashboard',
+      path: '/',
       label: '概要ダッシュボード',
       icon: <FiGrid className="w-5 h-5" />
     },
     {
-      path: '/dashboard/users',
+      path: '/users',
       label: 'ユーザー管理',
       icon: <FiUsers className="w-5 h-5" />
     },
     {
-      path: '/dashboard/settings',
+      path: '/settings',
       label: 'システム設定',
       icon: <FiSettings className="w-5 h-5" />
     }

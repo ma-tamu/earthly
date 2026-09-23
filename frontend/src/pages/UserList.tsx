@@ -5,10 +5,13 @@ import type {UserPaginatedResponse} from "../services/UserService.ts";
 export function UserList() {
   const { usersData } = useLoaderData() as { usersData: UserPaginatedResponse };
   const [, setSearchParams] = useSearchParams();
+
+  console.log("usersData", usersData);
+  console.log("usersData.data", usersData.data);
   const { data: users, meta } = usersData;
 
   const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > meta.totalPages) return;
+    if (newPage < 1 || newPage > meta.total) return;
     setSearchParams({ page: newPage.toString() });
   };
 
@@ -31,7 +34,6 @@ export function UserList() {
             <thead>
             <tr className="bg-slate-50/70 border-b border-slate-200/80 text-xs font-semibold uppercase tracking-wider text-slate-500">
               <th className="px-6 py-4">名前 / メールアドレス</th>
-              <th className="px-6 py-4">権限ロール</th>
               <th className="px-6 py-4">ステータス</th>
               <th className="px-6 py-4">登録日</th>
               <th className="px-6 py-4 text-right">操作</th>
@@ -51,22 +53,15 @@ export function UserList() {
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4.5 font-medium text-slate-700">
-                  {user.role === 'admin' ? (
-                    <span className="text-indigo-600 font-semibold bg-indigo-50 px-2 py-1 rounded-md text-xs">管理者</span>
-                  ) : (
-                    <span className="text-slate-600">一般ユーザー</span>
-                  )}
-                </td>
                 <td className="px-6 py-4.5">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border
-                      ${user.status === 'active'
+                      ${!user.lockout
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60'
                       : 'bg-slate-50 text-slate-400 border-slate-200'
                     }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${user.status === 'active' ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-                      {user.status === 'active' ? '有効' : '無効'}
+                      <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${!user.lockout ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+                      {!user.lockout ? '有効' : '無効'}
                     </span>
                 </td>
                 <td className="px-6 py-4.5 text-slate-500 text-xs">
@@ -85,24 +80,24 @@ export function UserList() {
 
         <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/30">
           <div className="text-xs font-medium text-slate-400">
-            全 <span className="text-slate-700">{meta.totalCount}</span> 件中 {(meta.currentPage - 1) * 10 + 1}〜{Math.min(meta.currentPage * 10, meta.totalCount)} 件を表示
+            全 <span className="text-slate-700">{meta.total}</span> 件中 {meta.offset * 10 + 1}〜{Math.min((meta.offset + 1) * 10, meta.total)} 件を表示
           </div>
           <div className="flex items-center space-x-1">
             <button
-              onClick={() => handlePageChange(meta.currentPage - 1)}
-              disabled={meta.currentPage === 1}
+              onClick={() => handlePageChange(meta.offset)}
+              disabled={meta.offset === 0}
               className="p-2 text-slate-500 hover:bg-white border border-transparent hover:border-slate-200 rounded-lg disabled:opacity-40 disabled:hover:bg-transparent transition-all"
             >
               <FiChevronLeft className="w-4 h-4" />
             </button>
 
             <span className="px-3 py-1 text-sm font-semibold bg-white border border-slate-200 text-blue-600 rounded-lg shadow-sm">
-              {meta.currentPage} / {meta.totalPages}
+              {meta.offset + 1} / {meta.total}
             </span>
 
             <button
-              onClick={() => handlePageChange(meta.currentPage + 1)}
-              disabled={meta.currentPage === meta.totalPages}
+              onClick={() => handlePageChange(meta.offset + 1)}
+              disabled={meta.offset === meta.total}
               className="p-2 text-slate-500 hover:bg-white border border-transparent hover:border-slate-200 rounded-lg disabled:opacity-40 disabled:hover:bg-transparent transition-all"
             >
               <FiChevronRight className="w-4 h-4" />

@@ -1,4 +1,4 @@
-import type {User, UserPaginatedResponse, UserService} from "../UserService.ts";
+import type {UserPaginatedResponse, UserService} from "../UserService.ts";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../types/di.ts";
 import type {UserRepository} from "../../repositories/UserRepository.ts";
@@ -14,20 +14,13 @@ export class UserServiceImpl implements UserService {
 
   async getUsers(page: number): Promise<UserPaginatedResponse> {
     const users = await this.userRepository.find(page);
-    const list = users.map(user => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: 'admin',
-      status: 'active',
-      createdAt: user.createdAt.toISOString()
-    }) as User);
+console.log("users ->", users);
     return {
-      data: list,
+      data: users.users,
       meta: {
-        currentPage: 1,
-        totalCount: 1,
-        totalPages: 1
+        offset: users.attribute.offset,
+        length: users.attribute.length,
+        total: users.attribute.total
       }
     };
   }

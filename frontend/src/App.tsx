@@ -21,13 +21,13 @@ function App() {
       errorElement: <ErrorPage/>,
       children: [
         {
-          path: "/",
+          path: "/login",
           element: <Login/>,
           loader: async () => {
             try {
               // セッションCookieがあれば自動でダッシュボードへリダイレクト
               await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
-              return redirect('/dashboard');
+              return redirect('/');
             } catch {
               return null;
             }
@@ -37,7 +37,8 @@ function App() {
     },
     // ② 認証後・システム内専用ルート群（サイドバー固定）
     {
-      path: "/dashboard",
+      path: "/",
+      id: "user",
       element: <MainLayout/>,
       errorElement: <ErrorPage/>,
       // 画面が描画される「前」に一括でCookie認証検証を行う堅牢なガード
@@ -46,7 +47,7 @@ function App() {
           const user = await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
           return {user};
         } catch {
-          return redirect('/'); // 未認証・セッション切れならログイン画面へ即リダイレクト
+          return redirect('/login'); // 未認証・セッション切れならログイン画面へ即リダイレクト
         }
       },
       children: [
@@ -71,14 +72,14 @@ function App() {
         },
         {
           path: "*",
-          element: <Navigate to="/dashboard" replace/>,
+          element: <Navigate to="/" replace/>,
         },
       ]
     },
     // その他の未知のURLはすべてログイン（またはリダイレクト）へ
     {
       path: "*",
-      element: <Navigate to="/" replace/>,
+      element: <Navigate to="/login" replace/>,
     }
   ]);
   return <RouterProvider router={router}/>;

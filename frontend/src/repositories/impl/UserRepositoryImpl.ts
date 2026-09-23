@@ -3,6 +3,7 @@ import {inject, injectable} from "inversify";
 import type {User} from "../entities/User.ts";
 import type {HttpClient} from "../../api/HttpClient.ts";
 import {TYPES} from "../../types/di.ts";
+import type {UserList} from "../entities/UserList.ts";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -29,8 +30,8 @@ export class UserRepositoryImpl implements UserRepository {
     await this.httpClient.delete<void>("/api/logout");
   }
 
-  async find(page: number): Promise<User[]> {
-    return this.httpClient.get<User[]>("/api/users?page=" + page);
+  async find(offset: number): Promise<UserList> {
+    return this.httpClient.get<UserList>(`/api/users?offset=${offset}&limit=10`);
   }
 
 }

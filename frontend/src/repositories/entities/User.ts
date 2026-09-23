@@ -3,7 +3,6 @@ export interface User {
   loginId: string;
   name: string;
   email: string;
-  password: string;
   lockout: boolean;
   language: string;
   timezone: string;

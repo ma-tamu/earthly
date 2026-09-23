@@ -17,7 +17,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({onMenuOpen}) => {
         >
           <FiMenu className="w-6 h-6"/>
         </button>
-        <span className="text-lg font-bold text-slate-900">NexusCore</span>
+        <span className="text-lg font-bold text-slate-900">Earthly</span>
       </div>
     </header>
   );

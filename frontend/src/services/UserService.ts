@@ -1,18 +1,11 @@
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-  status: 'active' | 'inactive';
-  createdAt: string;
-};
+import type {User} from "../repositories/entities/User.ts";
 
 export type UserPaginatedResponse = {
   data: User[];
   meta: {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
+    offset: number;
+    length: number;
+    total: number;
   };
 };
 

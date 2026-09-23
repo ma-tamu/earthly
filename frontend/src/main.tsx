@@ -6,13 +6,14 @@ import App from "./App.tsx";
 
 // アプリ起動とMSWの競合を防ぐ非同期ラッパー関数
 async function enableMocking() {
-  // Viteの開発環境かつ、モックを有効にしたい場合のみ動かす
-  if (import.meta.env.DEV) {
+  // 環境変数 VITE_ENABLE_MOCK が "true" の場合のみMSWを起動する
+  if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCK === "true") {
     const { worker } = await import("./mocks/browser");
     // MSWがネットワークのインターセプタを貼り終えるまで確実に待機する
     await worker.start({
       onUnhandledRequest: "bypass", // モック定義外の通信（ViteのHMR等）はスルーする
     });
+    console.log("🚀 [MSW] Mock Service Worker が有効です");
   }
 }
 

@@ -4,7 +4,7 @@ import type {UserDetail} from "../security/UserDetail.ts";
 
 export function Dashboard() {
 
-  const { user } = useRouteLoaderData("user") as { user: UserDetail };
+  const { user } = useRouteLoaderData("AuthenticationPrincipal") as { user: UserDetail };
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">

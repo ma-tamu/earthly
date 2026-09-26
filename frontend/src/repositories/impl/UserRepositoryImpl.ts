@@ -1,8 +1,8 @@
 import type {UserRepository} from "../UserRepository.ts";
 import {inject, injectable} from "inversify";
 import type {User} from "../entities/User.ts";
-import type {HttpClient} from "../../api/HttpClient.ts";
-import {TYPES} from "../../types/di.ts";
+import type {HttpClient} from "../../core/api/HttpClient.ts";
+import {TYPES} from "../../core/types/di.ts";
 import type {UserList} from "../entities/UserList.ts";
 import type {UserSearchRequest} from "../request/UserSearchRequest.ts";
 

@@ -1,6 +1,6 @@
 import type {UserPaginatedResponse, UserService} from "../UserService.ts";
 import {inject, injectable} from "inversify";
-import {TYPES} from "../../types/di.ts";
+import {TYPES} from "../../core/types/di.ts";
 import type {UserRepository} from "../../repositories/UserRepository.ts";
 import type {UserSearch} from "../dto/UserSearch.ts";
 

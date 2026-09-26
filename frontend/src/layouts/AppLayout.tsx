@@ -1,5 +1,5 @@
 import {Outlet, useLocation, useRouteLoaderData} from "react-router";
-import type {UserDetail} from "../security/UserDetail.ts";
+import type {UserDetail} from "../core/security/UserDetail.ts";
 import {useState} from "react";
 import {Sidebar} from "../components/Sidebar.tsx";
 import {Footer} from "../components/Footer.tsx";

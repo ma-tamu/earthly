@@ -1,8 +1,8 @@
 import {type FC, useEffect, useRef, useState} from "react";
-import type {UserDetail} from "../security/UserDetail.ts";
+import type {UserDetail} from "../core/security/UserDetail.ts";
 import {useNavigate} from "react-router";
-import {TYPES} from "../types/di.ts";
-import type {AuthService} from "../security/AuthService.ts";
+import {TYPES} from "../core/types/di.ts";
+import type {AuthService} from "../core/security/AuthService.ts";
 import {useInjection} from "../hooks/useInjection.ts";
 import {FiClock, FiGlobe, FiLogOut, FiMenu, FiChevronDown} from "react-icons/fi";
 

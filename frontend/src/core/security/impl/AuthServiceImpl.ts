@@ -1,7 +1,7 @@
 import type {AuthService} from "../AuthService.ts";
 import type {UserDetail} from "../UserDetail.ts";
 import {inject, injectable} from "inversify";
-import type {UserRepository} from "../../repositories/UserRepository.ts";
+import type {UserRepository} from "../../../repositories/UserRepository.ts";
 import {TYPES} from "../../types/di.ts";
 
 @injectable()

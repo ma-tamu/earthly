@@ -1,7 +1,7 @@
 import {type FC, useState,} from 'react';
 import {FiChevronDown, FiX} from 'react-icons/fi';
 import {Link} from "react-router";
-import {DASHBOARD_MENU_CONFIG} from '../config/menu';
+import {DASHBOARD_MENU_CONFIG} from '../core/config/menu';
 
 type MobileDrawerProps = {
   isOpen: boolean;

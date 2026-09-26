@@ -1,6 +1,6 @@
 import {useRouteLoaderData} from "react-router";
 import {FiBarChart2, FiClock, FiSettings} from "react-icons/fi";
-import type {UserDetail} from "../security/UserDetail.ts";
+import type {UserDetail} from "../core/security/UserDetail.ts";
 
 export function Dashboard() {
 

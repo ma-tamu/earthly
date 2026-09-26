@@ -1,10 +1,11 @@
 import {useState} from "react";
-import {useNavigate} from "react-router";
 import {InputField} from "../parts/InputField.tsx";
 import {FiLock, FiMail} from "react-icons/fi";
-import {useInjection} from "../hooks/useInjection.ts";
-import type {AuthService} from "../security/AuthService.ts";
-import {TYPES} from "../types/di.ts";
+import {useLocale} from "../hooks/useLocale.ts";
+import {useAuth} from "../hooks/useAuth.ts";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {type LoginParams, loginSchema} from "../types/auth.ts";
 
 /**
  * ログインページ
@@ -12,53 +13,33 @@ import {TYPES} from "../types/di.ts";
  */
 export function Login() {
 
-  const [loginId, setLoginId] = useState('');
-  const [password, setPassword] = useState('');
+  const {t} = useLocale();
+  const {login} = useAuth();
 
-  // エラー状態の管理
-  const [errors, setErrors] = useState({loginId: '', password: ''});
-  const navigate = useNavigate();
-  const authService = useInjection<AuthService>(TYPES.AuthService);
+  // ボタンの連打（多重送信）を確実に防止するためのローカルState
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // メールアドレスの検証
-  const validateLoginId = (value: string) => {
-    if (!value) {
-      return 'ログインIDを入力してください。';
-    }
-    return '';
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginParams>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
+  });
 
-  // パスワードの検証
-  const validatePassword = (value: string) => {
-    if (!value) {
-      return 'パスワードを入力してください。';
-    }
-    if (value.length < 8) {
-      return 'パスワードは8文字以上で入力してください。';
-    }
-    return '';
-  };
-
-  // フォーム送信時の処理
-  const handleSubmit = async (e: SubmitEvent) => {
-    e.preventDefault();
-
-    const loginIdError = validateLoginId(loginId);
-    const passwordError = validatePassword(password);
-
-    if (loginIdError || passwordError) {
-      setErrors({loginId: loginIdError, password: passwordError});
-      return;
-    }
-
+  const onSubmit = async (data: LoginParams) => {
+    setIsSubmitting(true); // 送信開始（ボタンと入力をロック）
     try {
-      await authService.login(loginId, password);
-      navigate('/', {replace: true});
-    } catch (error) {
-      console.log(error);
-      alert('メールアドレスまたはパスワードが正しくありません。');
+      // 💡 useAuth の login メソッドを実行。
+      // 内部で Repository ➔ HttpClient ➔ バックエンド（MSW）へと通信が飛び、
+      // 成功すると自動的に /dashboard への安全な画面切り替えが起動します
+      await login(data);
+    } catch {
+      // パスワード間違いや、401等の認証エラーが起きた場合のハンドリング
+      alert(t('validation.authFailed'));
+      setIsSubmitting(false); // エラー時はロックを解除して再入力を許可
     }
-
   };
 
   return (
@@ -69,20 +50,15 @@ export function Login() {
       </div>
 
       <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/50">
-        <form onSubmit={() => handleSubmit} className="space-y-6" noValidate>
+        <form onSubmit={() => handleSubmit(onSubmit)} className="space-y-6" noValidate>
           <InputField
             id="loginId"
             type="loginId"
             label="ログインID"
             placeholder="LoginID"
-            value={loginId}
-            error={errors.loginId}
-            onChange={(e) => {
-              setLoginId(e.target.value);
-              if (errors.loginId) setErrors(prev => ({...prev, email: ''}));
-            }}
-            onBlur={() => setErrors(prev => ({...prev, email: validateLoginId(loginId)}))}
+            error={errors.loginId?.message}
             icon={<FiMail className="w-5 h-5"/>}
+            {...register('loginId')}
           />
 
           <div>
@@ -97,14 +73,9 @@ export function Login() {
               type="password"
               label=""
               placeholder="••••••••"
-              value={password}
-              error={errors.password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (errors.password) setErrors(prev => ({...prev, password: ''}));
-              }}
-              onBlur={() => setErrors(prev => ({...prev, password: validatePassword(password)}))}
+              error={errors.password?.message}
               icon={<FiLock className="w-5 h-5"/>}
+              {...register('password')}
             />
           </div>
 
@@ -119,18 +90,17 @@ export function Login() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white font-semibold text-sm rounded-xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-600/30 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-blue-600/20 transition-all"
+            disabled={isSubmitting} // 多重送信（連打バグ）を物理的に100%シャットアウト
+            className={`w-full py-3 text-white font-semibold text-sm rounded-xl shadow-lg transition-all active:scale-[0.99] focus:outline-none
+              ${isSubmitting
+              ? 'bg-blue-400 cursor-not-allowed shadow-none'
+              : 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-600/30'
+            }`}
           >
-            ログイン
+            {isSubmitting ? t('login.submitting') : t('login.submit')}
           </button>
         </form>
       </div>
-
-      <p className="text-center mt-6 text-sm text-slate-500">
-        アカウントをお持ちでないですか？{' '}
-        <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">新しく作成する</a>
-      </p>
     </div>
-
   );
 }

@@ -3,7 +3,7 @@ import {FiArrowDown, FiArrowUp, FiSearch, FiUserPlus} from "react-icons/fi";
 import type {UserPaginatedResponse, UserService} from "../../services/UserService.ts";
 import {useEffect, useState} from "react";
 import {useInjection} from "../../hooks/useInjection.ts";
-import {TYPES} from "../../types/di.ts";
+import {TYPES} from "../../core/types/di.ts";
 import type {UserSearch} from "../../services/dto/UserSearch.ts";
 import {Pagination} from "../../components/Pagination.tsx";
 import {Loading} from "../../components/Loading.tsx";

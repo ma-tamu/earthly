@@ -1,6 +1,6 @@
 import {createContext, useContext} from "react";
 import {Container} from "inversify";
-import {container} from "../config/inversify.config.ts";
+import {container} from "../core/config/inversify.config.ts";
 
 const DIContext = createContext<Container>(container);
 

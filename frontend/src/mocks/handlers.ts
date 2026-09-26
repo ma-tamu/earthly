@@ -52,23 +52,48 @@ export const handlers = [
   }),
 
   // 4. ページネーション付きユーザー一覧取得API
-  http.get(`${BASE_URL}/api/users`, ({request}) => {
+  // 💡 ソート＆件数切り替えに対応したユーザー一覧API
+  http.get(`${BASE_URL}/api/users`, ({ request }) => {
     const url = new URL(request.url);
-    const page = Number.parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = 10;
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const search = url.searchParams.get('search') || '';
+    const limit = parseInt(url.searchParams.get('limit') || '10', 10); // 💡 件数制限の取得
+    const sortBy = url.searchParams.get('sortBy') || 'createdAt';       // 💡 ソート対象（デフォルト: 登録日）
+    const sortOrder = url.searchParams.get('sortOrder') || 'desc';      // 💡 昇順・降順（デフォルト: 降順）
 
-    const totalCount = mockUsers.length;
-    // const totalPages = Math.ceil(totalCount / limit);
+    // 1. キーワード検索フィルター
+    const filteredUsers = mockUsers.filter(user =>
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
+    );
+
+    // 2. 💡 ソートロジックの実行
+    filteredUsers.sort((a: any, b: any) => {
+      let valA = a[sortBy];
+      let valB = b[sortBy];
+
+      // 文字列の場合は比較用に小文字化
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
+
+      if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    // 3. ページネーション切り出し
+    const totalCount = filteredUsers.length;
+    const totalPages = Math.ceil(totalCount / limit);
     const start = (page - 1) * limit;
     const end = start + limit;
-    const paginatedData = mockUsers.slice(start, end);
+    const paginatedData = filteredUsers.slice(start, end);
 
     return HttpResponse.json({
       users: paginatedData,
       attribute: {
         offset: page,
+        total: totalPages,
         length: totalCount,
-        total: paginatedData.length,
       },
     });
   }),

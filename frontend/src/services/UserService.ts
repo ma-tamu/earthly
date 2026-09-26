@@ -1,4 +1,5 @@
 import type {User} from "../repositories/entities/User.ts";
+import type {UserSearch} from "./dto/UserSearch.ts";
 
 export type UserPaginatedResponse = {
   data: User[];
@@ -9,6 +10,15 @@ export type UserPaginatedResponse = {
   };
 };
 
+/**
+ * ユーザーサービス
+ */
 export interface UserService {
-  getUsers(page: number): Promise<UserPaginatedResponse>;
+
+  /**
+   * ユーザー一覧を取得する。
+   * @param param 検索条件
+   * @return ユーザー一覧
+   */
+  getUsers(param: UserSearch): Promise<UserPaginatedResponse>;
 }

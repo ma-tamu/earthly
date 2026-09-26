@@ -4,6 +4,7 @@ import type {User} from "../entities/User.ts";
 import type {HttpClient} from "../../api/HttpClient.ts";
 import {TYPES} from "../../types/di.ts";
 import type {UserList} from "../entities/UserList.ts";
+import type {UserSearchRequest} from "../request/UserSearchRequest.ts";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -30,8 +31,15 @@ export class UserRepositoryImpl implements UserRepository {
     await this.httpClient.delete<void>("/api/logout");
   }
 
-  async find(offset: number): Promise<UserList> {
-    return this.httpClient.get<UserList>(`/api/users?offset=${offset}&limit=10`);
+  async find(request: UserSearchRequest): Promise<UserList> {
+    const query = new URLSearchParams({
+      page: request.page.toString(),
+      search: request.search,
+      limit: request.size.toString(),
+      sortBy: request.sort,
+      sortOrder: request.order,
+    }).toString();
+    return this.httpClient.get<UserList>(`/api/users?${query}`);
   }
 
 }

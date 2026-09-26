@@ -1,13 +1,12 @@
 import './App.css'
 import {createBrowserRouter, Navigate, redirect, RouterProvider} from "react-router";
-import {UserList} from "./pages/UserList.tsx";
+import UserList from "./pages/users/UserList.tsx";
 import {container} from "./config/inversify.config.ts";
 import {Dashboard} from "./pages/Dashboard.tsx";
 import {ErrorPage} from "./pages/ErrorPage.tsx";
 import {Login} from "./pages/Login.tsx";
 import type {AuthService} from "./security/AuthService.ts";
 import {TYPES} from "./types/di.ts";
-import type {UserService} from "./services/UserService.ts";
 import {AppLayout} from "./layouts/AppLayout.tsx";
 
 
@@ -30,6 +29,16 @@ function App() {
       children: [
         {
           index: true,
+          loader: async () => {
+            try {
+              await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
+              return redirect("/dashboard");
+            } catch {
+              return redirect("/login");
+            }
+          }
+        },
+        {
           path: "/login",
           element: <Login/>,
           loader: async () => {
@@ -48,16 +57,9 @@ function App() {
         {
           path: "users",
           element: <UserList/>,
-          loader: async ({request}) => {
+          loader: async () => {
             try {
               await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
-
-              // 2. 認証OKなら一覧データ取得
-              const url = new URL(request.url);
-              const page = Number.parseInt(url.searchParams.get("page") || "1", 10);
-              const userService = container.get<UserService>(TYPES.UserService);
-              const usersData = await userService.getUsers(page);
-              return {usersData};
             } catch (error: unknown) {
               // 認証エラー（401）の場合はログイン画面へ
               if (error instanceof Error && error.message === 'UNAUTHORIZED') {
@@ -69,7 +71,11 @@ function App() {
         },
         {
           path: "settings",
-          element: <div className="text-2xl font-bold text-slate-900">システム設定画面（開発中）</div>,
+          children: [
+            {path: "general", element: <div className="text-2xl font-bold text-slate-900">一般設定画面</div>},
+            {path: "security", element: <div className="text-2xl font-bold text-slate-900">セキュリティ設定画面</div>},
+            {path: "notifications", element: <div className="text-2xl font-bold text-slate-900">通知設定画面</div>},
+          ],
           loader: async () => {
             const rootData = await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
             return !rootData ? redirect('/') : null;

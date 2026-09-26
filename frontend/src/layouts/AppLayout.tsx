@@ -1,7 +1,6 @@
 import {Outlet, useLocation, useRouteLoaderData} from "react-router";
 import type {UserDetail} from "../security/UserDetail.ts";
 import {useState} from "react";
-import {FiGrid, FiSettings, FiUsers} from "react-icons/fi";
 import {Sidebar} from "../components/Sidebar.tsx";
 import {Footer} from "../components/Footer.tsx";
 import {MobileDrawer} from "../components/MobileDrawer.tsx";
@@ -17,12 +16,6 @@ export function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); // デスクトップサイドバーの開閉
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // スマホドロワーの開閉
 
-  // ナビゲーションメニュー
-  const menuItems = [
-    { path: '/dashboard', label: '概要ダッシュボード', icon: <FiGrid className="w-5 h-5" /> },
-    { path: '/users', label: 'ユーザー管理', icon: <FiUsers className="w-5 h-5" /> },
-    { path: '/settings', label: 'システム設定', icon: <FiSettings className="w-5 h-5" /> }
-  ];
 
   return (
     <div className="min-h-screen bg-white text-slate-800 flex flex-col font-sans antialiased selection:bg-blue-500 selection:text-white">
@@ -39,9 +32,7 @@ export function AppLayout() {
       <div className="flex-1 flex bg-slate-50/50">
 
         {/* 【認証後かつサイドバー開状態のみ】デスクトップサイドバーを表示 */}
-        {user && isSidebarOpen && (
-          <Sidebar menuItems={menuItems} currentPath={location.pathname} />
-        )}
+        {user && isSidebarOpen && <Sidebar currentPath={location.pathname} />}
 
         {/* コンテンツ展開エリア（認証状況やサイドバーの開閉状態で左側の余白を動的に変化） */}
         <div className={`flex-1 flex flex-col min-w-0 min-h-[calc(100vh-64px)] transition-all duration-300
@@ -61,7 +52,6 @@ export function AppLayout() {
         <MobileDrawer
           isOpen={isMobileMenuOpen}
           onClose={() => setIsMobileMenuOpen(false)}
-          menuItems={menuItems}
           currentPath={location.pathname}
         />
       )}

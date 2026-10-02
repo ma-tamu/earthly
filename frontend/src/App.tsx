@@ -1,14 +1,16 @@
 import './App.css'
 import {createBrowserRouter, Navigate, redirect, RouterProvider} from "react-router";
-import UserList from "./pages/users/UserList.tsx";
+import UserList from "./ui/pages/users/UserList.tsx";
 import {container} from "./core/config/inversify.config.ts";
-import {Dashboard} from "./pages/Dashboard.tsx";
-import {ErrorPage} from "./pages/ErrorPage.tsx";
-import {Login} from "./pages/Login.tsx";
+import {Dashboard} from "./ui/pages/Dashboard.tsx";
+import {ErrorPage} from "./ui/pages/ErrorPage.tsx";
+import {Login} from "./ui/pages/Login.tsx";
 import type {AuthService} from "./core/security/AuthService.ts";
 import {TYPES} from "./core/types/di.ts";
-import {AppLayout} from "./layouts/AppLayout.tsx";
+import {AppLayout} from "./ui/layouts/AppLayout.tsx";
 import {authGuard} from "./core/security/authGuard.ts";
+import type {LocaleService} from "./services/LocaleService.ts";
+import {UserEntry} from "./ui/pages/users/UserEntry.tsx";
 
 
 function App() {
@@ -19,13 +21,22 @@ function App() {
       id: "AuthenticationPrincipal",
       element: <AppLayout/>,
       errorElement: <ErrorPage/>,
-      loader: async () => {
-        try {
-          const user = await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
-          return {user};
-        } catch {
-          return {user: null}
-        }
+      loader: async (request) => {
+        const authService = container.get<AuthService>(TYPES.AuthService);
+        const localeService = container.get<LocaleService>(TYPES.LocaleService);
+
+        // URLパラメータ等から現在の言語（デフォルト: ja）を取得
+        const url = new URL(request.url);
+        const currentLocale = (url.searchParams.get("lang") || 'ja') as 'ja' | 'en';
+
+        // バックエンドから最新データを並列（Promise.all）で直接フェッチ
+        const [user, translations] = await Promise.all([
+          authService.getCurrentUser().catch(() => null), // トップやログイン用に、rootでの認証落ち（401）はnullとして優しく許容
+          localeService.fetchTranslations(currentLocale)
+        ]);
+
+        // 子階層の全コンポーネントから useRouteLoaderData("root") で0秒参照できるように一元分配
+        return {user, translations, locale: currentLocale};
       },
       children: [
         {
@@ -73,7 +84,7 @@ function App() {
             },
             {
               path: "entries",
-              element: <></>,
+              element: <UserEntry />,
               loader: () => authGuard()
             }
           ]

@@ -10,16 +10,19 @@ import {AuthServiceImpl} from "../security/impl/AuthServiceImpl.ts";
 import type {AuthService} from "../security/AuthService.ts";
 import type {UserService} from "../../services/UserService.ts";
 import {UserServiceImpl} from "../../services/impl/UserServiceImpl.ts";
+import type {LocaleService} from "../../services/LocaleService.ts";
+import {LocaleServiceImpl} from "../../services/impl/LocaleServiceImpl.ts";
 
 const container = new Container();
 
-container.bind<HttpClient>(TYPES.HtpClient).to(DefaultHttpClient).inSingletonScope();
+container.bind<HttpClient>(TYPES.HttpClient).to(DefaultHttpClient).inSingletonScope();
 
 // repository
 container.bind<UserRepository>(TYPES.UserRepository).to(UserRepositoryImpl).inSingletonScope();
 
 // service
 container.bind<AuthService>(TYPES.AuthService).to(AuthServiceImpl).inSingletonScope();
+container.bind<LocaleService>(TYPES.LocaleService).to(LocaleServiceImpl).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserServiceImpl).inSingletonScope();
 container.bind<GreetingService>(TYPES.GreetingService).to(GreetingServiceImpl).inSingletonScope();
 

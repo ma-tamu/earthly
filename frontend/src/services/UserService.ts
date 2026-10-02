@@ -1,5 +1,6 @@
 import type {User} from "../repositories/entities/User.ts";
 import type {UserSearch} from "./dto/UserSearch.ts";
+import type {UserEntryParam} from "../types/user.ts";
 
 export type UserPaginatedResponse = {
   data: User[];
@@ -21,4 +22,8 @@ export interface UserService {
    * @return ユーザー一覧
    */
   getUsers(param: UserSearch): Promise<UserPaginatedResponse>;
+
+  entryConfirm(param: UserEntryParam): Promise<void>;
+
+  entry(param: UserEntryParam): Promise<string>;
 }

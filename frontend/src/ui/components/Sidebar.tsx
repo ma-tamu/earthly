@@ -1,7 +1,7 @@
 import {type FC, useState} from 'react';
 import {Link} from 'react-router';
 import {FiChevronDown} from "react-icons/fi";
-import { DASHBOARD_MENU_CONFIG } from '../core/config/menu';
+import { DASHBOARD_MENU_CONFIG } from '../../core/config/menu.tsx';
 
 type SidebarProps = {
   currentPath: string;

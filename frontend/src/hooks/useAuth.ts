@@ -4,6 +4,7 @@ import type {AuthService} from "../core/security/AuthService.ts";
 import {TYPES} from "../core/types/di.ts";
 import type {UserDetail} from "../core/security/UserDetail.ts";
 import type {LoginParams} from "../types/auth.ts";
+import {useSubmitLock} from "./useSubmitLock.ts";
 
 export function useAuth() {
 
@@ -24,7 +25,7 @@ export function useAuth() {
   };
 
   // ログアウト処理
-  const logout = async () => {
+  const rawLogout = async () => {
     try {
       // 1. バックエンドAPIを叩いてサーバー側のセッションCookieを消去
       await authService.logout();
@@ -36,6 +37,7 @@ export function useAuth() {
       navigate('/login', {replace: true});
     }
   };
+  const { isPending: isLoggingOut, execute: logout } = useSubmitLock(rawLogout);
 
   // 認可チェック（役割ベースのアクセス制御）
   const hasPermission = (permission: string): boolean => {
@@ -51,6 +53,7 @@ export function useAuth() {
     isLoggingIn: false, // フォーム送信中の多重連打を防止したい場合は、LoginPage 側のローカル State でシンプルに管理するのがベストです
     login,
     logout,
+    isLoggingOut,
     hasPermission,
   };
 }

@@ -1,14 +1,16 @@
-import {useSearchParams} from "react-router";
+import {Link, useSearchParams} from "react-router";
 import {FiArrowDown, FiArrowUp, FiSearch, FiUserPlus} from "react-icons/fi";
-import type {UserPaginatedResponse, UserService} from "../../services/UserService.ts";
+import type {UserPaginatedResponse, UserService} from "../../../services/UserService.ts";
 import {useEffect, useState} from "react";
-import {useInjection} from "../../hooks/useInjection.ts";
-import {TYPES} from "../../core/types/di.ts";
-import type {UserSearch} from "../../services/dto/UserSearch.ts";
+import {useInjection} from "../../../hooks/useInjection.ts";
+import {TYPES} from "../../../core/types/di.ts";
+import type {UserSearch} from "../../../services/dto/UserSearch.ts";
 import {Pagination} from "../../components/Pagination.tsx";
 import {Loading} from "../../components/Loading.tsx";
+import {useLocale} from "../../../hooks/useLocale.ts";
 
 function UserList() {
+  const {t} =useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const userService = useInjection<UserService>(TYPES.UserService)
 
@@ -106,11 +108,11 @@ function UserList() {
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">ユーザー管理</h1>
           <p className="text-slate-500 text-sm mt-1">アカウントの高度な一覧検索・ソート管理が可能です。</p>
         </div>
-        <button
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md">
+        <Link to={"/users/entries"}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md">
           <FiUserPlus className="w-4 h-4"/>
           <span>新規ユーザー追加</span>
-        </button>
+        </Link>
       </div>
 
       {/* 検索 ＆ 💡表示件数セレクト コントロールバー */}
@@ -126,7 +128,7 @@ function UserList() {
             className="w-full pl-10 pr-20 py-2 bg-slate-50/50 border border-slate-200 text-sm rounded-xl focus:outline-none text-slate-900"
           />
           <button type="submit"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg shadow-sm">検索
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg shadow-sm">{t('page.common.button.search')}
           </button>
         </form>
 

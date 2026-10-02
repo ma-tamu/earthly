@@ -18,6 +18,7 @@ export class AuthServiceImpl implements AuthService {
     return {
       loginId: user.loginId,
       name: user.name,
+      mail: user.email,
       language: user.language,
       timezone: user.timezone,
       permissions: []

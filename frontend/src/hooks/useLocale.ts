@@ -5,7 +5,7 @@ export function useLocale() {
 
   // 💡 1. 最上位（id: "root"）の loader が取得済みのデータを直接のぞき込む
   const rootData = useRouteLoaderData('root') as {
-    translations: Record<string, any>;
+    translations: Record<string, unknown>;
     locale: 'ja' | 'en'
   } | undefined;
 
@@ -14,17 +14,17 @@ export function useLocale() {
   const locale = rootData?.locale ?? 'ja';
 
   /**
-   * 💡 2. ドット区切りのパス文字列（"login.title"）から安全に多言語テキストを抽出する関数
+   * 2. ドット区切りのパス文字列（"login.title"）から安全に多言語テキストを抽出する関数
    * 万が一バックエンド側でキーが削除・変更されていても、画面がクラッシュすることなく
    * パス文字列そのものが返る耐壊性（フォールトトレランス）を100%ピュアに維持しています。
    */
   const t = (path: string): string => {
     const keys = path.split('.');
-    let current: any = dict;
+    let current: unknown = dict;
 
     for (const key of keys) {
       if (current && typeof current === 'object' && key in current) {
-        current = current[key];
+        current = (current as Record<string, unknown>)[key];
       } else {
         return path; // キーが見つからなければ、デバッグしやすくするためにパス文字列そのものを返す
       }

@@ -1,4 +1,6 @@
 import {http, HttpResponse} from 'msw';
+import ja from "./locale/ja.json"
+import en from "./locale/en.json"
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -96,5 +98,13 @@ export const handlers = [
         length: totalCount,
       },
     });
+  }),
+
+  http.get(`${BASE_URL}/api/locales/:lang`, ({ params }) => {
+    const { lang } = params;
+
+    const dict = {ja, en};
+    const selectedDict = dict[lang as 'ja' | 'en'] || dict.ja;
+    return HttpResponse.json(selectedDict);
   }),
 ];

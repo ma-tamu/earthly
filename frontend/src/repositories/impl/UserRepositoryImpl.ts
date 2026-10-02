@@ -5,13 +5,15 @@ import type {HttpClient} from "../../core/api/HttpClient.ts";
 import {TYPES} from "../../core/types/di.ts";
 import type {UserList} from "../entities/UserList.ts";
 import type {UserSearchRequest} from "../request/UserSearchRequest.ts";
+import type {UserEntryRequest} from "../request/UserEntryRequest.ts";
+import type {MessageResponse} from "../response/MessageResponse.ts";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
 
   private readonly httpClient: HttpClient;
 
-  constructor(@inject(TYPES.HtpClient) httpClient: HttpClient) {
+  constructor(@inject(TYPES.HttpClient) httpClient: HttpClient) {
     this.httpClient = httpClient;
   }
 
@@ -39,7 +41,15 @@ export class UserRepositoryImpl implements UserRepository {
       sortBy: request.sort,
       sortOrder: request.order,
     }).toString();
-    return this.httpClient.get<UserList>(`/api/users?${query}`);
+    return await this.httpClient.get<UserList>(`/api/users?${query}`);
+  }
+
+  async entry(request: UserEntryRequest): Promise<MessageResponse> {
+    return await this.httpClient.post<MessageResponse>(`/api/entries`, request);
+  }
+
+  async entryConfirm(request: UserEntryRequest): Promise<void> {
+    await this.httpClient.post<MessageResponse>(`/api/entries/confirms`, request);
   }
 
 }

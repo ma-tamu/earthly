@@ -1,13 +1,8 @@
 import {type FC, useEffect, useRef, useState} from "react";
-import type {UserDetail} from "../core/security/UserDetail.ts";
-import {useNavigate} from "react-router";
-import {TYPES} from "../core/types/di.ts";
-import type {AuthService} from "../core/security/AuthService.ts";
-import {useInjection} from "../hooks/useInjection.ts";
 import {FiClock, FiGlobe, FiLogOut, FiMenu, FiChevronDown} from "react-icons/fi";
+import {useAuth} from "../../hooks/useAuth.ts";
 
 type HeaderProps = {
-  user: UserDetail | null;
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
   onToggleMobileMenu: () => void;
@@ -15,16 +10,14 @@ type HeaderProps = {
 
 
 export const Header: FC<HeaderProps> = ({
-                                          user,
                                           isSidebarOpen,
                                           onToggleSidebar,
                                           onToggleMobileMenu,
                                         }) => {
 
-  const navigate = useNavigate();
-  const authService = useInjection<AuthService>(TYPES.AuthService);
-  const [lang, setLang] = useState('ja');
-  const [timezone, setTimezone] = useState('JST');
+  const {user, logout, isLoggingOut} = useAuth();
+  const [lang, setLang] = useState(user ? user.language : 'ja');
+  const [timezone, setTimezone] = useState(user ? user.timezone : 'JST');
   const [isMenuOpen, setIsMenuOpen] = useState(false); // ドロップダウンメニューの開閉状態
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -40,18 +33,9 @@ export const Header: FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-
-  const handleLogout = async () => {
-    try {
-      await authService.logout();
-    } finally {
-      // ページ全体のリロードを伴って最上位の共通 loader を再発火させ、
-      // 確実に user=null 状態にしてログイン画面に安全に戻します
-      navigate('/login', { replace: true });
-    }
-  };
   return (
-    <header className="h-16 border-b border-slate-100 px-4 sm:px-6 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-sm shadow-slate-100/10">
+    <header
+      className="h-16 border-b border-slate-100 px-4 sm:px-6 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-sm shadow-slate-100/10">
 
       {/* 左エリア：ロゴ ＆ サイドバースイッチ */}
       <div className="flex items-center space-x-3">
@@ -62,19 +46,20 @@ export const Header: FC<HeaderProps> = ({
               className="hidden md:flex p-2 text-slate-500 hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors mr-1"
               title={isSidebarOpen ? "サイドバーを閉じる" : "サイドバーを開く"}
             >
-              <FiMenu className="w-4 h-4" />
+              <FiMenu className="w-4 h-4"/>
             </button>
             <button
               onClick={onToggleMobileMenu}
               className="flex md:hidden p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors mr-1"
             >
-              <FiMenu className="w-5 h-5" />
+              <FiMenu className="w-5 h-5"/>
             </button>
           </>
         )}
 
         <div className="flex items-center space-x-2.5">
-          <span className="text-lg font-bold tracking-tight bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span
+            className="text-lg font-bold tracking-tight bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Earthly
           </span>
         </div>
@@ -90,21 +75,27 @@ export const Header: FC<HeaderProps> = ({
               className="flex items-center space-x-2.5 p-1.5 pr-3 hover:bg-slate-50 border border-slate-100 rounded-xl transition-all select-none group"
             >
               {/* 丸型アバタープレースホルダー */}
-              <div className="h-7 w-7 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-sm shadow-blue-500/20 font-bold text-xs uppercase">
+              <div
+                className="h-7 w-7 bg-linear-to-tr from-blue-600 to-indigo-500 rounded-lg flex items-center justify-center text-white shadow-sm shadow-blue-500/20 font-bold text-xs uppercase">
                 {user.name.charAt(0)}
               </div>
-              <span className="text-xs font-semibold text-slate-600 group-hover:text-slate-900 transition-colors max-w-35 truncate">
+              <span
+                className="text-xs font-semibold text-slate-600 group-hover:text-slate-900 transition-colors max-w-35 truncate">
                 {user.name}
               </span>
-              <FiChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isMenuOpen ? 'rotate-180 text-slate-600' : ''}`} />
+              <FiChevronDown
+                className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isMenuOpen ? 'rotate-180 text-slate-600' : ''}`}/>
             </button>
 
             {/* 浮き出るモダンなドロップダウンメニューカード */}
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl shadow-slate-200/60 p-2.5 space-y-3 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <div
+                className="absolute right-0 mt-2 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl shadow-slate-200/60 p-2.5 space-y-3 z-50 animate-in fade-in zoom-in-95 duration-100">
                 {/* ユーザー簡易プロフィールヘッダー */}
                 <div className="px-2.5 py-2 border-b border-slate-100/80">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ログイン中のアカウント</div>
+                  <div
+                    className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ログイン中のアカウント
+                  </div>
                   <div className="text-sm font-bold text-slate-800 truncate mt-0.5">{user.name}</div>
                 </div>
 
@@ -113,7 +104,7 @@ export const Header: FC<HeaderProps> = ({
                   {/* 言語設定エリア */}
                   <div className="flex items-center justify-between px-2.5 py-1">
                     <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500">
-                      <FiGlobe className="w-4 h-4 text-slate-400" />
+                      <FiGlobe className="w-4 h-4 text-slate-400"/>
                       <span>言語</span>
                     </div>
                     <select
@@ -129,7 +120,7 @@ export const Header: FC<HeaderProps> = ({
                   {/* タイムゾーン設定エリア */}
                   <div className="flex items-center justify-between px-2.5 py-1">
                     <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500">
-                      <FiClock className="w-4 h-4 text-slate-400" />
+                      <FiClock className="w-4 h-4 text-slate-400"/>
                       <span>タイムゾーン</span>
                     </div>
                     <select
@@ -146,11 +137,12 @@ export const Header: FC<HeaderProps> = ({
                 <div className="border-t border-slate-100/80 pt-1.5">
                   {/* ログアウトアクションボタン */}
                   <button
-                    onClick={handleLogout}
+                    onClick={logout}
+                    disabled={isLoggingOut}
                     className="w-full flex items-center space-x-2.5 px-2.5 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-all"
                   >
-                    <FiLogOut className="w-4 h-4 text-red-500" />
-                    <span>システムからログアウト</span>
+                    <FiLogOut className="w-4 h-4 text-red-500"/>
+                    <span>{isLoggingOut ? 'ログアウト中' : 'ログアウト'} </span>
                   </button>
                 </div>
               </div>
@@ -159,7 +151,7 @@ export const Header: FC<HeaderProps> = ({
         ) : (
           /* 【認証前】未ログイン時は言語切替のみを端正に表示 */
           <div className="relative flex items-center">
-            <FiGlobe className="absolute left-2.5 text-slate-400 w-4 h-4 pointer-events-none" />
+            <FiGlobe className="absolute left-2.5 text-slate-400 w-4 h-4 pointer-events-none"/>
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value)}

@@ -1,11 +1,10 @@
-import {useState} from "react";
-import {InputField} from "../parts/InputField.tsx";
+import {InputField} from "../components/parts/InputField.tsx";
 import {FiLock, FiMail} from "react-icons/fi";
-import {useLocale} from "../hooks/useLocale.ts";
-import {useAuth} from "../hooks/useAuth.ts";
+import {useLocale} from "../../hooks/useLocale.ts";
+import {useAuth} from "../../hooks/useAuth.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {type LoginParams, loginSchema} from "../types/auth.ts";
+import {type LoginParams, loginSchema} from "../../types/auth.ts";
 
 /**
  * ログインページ
@@ -16,29 +15,21 @@ export function Login() {
   const {t} = useLocale();
   const {login} = useAuth();
 
-  // ボタンの連打（多重送信）を確実に防止するためのローカルState
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginParams>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
   const onSubmit = async (data: LoginParams) => {
-    setIsSubmitting(true); // 送信開始（ボタンと入力をロック）
     try {
-      // 💡 useAuth の login メソッドを実行。
-      // 内部で Repository ➔ HttpClient ➔ バックエンド（MSW）へと通信が飛び、
-      // 成功すると自動的に /dashboard への安全な画面切り替えが起動します
       await login(data);
     } catch {
       // パスワード間違いや、401等の認証エラーが起きた場合のハンドリング
       alert(t('validation.authFailed'));
-      setIsSubmitting(false); // エラー時はロックを解除して再入力を許可
     }
   };
 
@@ -56,6 +47,7 @@ export function Login() {
             type="loginId"
             label="ログインID"
             placeholder="LoginID"
+            disabled={isSubmitting}
             error={errors.loginId?.message}
             icon={<FiMail className="w-5 h-5"/>}
             {...register('loginId')}
@@ -73,6 +65,7 @@ export function Login() {
               type="password"
               label=""
               placeholder="••••••••"
+              disabled={isSubmitting}
               error={errors.password?.message}
               icon={<FiLock className="w-5 h-5"/>}
               {...register('password')}

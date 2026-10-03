@@ -37,7 +37,7 @@ export class UserServiceImpl implements UserService {
       loginId: param.loginId,
       name: param.name,
       email: param.email,
-      language: param.length,
+      language: param.language,
       timezone: param.timezone,
     });
     return messageResponse.message;
@@ -48,7 +48,7 @@ export class UserServiceImpl implements UserService {
       loginId: param.loginId,
       name: param.name,
       email: param.email,
-      language: param.length,
+      language: param.language,
       timezone: param.timezone,
     });
   }

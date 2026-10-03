@@ -43,13 +43,13 @@ export const handlers = [
   }),
 
   // 2. ログインAPI
-  http.post(`${BASE_URL}/api/auth/login`, async () => {
+  http.post(`${BASE_URL}/api/login`, async () => {
     // 成功時：サーバー側でCookieをセットしたと仮定して200を返す
     return new HttpResponse(null, {status: 200});
   }),
 
   // 3. ログアウトAPI
-  http.post(`${BASE_URL}/api/auth/logout`, () => {
+  http.post(`${BASE_URL}/api/logout`, () => {
     return new HttpResponse(null, {status: 200});
   }),
 
@@ -57,9 +57,9 @@ export const handlers = [
   // 💡 ソート＆件数切り替えに対応したユーザー一覧API
   http.get(`${BASE_URL}/api/users`, ({ request }) => {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const page = Number.parseInt(url.searchParams.get('page') || '1', 10);
     const search = url.searchParams.get('search') || '';
-    const limit = parseInt(url.searchParams.get('limit') || '10', 10); // 💡 件数制限の取得
+    const limit = Number.parseInt(url.searchParams.get('limit') || '10', 10); // 💡 件数制限の取得
     const sortBy = url.searchParams.get('sortBy') || 'createdAt';       // 💡 ソート対象（デフォルト: 登録日）
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';      // 💡 昇順・降順（デフォルト: 降順）
 
@@ -107,4 +107,11 @@ export const handlers = [
     const selectedDict = dict[lang as 'ja' | 'en'] || dict.ja;
     return HttpResponse.json(selectedDict);
   }),
+
+  http.post(`${BASE_URL}/api/users/entries`,  ({request}) => {
+    console.log("user entry request.", request);
+    return HttpResponse.json({
+      "message": 1
+    });
+  })
 ];

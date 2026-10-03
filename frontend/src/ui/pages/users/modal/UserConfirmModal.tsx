@@ -1,7 +1,7 @@
 import type {FC} from "react";
 import type {UserConfirmModalProps} from "./props/UserConfirmModalProps.ts";
-import {useLocale} from "../../../hooks/useLocale.ts";
-import {Modal} from "../../components/Modal.tsx";
+import {useLocale} from "../../../../hooks/useLocale.ts";
+import {Modal} from "../../../components/Modal.tsx";
 import {FiAlertCircle} from "react-icons/fi";
 
 export const UserConfirmModal: FC<UserConfirmModalProps> = ({
@@ -38,6 +38,10 @@ export const UserConfirmModal: FC<UserConfirmModalProps> = ({
         {/* 💡 ベタ書きを完全に排除した、登録内容の確認データ一覧 */}
         <div className="bg-slate-50/70 border border-slate-100 rounded-xl p-4 space-y-3 text-sm">
           <div className="flex justify-between border-b border-slate-200/50 pb-2">
+            <span className="text-slate-400 font-medium text-xs">{t('userCreate.deptLabel')}</span>
+            <span className="font-bold text-slate-800">{formData.loginId}</span>
+          </div>
+          <div className="flex justify-between border-b border-slate-200/50 pb-2">
             <span className="text-slate-400 font-medium text-xs">{t('userCreate.nameLabel')}</span>
             <span className="font-bold text-slate-800">{formData.name}</span>
           </div>
@@ -45,16 +49,14 @@ export const UserConfirmModal: FC<UserConfirmModalProps> = ({
             <span className="text-slate-400 font-medium text-xs">{t('userCreate.emailLabel')}</span>
             <span className="font-bold text-slate-800">{formData.email}</span>
           </div>
-{/*          <div className="flex justify-between border-b border-slate-200/50 pb-2">
+          <div className="flex justify-between border-b border-slate-200/50 pb-2">
             <span className="text-slate-400 font-medium text-xs">{t('userCreate.deptLabel')}</span>
-            <span className="font-bold text-slate-800">{formData.department}</span>
+            <span className="font-bold text-slate-800">{formData.language}</span>
           </div>
-          <div className="flex justify-between pb-1">
-            <span className="text-slate-400 font-medium text-xs">{t('userCreate.roleLabel')}</span>
-            <span className="font-bold text-slate-800">
-              {formData.role === 'admin' ? t('userCreate.roleAdmin') : t('userCreate.roleUser')}
-            </span>
-          </div>*/}
+          <div className="flex justify-between border-b border-slate-200/50 pb-2">
+            <span className="text-slate-400 font-medium text-xs">{t('userCreate.deptLabel')}</span>
+            <span className="font-bold text-slate-800">{formData.timezone}</span>
+          </div>
         </div>
 
         {/* 下部アクションボタンエリア */}

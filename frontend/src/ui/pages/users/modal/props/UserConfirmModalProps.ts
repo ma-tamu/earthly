@@ -1,4 +1,4 @@
-import type {UserEntryParam} from "../../../../types/user.ts";
+import type {UserEntryParam} from "../../../../../types/user.ts";
 
 export type UserConfirmModalProps = {
   isOpen: boolean;

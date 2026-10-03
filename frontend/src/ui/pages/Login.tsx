@@ -18,13 +18,14 @@ export function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: {errors, isSubmitting},
   } = useForm<LoginParams>({
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
 
-  const onSubmit = async (data: LoginParams) => {
+  const onSubmit = async (data: LoginParams, e: SubmitEvent) => {
+    e.preventDefault();
     try {
       await login(data);
     } catch {
@@ -41,7 +42,7 @@ export function Login() {
       </div>
 
       <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-xl shadow-slate-100/50">
-        <form onSubmit={() => handleSubmit(onSubmit)} className="space-y-6" noValidate>
+        <form onSubmit={(e) => handleSubmit(onSubmit)(e)} className="space-y-6" noValidate>
           <InputField
             id="loginId"
             type="loginId"

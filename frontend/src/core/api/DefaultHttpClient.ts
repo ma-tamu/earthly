@@ -43,15 +43,12 @@ export class DefaultHttpClient implements HttpClient {
       ? this.prepareHeadersAndBody(headers, body, contentType)
       : body;
 
-
-    const defaultOptions: RequestInit = {
-      ...restOptions,
-      headers,
+    const response = await fetch(url, {
+      method: method,
+      headers: headers,
       body: finalBody,
       credentials: 'include',
-    }
-
-    const response = await fetch(url, defaultOptions);
+    });
 
     if (response.status === 401) {
       throw new Error(`Unauthorized request: ${response.status}`);

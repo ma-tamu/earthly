@@ -12,7 +12,7 @@ export const UserEntrySchema = z.object({
   loginId: z.string().nonempty().min(8).max(255).regex(/^\w{8,}$/),
   name: z.string().nonempty().max(255),
   email: z.email().max(255),
-  length: z.string().nonempty().regex(/ja|en/),
+  language: z.string().nonempty().regex(/ja|en/),
   timezone: z.string().nonempty().max(255),
 });
 

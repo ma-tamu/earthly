@@ -26,7 +26,7 @@ export class AuthServiceImpl implements AuthService {
   }
 
   async login(loginId: string, password: string): Promise<void> {
-    await this.userRepository.authenticate(loginId, password);
+    await this.userRepository.authenticate({loginId: loginId, password: password});
   }
 
   async logout(): Promise<void> {

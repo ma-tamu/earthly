@@ -11,6 +11,7 @@ import {AppLayout} from "./ui/layouts/AppLayout.tsx";
 import {authGuard} from "./core/security/authGuard.ts";
 import type {LocaleService} from "./services/LocaleService.ts";
 import {UserEntry} from "./ui/pages/users/UserEntry.tsx";
+import {Loading} from "./ui/components/Loading.tsx";
 
 
 function App() {
@@ -18,49 +19,59 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      id: "AuthenticationPrincipal",
       element: <AppLayout/>,
       errorElement: <ErrorPage/>,
+      id: "AuthenticationPrincipal",
       loader: async (request) => {
-        const authService = container.get<AuthService>(TYPES.AuthService);
-        const localeService = container.get<LocaleService>(TYPES.LocaleService);
+        try {
+          const authService = container.get<AuthService>(TYPES.AuthService);
+          const localeService = container.get<LocaleService>(TYPES.LocaleService);
 
-        // URLパラメータ等から現在の言語（デフォルト: ja）を取得
-        const url = new URL(request.url);
-        const currentLocale = (url.searchParams.get("lang") || 'ja') as 'ja' | 'en';
+          // URLパラメータ等から現在の言語（デフォルト: ja）を取得
+          const url = new URL(request.url);
+          const currentLocale = (url.searchParams.get("lang") || 'ja') as 'ja' | 'en';
 
-        // バックエンドから最新データを並列（Promise.all）で直接フェッチ
-        const [user, translations] = await Promise.all([
-          authService.getCurrentUser().catch(() => null), // トップやログイン用に、rootでの認証落ち（401）はnullとして優しく許容
-          localeService.fetchTranslations(currentLocale)
-        ]);
+          // バックエンドから最新データを並列（Promise.all）で直接フェッチ
+          const [user, translations] = await Promise.all([
+            authService.getCurrentUser(),
+            localeService.fetchTranslations(currentLocale)
+          ]);
 
-        // 子階層の全コンポーネントから useRouteLoaderData("root") で0秒参照できるように一元分配
-        return {user, translations, locale: currentLocale};
+          // 子階層の全コンポーネントから useRouteLoaderData("AuthenticationPrincipal") で0秒参照できるように一元分配
+          return {user, translations, locale: currentLocale};
+
+        } catch {
+          return redirect("/login");
+        }
       },
       children: [
         {
           index: true,
-          loader: async () => {
-            try {
-              await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
-              return redirect("/dashboard");
-            } catch {
-              return redirect("/login");
-            }
+          element: <Loading variant="spinner" />,
+          loader: async (request) => {
+            const authService = container.get<AuthService>(TYPES.AuthService);
+            const localeService = container.get<LocaleService>(TYPES.LocaleService);
+
+            // URLパラメータ等から現在の言語（デフォルト: ja）を取得
+            const url = new URL(request.url);
+            const currentLocale = (url.searchParams.get("lang") || 'ja') as 'ja' | 'en';
+
+            // バックエンドから最新データを並列（Promise.all）で直接フェッチ
+            const [user, translations] = await Promise.all([
+              authService.getCurrentUser().catch(() => null), // トップやログイン用に、rootでの認証落ち（401）はnullとして優しく許容
+              localeService.fetchTranslations(currentLocale)
+            ]);
+
+            // 子階層の全コンポーネントから useRouteLoaderData("AuthenticationPrincipal") で0秒参照できるように一元分配
+            return {user, translations, locale: currentLocale};
           }
-        },
-        {
-          path: "/login",
-          element: <Login/>,
-          loader: () => authGuard()
         },
         {
           path: "dashboard",
           element: <Dashboard/>,
           loader: async () => {
             const rootData = await container.get<AuthService>(TYPES.AuthService).getCurrentUser();
-            return !rootData ? redirect('/login') : null;
+            return !rootData ? redirect('/login') : rootData;
           }
         },
         {
@@ -103,7 +114,19 @@ function App() {
         }
       ]
     },
-
+    {
+      path: "/login",
+      element: <Login/>,
+      loader: async () => {
+        const authService = container.get<AuthService>(TYPES.AuthService);
+        try {
+          await authService.getCurrentUser();
+          return redirect('/dashboard');
+        } catch {
+          return null; // 未ログインなら何もしない（ループしない）
+        }
+      }
+    },
     // その他の未知のURLはすべてログイン（またはリダイレクト）へ
     {
       path: "*",

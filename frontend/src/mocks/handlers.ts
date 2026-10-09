@@ -1,6 +1,7 @@
 import {http, HttpResponse} from 'msw';
 import ja from "./locale/ja.json"
 import en from "./locale/en.json"
+import type {UserDetail} from "../core/security/UserDetail.ts";
 
 const BASE_URL = 'http://localhost:8000';
 
@@ -18,34 +19,47 @@ const mockUsers = Array.from({length: 25}, (_, i) => ({
   updatedAt: new Date(2026, 0, 1 + i).toISOString(), // 2026年想定
   updatedBy: 'NULL',
 }));
+mockUsers.push({
+  id: "NULL",
+  loginId: "admin",
+  name: "Administrator",
+  email: "example@planet.com",
+  lockout: false,
+  language: "ja",
+  timezone: "UTC",
+  createdAt: "1970/01/01 00:00:00",
+  createdBy: "NULL",
+  updatedAt: "1970/01/01 00:00:00",
+  updatedBy: "NULL",
+
+});
+let user:UserDetail|null = null;
+
 
 export const handlers = [
   // 1. 現在のログインユーザー取得（Cookie検証のモック）
   http.get(`${BASE_URL}/api/users/me`, () => {
     // Cookieのシミュレートとして、簡易的にチェック（通常はブラウザが自動送信）
     // デバッグ用に、常にログイン成功状態とするか、任意で401エラーを切り替える
-    return HttpResponse.json({
-      id: "NULL",
-      loginId: "admin",
-      name: "Administrator",
-      email: "example@planet.com",
-      lockout: false,
-      language: "ja",
-      timezone: "UTC",
-      createdAt: "1970/01/01 00:00:00",
-      createdBy: "NULL",
-      updatedAt: "1970/01/01 00:00:00",
-      updatedBy: "NULL",
-
-    });
+    if (user) {
+      return HttpResponse.json(user);
+    }
     // 未ログイン状態を試したい場合は以下を有効化
-    // return new HttpResponse(null, { status: 401 });
+    return new HttpResponse(null, { status: 401 });
   }),
 
   // 2. ログインAPI
-  http.post(`${BASE_URL}/api/login`, async () => {
+  http.post(`${BASE_URL}/api/login`, async ({request}) => {
     // 成功時：サーバー側でCookieをセットしたと仮定して200を返す
-    return new HttpResponse(null, {status: 200});
+    try {
+      const body = await request.formData();
+      const loginId = body.get('loginId');
+      user = mockUsers.find(value => value.loginId === loginId);
+
+      return new HttpResponse(JSON.stringify(user), {status: 200});
+    } catch (e) {
+      console.error(e);
+    }
   }),
 
   // 3. ログアウトAPI
@@ -108,8 +122,7 @@ export const handlers = [
     return HttpResponse.json(selectedDict);
   }),
 
-  http.post(`${BASE_URL}/api/users/entries`,  ({request}) => {
-    console.log("user entry request.", request);
+  http.post(`${BASE_URL}/api/users/entries`,  () => {
     return HttpResponse.json({
       "message": 1
     });

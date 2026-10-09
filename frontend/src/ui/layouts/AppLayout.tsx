@@ -22,7 +22,6 @@ export function AppLayout() {
 
       {/* どんな画面でも常に表示される共通ヘッダー */}
       <Header
-        user={user}
         isSidebarOpen={isSidebarOpen}
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

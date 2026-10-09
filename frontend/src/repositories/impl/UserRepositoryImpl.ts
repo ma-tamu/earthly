@@ -7,6 +7,7 @@ import type {UserList} from "../entities/UserList.ts";
 import type {UserSearchRequest} from "../request/UserSearchRequest.ts";
 import type {UserEntryRequest} from "../request/UserEntryRequest.ts";
 import type {MessageResponse} from "../response/MessageResponse.ts";
+import type {AuthenticationRequest} from "../request/AuthenticationRequest.ts";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -22,8 +23,11 @@ export class UserRepositoryImpl implements UserRepository {
     return await this.httpClient.get<User>("/api/users/me");
   }
 
-  async authenticate(loginId: string, password: string): Promise<void> {
-    await this.httpClient.post<string>('/api/login', {loginId: loginId, password: password}, {contentType: "form"});
+  async authenticate(request: AuthenticationRequest): Promise<void> {
+    const formData = new URLSearchParams()
+    formData.append('loginId', request.loginId);
+    formData.append('password', request.password);
+    await this.httpClient.post<string>('/api/login', 'application/x-www-form-urlencoded', formData);
   }
 
   async logout(): Promise<void> {
@@ -42,15 +46,13 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async entry(request: UserEntryRequest): Promise<MessageResponse> {
-    return await this.httpClient.post<MessageResponse>("/api/users/entries", request,
-      {
-        contentType: "json"
-      }
-    );
+    const json = JSON.stringify(request);
+    return await this.httpClient.post<MessageResponse>("/api/users/entries", json);
   }
 
   async entryConfirm(request: UserEntryRequest): Promise<void> {
-    await this.httpClient.post<MessageResponse>("/api/users/entries/confirms", request);
+    const json = JSON.stringify(request);
+    await this.httpClient.post<MessageResponse>("/api/users/entries/confirms", json);
   }
 
 }

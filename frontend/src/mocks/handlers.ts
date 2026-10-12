@@ -33,7 +33,7 @@ mockUsers.push({
   updatedBy: "NULL",
 
 });
-let user:UserDetail|null = null;
+let user: UserDetail | null = null;
 
 
 export const handlers = [
@@ -45,7 +45,7 @@ export const handlers = [
       return HttpResponse.json(user);
     }
     // 未ログイン状態を試したい場合は以下を有効化
-    return new HttpResponse(null, { status: 401 });
+    return new HttpResponse(null, {status: 401});
   }),
 
   // 2. ログインAPI
@@ -67,9 +67,16 @@ export const handlers = [
     return new HttpResponse(null, {status: 200});
   }),
 
+  http.get(`${BASE_URL}/api/languages`, ({params}) => {
+    const {lang} = params;
+    const dict = {ja, en};
+    const selectedDict = dict[lang as 'ja' | 'en'] || dict.ja;
+    return HttpResponse.json(selectedDict);
+  }),
+
   // 4. ページネーション付きユーザー一覧取得API
   // 💡 ソート＆件数切り替えに対応したユーザー一覧API
-  http.get(`${BASE_URL}/api/users`, ({ request }) => {
+  http.get(`${BASE_URL}/api/users`, ({request}) => {
     const url = new URL(request.url);
     const page = Number.parseInt(url.searchParams.get('page') || '1', 10);
     const search = url.searchParams.get('search') || '';
@@ -114,15 +121,15 @@ export const handlers = [
     });
   }),
 
-  http.get(`${BASE_URL}/api/locales/:lang`, ({ params }) => {
-    const { lang } = params;
+  http.get(`${BASE_URL}/api/locales/:lang`, ({params}) => {
+    const {lang} = params;
 
     const dict = {ja, en};
     const selectedDict = dict[lang as 'ja' | 'en'] || dict.ja;
     return HttpResponse.json(selectedDict);
   }),
 
-  http.post(`${BASE_URL}/api/users/entries`,  () => {
+  http.post(`${BASE_URL}/api/users/entries`, () => {
     return HttpResponse.json({
       "message": 1
     });

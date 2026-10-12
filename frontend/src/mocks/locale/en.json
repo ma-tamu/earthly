@@ -4,6 +4,11 @@
       "button": {
         "search": "search"
       }
+    },
+    "login": {
+      "button": {
+        "login": "Login"
+      }
     }
   }
 }

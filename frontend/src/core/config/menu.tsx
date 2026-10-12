@@ -1,5 +1,6 @@
 import type {ReactNode} from "react";
 import {FiGrid, FiUsers, FiSettings} from 'react-icons/fi';
+import {FaBuilding, FaGamepad} from "react-icons/fa6";
 
 export type SubMenuItem = {
   path: string;
@@ -23,6 +24,16 @@ export const DASHBOARD_MENU_CONFIG: MenuItem[] = [
     path: '/users',
     label: 'ユーザー管理',
     icon: <FiUsers className="w-5 h-5"/>
+  },
+  {
+    path: '/compaies',
+    label: '会社管理',
+    icon: <FaBuilding className="w-5 h-5" />
+  },
+  {
+    path: '/clients',
+    label: 'OAuthクライアント管理',
+    icon: <FaGamepad className="w-5 h-5" />
   },
   {
     label: 'システム設定',

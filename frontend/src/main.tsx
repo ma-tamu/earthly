@@ -18,7 +18,8 @@ async function enableMocking() {
 }
 
 // 初期化を待ってからアプリケーションをレンダリングする
-enableMocking().then(() => {
+enableMocking().then(async () => {
+  await import("./i18n")
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <App />

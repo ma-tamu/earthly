@@ -1,6 +1,7 @@
 import {type FC, useEffect, useRef, useState} from "react";
 import {FiClock, FiGlobe, FiLogOut, FiMenu, FiChevronDown} from "react-icons/fi";
 import {useAuth} from "../../hooks/useAuth.ts";
+import {useTranslation} from "react-i18next";
 
 type HeaderProps = {
   isSidebarOpen: boolean;
@@ -14,7 +15,7 @@ export const Header: FC<HeaderProps> = ({
                                           onToggleSidebar,
                                           onToggleMobileMenu,
                                         }) => {
-
+  const {t} = useTranslation();
   const {user, logout, isLoggingOut} = useAuth();
   const [lang, setLang] = useState(user ? user.language : 'ja');
   const [timezone, setTimezone] = useState(user ? user.timezone : 'JST');
@@ -44,7 +45,7 @@ export const Header: FC<HeaderProps> = ({
             <button
               onClick={onToggleSidebar}
               className="hidden md:flex p-2 text-slate-500 hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors mr-1"
-              title={isSidebarOpen ? "サイドバーを閉じる" : "サイドバーを開く"}
+              title={isSidebarOpen ? t("page.header.sideBar.clolse") : t("page.header.sideBar.open")}
             >
               <FiMenu className="w-4 h-4"/>
             </button>

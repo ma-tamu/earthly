@@ -4,6 +4,30 @@
       "button": {
         "search": "検索"
       }
+    },
+    "header": {
+      "title": "Earthly",
+      "language": {
+        "ja": "日本語",
+        "en": "英語"
+      },
+      "sideBar": {
+        "open": "サイドバーを開く",
+        "close": "サイドバーを閉じる"
+      }
+    },
+    "footer": "Planet System INC All rights reserved.",
+    "login": {
+      "button": {
+        "login": "ログイン"
+      },
+      "label": {
+        "welcome": "Welcome Earthly",
+        "loginId": "ログインID",
+        "password": "パスワード",
+        "forgot": "パスワードをお忘れですか?",
+        "remember": "ログイン状態を保持する"
+      }
     }
   }
 }

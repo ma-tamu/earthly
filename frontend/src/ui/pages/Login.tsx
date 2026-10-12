@@ -1,6 +1,5 @@
 import {InputField} from "../components/parts/InputField.tsx";
 import {FiLock, FiMail} from "react-icons/fi";
-import {useLocale} from "../../hooks/useLocale.ts";
 import {useAuth} from "../../hooks/useAuth.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -8,6 +7,7 @@ import {type LoginParams, loginSchema} from "../../types/auth.ts";
 import {Header} from "../components/Header.tsx";
 import {Footer} from "../components/Footer.tsx";
 import {useState} from "react";
+import {useTranslation} from "react-i18next";
 
 /**
  * ログインページ
@@ -15,7 +15,7 @@ import {useState} from "react";
  */
 export function Login() {
 
-  const {t} = useLocale();
+  const {t} = useTranslation();
   const {login} = useAuth();
 
   // 認証後専用の状態管理
@@ -59,7 +59,7 @@ export function Login() {
         {/* コンテンツ展開エリア（認証状況やサイドバーの開閉状態で左側の余白を動的に変化） */}
         <div className={`flex-1 flex flex-col min-w-0 min-h-[calc(100vh-64px)] transition-all duration-300 md:pl-0`}
         >
-          <main className="flex-1 flex p-4 sm:p-6 lg:p-8 bg-white justify-center">
+          <main className="flex-1 flex p-4 sm:p-6 lg:p-8 bg-white items-center justify-center">
             <div className="w-full max-w-110">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-3">Welcome Earthly</h1>
@@ -116,7 +116,7 @@ export function Login() {
                       : 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700 hover:shadow-blue-600/30'
                     }`}
                   >
-                    {isSubmitting ? t('login.submitting') : t('login.submit')}
+                    {isSubmitting ? t('page.login.button.login') : t('page.login.button.login')}
                   </button>
                 </form>
               </div>

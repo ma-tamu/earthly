@@ -1,9 +1,9 @@
-import type {User} from "../repositories/entities/User.ts";
+import type {UserEntity} from "../repositories/entities/UserEntity.ts";
 import type {UserSearch} from "./dto/UserSearch.ts";
-import type {UserEntryParam} from "../types/user.ts";
+import type {User, UserEntryParam} from "../types/user.ts";
 
 export type UserPaginatedResponse = {
-  data: User[];
+  data: UserEntity[];
   meta: {
     offset: number;
     length: number;
@@ -26,4 +26,6 @@ export interface UserService {
   entryConfirm(param: UserEntryParam): Promise<void>;
 
   entry(param: UserEntryParam): Promise<string>;
+
+  get(id: string): Promise<User>;
 }

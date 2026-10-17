@@ -1,6 +1,6 @@
 import type {UserRepository} from "../UserRepository.ts";
 import {inject, injectable} from "inversify";
-import type {User} from "../entities/User.ts";
+import type {UserEntity} from "../entities/UserEntity.ts";
 import type {HttpClient} from "../../core/api/HttpClient.ts";
 import {TYPES} from "../../core/types/di.ts";
 import type {UserList} from "../entities/UserList.ts";
@@ -19,8 +19,8 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
 
-  async me(): Promise<User> {
-    return await this.httpClient.get<User>("/api/users/me");
+  async me(): Promise<UserEntity> {
+    return await this.httpClient.get<UserEntity>("/api/users/me");
   }
 
   async authenticate(request: AuthenticationRequest): Promise<void> {
@@ -31,7 +31,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async logout(): Promise<void> {
-    await this.httpClient.delete<void>("/api/logout");
+    await this.httpClient.post<string>("/api/logout");
   }
 
   async find(request: UserSearchRequest): Promise<UserList> {
@@ -53,6 +53,10 @@ export class UserRepositoryImpl implements UserRepository {
   async entryConfirm(request: UserEntryRequest): Promise<void> {
     const json = JSON.stringify(request);
     await this.httpClient.post<MessageResponse>("/api/users/entries/confirms", json);
+  }
+
+  async get(id: string): Promise<UserEntity> {
+    return await this.httpClient.get<UserEntity>(`/api/users/${id}`);
   }
 
 }

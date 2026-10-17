@@ -10,7 +10,7 @@ import {Loading} from "../../components/Loading.tsx";
 import {useLocale} from "../../../hooks/useLocale.ts";
 
 function UserList() {
-  const {t} =useLocale();
+  const {t} = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const userService = useInjection<UserService>(TYPES.UserService)
 
@@ -179,7 +179,6 @@ function UserList() {
                     className="px-6 py-4 cursor-pointer hover:bg-slate-100/70 transition-colors">
                   登録日 {renderSortIcon('createdAt')}
                 </th>
-                <th className="px-6 py-4 text-right">操作</th>
               </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm">
@@ -187,12 +186,11 @@ function UserList() {
                 <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="px-6 py-4.5">
                     <div className="flex items-center space-x-3">
-                      <div
-                        className="h-9 w-9 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-600 text-xs">
-                        {user.name.replace(/[^A-Za-z0-9]/g, '').charAt(0) || user.name.charAt(0)}
-                      </div>
                       <div>
-                        <div className="font-semibold text-slate-900">{user.name}</div>
+                        <Link to={`/users/${user.id}`}
+                              className="font-bold text-slate-900 hover:text-blue-600 hover:underline transition-colors block text-left">
+                          {user.name}
+                        </Link>
                         <div className="text-slate-400 text-xs">{user.email}</div>
                       </div>
                     </div>
@@ -210,11 +208,6 @@ function UserList() {
                   </td>
                   <td
                     className="px-6 py-4.5 text-slate-500 text-xs">{new Date(user.createdAt).toLocaleDateString('ja-JP')}</td>
-                  <td className="px-6 py-4.5 text-right">
-                    <button
-                      className="text-xs font-bold text-slate-600 hover:text-blue-600 px-3 py-1.5 hover:bg-slate-50 rounded-lg">編集
-                    </button>
-                  </td>
                 </tr>
               ))}
               </tbody>

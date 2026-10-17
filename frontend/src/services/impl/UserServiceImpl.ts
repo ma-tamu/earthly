@@ -3,7 +3,7 @@ import {inject, injectable} from "inversify";
 import {TYPES} from "../../core/types/di.ts";
 import type {UserRepository} from "../../repositories/UserRepository.ts";
 import type {UserSearch} from "../dto/UserSearch.ts";
-import type {UserEntryParam} from "../../types/user.ts";
+import type {User, UserEntryParam} from "../../types/user.ts";
 
 @injectable()
 export class UserServiceImpl implements UserService {
@@ -51,5 +51,17 @@ export class UserServiceImpl implements UserService {
       language: param.language,
       timezone: param.timezone,
     });
+  }
+
+  async get(id: string): Promise<User> {
+    const entity = await this.userRepository.get(id);
+    return {
+      id: entity.id,
+      loginId: entity.loginId,
+      name: entity.name,
+      email: entity.email,
+      language: entity.language,
+      timezone: entity.timezone,
+    };
   }
 }

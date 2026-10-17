@@ -64,7 +64,8 @@ export const handlers = [
 
   // 3. ログアウトAPI
   http.post(`${BASE_URL}/api/logout`, () => {
-    return new HttpResponse(null, {status: 200});
+    user = null;
+    return new HttpResponse("", {status: 200});
   }),
 
   http.get(`${BASE_URL}/api/languages`, ({params}) => {
@@ -133,5 +134,14 @@ export const handlers = [
     return HttpResponse.json({
       "message": 1
     });
+  }),
+
+  http.get(`${BASE_URL}/api/users/:id`, ({params}) => {
+    const {id} = params;
+    const u =  mockUsers.find(value => value.id === id);
+    if (!u) {
+      return HttpResponse.json({}, {status: 404});
+    }
+    return HttpResponse.json(u);
   })
 ];

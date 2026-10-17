@@ -12,6 +12,7 @@ import {authGuard} from "./core/security/authGuard.ts";
 import type {LocaleService} from "./services/LocaleService.ts";
 import {UserEntry} from "./ui/pages/users/UserEntry.tsx";
 import {Loading} from "./ui/components/Loading.tsx";
+import UserDetail from "./ui/pages/users/UserDetail.tsx";
 
 
 function App() {
@@ -84,7 +85,7 @@ function App() {
             },
             {
               path: ":id",
-              element: <></>,
+              element: <UserDetail/>,
               loader: async () => {
                 try {
                   await container.get<AuthService>(TYPES.AuthService).getCurrentUser();

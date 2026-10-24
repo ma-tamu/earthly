@@ -8,6 +8,8 @@ import type {UserSearchRequest} from "../request/UserSearchRequest.ts";
 import type {UserEntryRequest} from "../request/UserEntryRequest.ts";
 import type {MessageResponse} from "../response/MessageResponse.ts";
 import type {AuthenticationRequest} from "../request/AuthenticationRequest.ts";
+import type {RoleList} from "../entities/RoleList.ts";
+import type {UserRoleSearchRequest} from "../request/UserRoleSearchRequest.ts";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -57,6 +59,17 @@ export class UserRepositoryImpl implements UserRepository {
 
   async get(id: string): Promise<UserEntity> {
     return await this.httpClient.get<UserEntity>(`/api/users/${id}`);
+  }
+
+  async findRole(id: string, request: UserRoleSearchRequest): Promise<RoleList> {
+    const query = new URLSearchParams({
+      page: request.page.toString(),
+      search: request.search,
+      limit: request.size.toString(),
+      sortBy: request.sort,
+      sortOrder: request.order,
+    }).toString();
+    return await this.httpClient.get<RoleList>(`/api/users/${id}/roles?${query}`);
   }
 
 }

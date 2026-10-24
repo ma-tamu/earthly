@@ -143,5 +143,31 @@ export const handlers = [
       return HttpResponse.json({}, {status: 404});
     }
     return HttpResponse.json(u);
+  }),
+  http.get(`${BASE_URL}/api/users/:id/roles`, ({request}) => {
+    const url = new URL(request.url);
+    const page = Number.parseInt(url.searchParams.get('page') || '1', 10);
+    const search = url.searchParams.get('search') || '';
+    const limit = Number.parseInt(url.searchParams.get('limit') || '10', 10); // 💡 件数制限の取得
+    const sortBy = url.searchParams.get('sortBy') || 'createdAt';       // 💡 ソート対象（デフォルト: 登録日）
+    const sortOrder = url.searchParams.get('sortOrder') || 'desc';      // 💡 昇順・降順（デフォルト: 降順）
+
+    return HttpResponse.json({
+      roles: {
+        id: 1,
+        name: "Administrador",
+        description: "Administrador",
+        createdAt: new Date(),
+        createdBy: "NULL",
+        updatedAt: new Date(),
+        updatedBy: "NULL",
+      },
+      attribute: {
+        offset: page,
+        total: 10,
+        length: 1,
+      }
+    })
   })
+
 ];
